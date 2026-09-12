@@ -1,0 +1,1279 @@
+<style>  
+  html,
+  body,
+  .content-wrapper,
+  .container,
+  .page-width,
+  .main-content,
+  #content,
+  #main,
+  #wrapper,
+  .wrapper,
+  [class*="container"],
+  [class*="wrapper"],
+  [class*="content"],
+  [class*="page"],
+  [class*="collection"],
+  [class*="layout"],
+  [class*="col-"],
+  [class*="row"],
+  [class*="section"],
+  article,
+  main,
+  section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .ibl-altar,
+  .ibl-altar * {
+    box-sizing: border-box;
+  }
+
+  .ibl-altar {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #7d7d7d;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-green: #9fd8be;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    overflow: hidden;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-altar a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-altar a:hover,
+  .ibl-altar a:focus,
+  .ibl-altar a *,
+  .ibl-altar a:hover *,
+  .ibl-altar a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-altar img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-altar-shell {
+    width: min(900px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  /* --- hero --- */
+  .ibl-altar-hero {
+    text-align: center;
+    padding: 0;
+  }
+
+  .ibl-altar-tagline {
+    color: var(--ibl-muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 28px 0 16px;
+  }
+
+  .ibl-altar-desc {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 16px;
+    color: var(--ibl-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .ibl-altar-desc strong {
+    color: var(--ibl-text);
+  }
+
+  /* --- video --- */
+  .ibl-altar-video-section {
+    margin: 40px auto 0 !important;
+    width: min(900px, calc(100% - 32px)) !important;
+  }
+
+  .ibl-altar-video-main {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-altar-video-main iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ibl-altar-video-list {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .ibl-altar-video-item {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    padding: 10px;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--ibl-font);
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-altar-video-item:hover {
+    border-color: #343434;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-altar-video-item.active {
+    border-color: var(--ibl-accent);
+  }
+
+  .ibl-altar-video-item img {
+    width: 80px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .ibl-altar-video-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ibl-altar-video-item-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ibl-text);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .ibl-altar-video-item-desc {
+    font-size: 11px;
+    color: var(--ibl-dim);
+    line-height: 1.3;
+  }
+
+  /* --- download / cta --- */
+  .ibl-altar-cta {
+    text-align: center;
+    padding: 48px 0 36px;
+  }
+
+  .ibl-altar-version {
+    color: var(--ibl-muted);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 0;
+  }
+
+  .ibl-altar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 54px;
+    padding: 16px 40px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 8px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    cursor: pointer;
+  }
+
+  .ibl-altar a.ibl-altar-button,
+  .ibl-altar a.ibl-altar-button:hover,
+  .ibl-altar a.ibl-altar-button:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-altar-button:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+    border-color: #d8d8d8;
+  }
+
+  .ibl-altar-button-sub {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--ibl-dim);
+  }
+
+  .ibl-altar-other-platforms {
+    margin-top: 16px;
+  }
+
+  .ibl-altar-other-cb {
+    display: none;
+  }
+
+  .ibl-altar-other-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--ibl-dim);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    user-select: none;
+    transition: color 180ms ease;
+  }
+
+  .ibl-altar-other-label:hover {
+    color: var(--ibl-text);
+  }
+
+  .ibl-altar-other-cb:checked ~ .ibl-altar-other-label .ibl-altar-accordion-triangle {
+    transform: rotate(180deg);
+  }
+
+  .ibl-altar-other-list {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .ibl-altar-other-cb:checked ~ .ibl-altar-other-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .ibl-altar-other-link {
+    color: var(--ibl-dim) !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 180ms ease;
+  }
+
+  .ibl-altar-other-link:hover {
+    color: var(--ibl-text) !important;
+  }
+
+  /* --- accordion section --- */
+  .ibl-altar-accordions {
+    padding: 0 0 36px;
+  }
+
+  .ibl-altar-accordion {
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-altar-accordion:first-child {
+    border-top: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-altar-accordion-cb {
+    display: none;
+  }
+
+  .ibl-altar-accordion-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    color: var(--ibl-text);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--ibl-font);
+    cursor: pointer;
+    text-align: left;
+    user-select: none;
+    transition: color 180ms ease;
+  }
+
+  .ibl-altar-accordion-label:hover {
+    color: var(--ibl-accent);
+  }
+
+  .ibl-altar-accordion-text {
+    white-space: nowrap;
+  }
+
+  .ibl-altar-accordion-triangle {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid var(--ibl-muted);
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  .ibl-altar-accordion-cb:checked ~ .ibl-altar-accordion-label .ibl-altar-accordion-triangle {
+    transform: rotate(180deg);
+  }
+
+  .ibl-altar-accordion-body {
+    display: none;
+    padding: 0 0 20px;
+    color: var(--ibl-muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .ibl-altar-accordion-cb:checked ~ .ibl-altar-accordion-body {
+    display: block;
+  }
+
+  .ibl-altar-accordion-content a {
+    color: var(--ibl-green) !important;
+    text-decoration: underline !important;
+  }
+
+  .ibl-altar-accordion-content ul {
+    padding-left: 18px;
+    margin: 8px 0;
+  }
+
+  .ibl-altar-accordion-content li {
+    margin-bottom: 4px;
+  }
+
+  .ibl-altar-accordion-content strong {
+    color: var(--ibl-text);
+  }
+
+  /* --- image --- */
+  .ibl-altar-image {
+    padding: 0 0 48px;
+  }
+
+  .ibl-altar-image img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--ibl-line);
+  }
+
+  /* --- features --- */
+  .ibl-altar-features {
+    padding: 0 0 48px;
+  }
+
+  .ibl-altar-features-heading {
+    color: var(--ibl-muted) !important;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 32px;
+  }
+
+  .ibl-altar-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .ibl-altar-feature-card {
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 10px;
+    padding: 22px 20px;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-altar-feature-card:hover {
+    border-color: #343434;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-altar-feature-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .ibl-altar-feature-desc {
+    color: var(--ibl-muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* --- bottom links (source / tickets) --- */
+  .ibl-altar-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 0 0 64px;
+  }
+
+  .ibl-altar-link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 12px;
+    padding: 32px 20px;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-altar-link-card:hover {
+    border-color: #343434;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-altar-link-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    opacity: 0.5;
+  }
+
+  .ibl-altar-link-text {
+    color: var(--ibl-muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 300px;
+  }
+
+  .ibl-altar-link-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ibl-text);
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 760px) {
+    .ibl-altar-video-section {
+      width: min(100% - 24px, 900px) !important;
+    }
+
+    .ibl-altar-video-list {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ibl-altar-video-item {
+      flex-shrink: 0;
+    }
+
+    .ibl-altar-features-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ibl-altar-links {
+      grid-template-columns: 1fr;
+    }
+
+    .ibl-altar-shell {
+      width: min(100% - 24px, 900px);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ibl-altar-features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* --- supporter section --- */
+
+  .ibl-altar-supporter {
+    border-top: 1px solid var(--ibl-line-soft);
+    margin-top: 32px;
+    padding-top: 48px;
+  }
+
+  .ibl-altar-supporter-label {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--ibl-green);
+    border-radius: 4px;
+    color: var(--ibl-green) !important;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .ibl-altar-section-title {
+    font-size: clamp(20px, 3vw, 30px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 20px;
+    color: var(--ibl-text);
+  }
+
+  .ibl-altar-bundle-card {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    padding: 24px;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 12px;
+    margin-bottom: 32px;
+  }
+
+  .ibl-altar-bundle-img {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-altar-bundle-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ibl-altar-bundle-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ibl-altar-bundle-name {
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    color: var(--ibl-text);
+  }
+
+  .ibl-altar-bundle-desc {
+    color: var(--ibl-muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 8px 0 0;
+    max-width: 480px;
+  }
+
+  .ibl-altar-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .ibl-altar-price {
+    color: var(--ibl-text);
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .ibl-altar-price-old {
+    color: var(--ibl-dim);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: line-through;
+  }
+
+  .ibl-altar-sale-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border: 1px solid rgba(159, 216, 190, 0.28);
+    border-radius: 4px;
+    background: rgba(159, 216, 190, 0.08);
+    color: var(--ibl-green);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .ibl-altar-bundle-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .ibl-altar-bundle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 28px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 8px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: transform 180ms ease, background 180ms ease;
+    cursor: pointer;
+  }
+
+  .ibl-altar a.ibl-altar-bundle-btn,
+  .ibl-altar a.ibl-altar-bundle-btn:hover,
+  .ibl-altar a.ibl-altar-bundle-btn:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-altar-bundle-btn:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  .ibl-altar-bundle-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 28px;
+    border: 1px solid var(--ibl-dim);
+    border-radius: 8px;
+    color: var(--ibl-muted) !important;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: transform 180ms ease, border-color 180ms ease, color 180ms ease;
+    cursor: pointer;
+  }
+
+  .ibl-altar a.ibl-altar-bundle-link,
+  .ibl-altar a.ibl-altar-bundle-link:hover,
+  .ibl-altar a.ibl-altar-bundle-link:focus {
+    color: var(--ibl-muted) !important;
+  }
+
+  .ibl-altar-bundle-link:hover {
+    transform: translateY(-1px);
+    border-color: var(--ibl-text);
+    color: var(--ibl-text) !important;
+  }
+
+  .ibl-altar-packs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .ibl-altar-pack-card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 10px;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-altar-pack-card:hover {
+    border-color: #343434;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-altar-pack-art {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .ibl-altar-pack-art img {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+  }
+
+  .ibl-altar-pack-price {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .ibl-altar-pack-art .ibl-price-old {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    color: #9a9a9a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: line-through;
+  }
+
+  .ibl-altar-pack-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ibl-text);
+  }
+
+  @media screen and (max-width: 760px) {
+    .ibl-altar-bundle-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .ibl-altar-bundle-actions {
+      flex-direction: row;
+    }
+
+    .ibl-altar-packs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<div class="ibl-altar">
+  <div class="ibl-altar-hero">
+    <div class="ibl-altar-video-section">
+      <div class="ibl-altar-video-main">
+        <iframe id="ial-main-video" src="https://www.youtube-nocookie.com/embed/kFFw7ILC244" title="Altar v0.4.0 Walkthrough" allowfullscreen></iframe>
+      </div>
+      <div class="ibl-altar-video-list">
+        <button class="ibl-altar-video-item" data-video="xOqfnTtuwT8">
+          <img src="https://img.youtube.com/vi/xOqfnTtuwT8/mqdefault.jpg" alt="Altar Trailer">
+          <div class="ibl-altar-video-item-info">
+            <div class="ibl-altar-video-item-title">Altar Trailer</div>
+            <div class="ibl-altar-video-item-desc">Original release trailer</div>
+          </div>
+        </button>
+        <button class="ibl-altar-video-item active" data-video="kFFw7ILC244">
+          <img src="https://img.youtube.com/vi/kFFw7ILC244/mqdefault.jpg" alt="Altar v0.4.0 Walkthrough">
+          <div class="ibl-altar-video-item-info">
+            <div class="ibl-altar-video-item-title">v0.4.0 Walkthrough</div>
+            <div class="ibl-altar-video-item-desc">New features and overview</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="ibl-altar-tagline">A gift from The Lake</div>
+    <p class="ibl-altar-desc">
+      Altar is a <strong>FREE</strong>, open-source guitar amplifier with a feature-set you would only expect to find in a $200 product.
+    </p>
+
+    <div class="ibl-altar-cta">
+      <a class="ibl-altar-button" id="ial-download-main" href="https://github.com/iamlamprey/altar/releases/download/v0.4.0/Altar-v0.4.0-windows.zip" rel="noopener">
+        Download for <span id="ial-os-label">your OS</span>
+      </a>
+
+      <div class="ibl-altar-other-platforms">
+        <input type="checkbox" id="ial-other-cb" class="ibl-altar-other-cb">
+        <label for="ial-other-cb" class="ibl-altar-other-label">
+          Other platforms
+          <span class="ibl-altar-accordion-triangle"></span>
+        </label>
+        <div class="ibl-altar-other-list">
+          <a class="ibl-altar-other-link" data-os="windows" href="https://github.com/iamlamprey/altar/releases/download/v0.4.0/Altar-v0.4.0-windows.zip" rel="noopener">Windows</a>
+          <a class="ibl-altar-other-link" data-os="macos" href="https://github.com/iamlamprey/altar/releases/download/v0.4.0/Altar-v0.4.0-macOS.pkg" rel="noopener">macOS</a>
+          <a class="ibl-altar-other-link" data-os="linux" href="https://github.com/iamlamprey/altar/releases/download/v0.4.0/Altar-v0.4.0-linux-x86_64.tar.gz" rel="noopener">Linux</a>
+        </div>
+      </div>
+
+      <p class="ibl-altar-version">Latest version: <span id="ial-version">0.4.0</span></p>
+    </div>
+  </div>
+
+  <div class="ibl-altar-shell">
+    <!-- accordions -->
+    <div class="ibl-altar-accordions">
+      <div class="ibl-altar-accordion">
+        <input type="checkbox" id="ial-versions" class="ibl-altar-accordion-cb">
+        <label for="ial-versions" class="ibl-altar-accordion-label">
+          <span class="ibl-altar-accordion-text">Previous Versions</span>
+          <span class="ibl-altar-accordion-triangle"></span>
+        </label>
+        <div class="ibl-altar-accordion-body">
+          <div class="ibl-altar-accordion-content">
+            <div id="ial-prev-versions"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ibl-altar-accordion">
+        <input type="checkbox" id="ial-changelog" class="ibl-altar-accordion-cb">
+        <label for="ial-changelog" class="ibl-altar-accordion-label">
+          <span class="ibl-altar-accordion-text">Changelog</span>
+          <span class="ibl-altar-accordion-triangle"></span>
+        </label>
+        <div class="ibl-altar-accordion-body">
+          <div class="ibl-altar-accordion-content" id="ial-changelog-content"></div>
+      </div>
+    </div>
+  </div>
+
+    <!-- interface image -->
+    <div class="ibl-altar-image">
+      <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jqvtf7q0ji91t7oi6f119t1ek1c.png" alt="Altar interface screenshot" loading="lazy">
+    </div>
+
+    <!-- features -->
+    <div class="ibl-altar-features">
+      <h2 class="ibl-altar-features-heading">Features</h2>
+      <div class="ibl-altar-features-grid">
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Two Amplifiers</h3>
+          <p class="ibl-altar-feature-desc">Altar comes with a glassy clean channel, and a modern high-gain channel for a wide variety of tones.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">NAM Support</h3>
+          <p class="ibl-altar-feature-desc">Load your existing NAM (Neural Amp Modeler) files by switching to Altar's third amp channel. Supports both A1 and A2 model formats.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Modular DSP</h3>
+          <p class="ibl-altar-feature-desc">Drag the amp, cab and FX modules around to re-order them. Right click to bypass.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Cab Designer</h3>
+          <p class="ibl-altar-feature-desc">Create your own professional-sounding IRs with an intuitive designer tool. Share your cabs with friends or even sell them.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Pitch Shifting</h3>
+          <p class="ibl-altar-feature-desc">Two-octave realtime pitch shifting with semitone-snapping and a sub-octave layer blend, all fully automatable.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">FX Suite</h3>
+          <p class="ibl-altar-feature-desc">Multiple Overdrive modes, Circuit-Bending, Reverb, Forward, Reverse and Glitch Delays, Chorus and a Ringmod.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Mixing Tools</h3>
+          <p class="ibl-altar-feature-desc">Mix faster with the Low-frequency palm mute control (Chug). Upper-mid pick attack expansion (Pick), a pre-set Whistle filter and built-in Lofi effect.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">Pre & Post Process</h3>
+          <p class="ibl-altar-feature-desc">Process the DI and final tone with industry-grade channel strips for the ultimate encapsulated tone.</p>
+        </div>
+        <div class="ibl-altar-feature-card">
+          <h3 class="ibl-altar-feature-name">No Stone Unturned</h3>
+          <p class="ibl-altar-feature-desc">Up to 8x Oversampling, built-in Tuner, Click, and an Output Limiter complete the package for your new amplifier.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- source / tickets -->
+    <div class="ibl-altar-links">
+      <a class="ibl-altar-link-card" href="https://github.com/iamlamprey/altar" target="_blank" rel="noopener">
+        <img class="ibl-altar-link-icon" src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1ja0ade5e1hfm1qbr1o9e5dl74b36.png" alt="" aria-hidden="true">
+        <span class="ibl-altar-link-label">Source Code</span>
+        <p class="ibl-altar-link-text">Altar is licensed under GPL-3. Access the Github repository for the full source code.</p>
+      </a>
+      <a class="ibl-altar-link-card" href="https://github.com/iamlamprey/altar/issues" target="_blank" rel="noopener">
+        <img class="ibl-altar-link-icon" src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1ja0adnsd1pp41g62fp3te1chj3f.png" alt="" aria-hidden="true">
+        <span class="ibl-altar-link-label">Create Ticket</span>
+        <p class="ibl-altar-link-text">Feedback and bug reports go here. Please include your workstation and steps to reproduce.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- supporter packs -->
+  <div class="ibl-altar-supporter">
+    <div class="ibl-altar-shell">
+
+      <h2 class="ibl-altar-section-title">Support Development</h2>
+      <p style="color: var(--ibl-muted); font-size: 14px; line-height: 1.7; margin: 0 0 24px; max-width: 600px;">
+        Those wishing to support development can do so by purchasing one of the supporter packs. These are designed to fix specific pain points and save you time when producing. Every purchase directly supports future plugins.
+      </p>
+
+      <!-- individual packs -->
+      <div class="ibl-altar-packs-grid">
+        <a class="ibl-altar-pack-card" href="https://iamlamprey.com/b/ambience-supporter-pack" data-ibl-slug="ambience-supporter-pack" target="_blank" rel="noopener">
+          <div class="ibl-altar-pack-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=400/https://pe56d.s3.amazonaws.com/o_1jr5bh5ab1h281pg9bhnj4260h1a.png" alt="Ambience Supporter Pack" loading="lazy">
+            <span class="ibl-altar-pack-price">$10</span><span class="ibl-price-old" style="display: none">$10</span>
+          </div>
+          <div class="ibl-altar-pack-name">Ambiences</div>
+        </a>
+        <a class="ibl-altar-pack-card" href="https://iamlamprey.com/b/riser-supporter-pack" data-ibl-slug="riser-supporter-pack" target="_blank" rel="noopener">
+          <div class="ibl-altar-pack-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=400/https://pe56d.s3.amazonaws.com/o_1jr5c4mqs1d2v1jvv1ascuub1vdc1a.png" alt="Riser Supporter Pack" loading="lazy">
+            <span class="ibl-altar-pack-price">$10</span><span class="ibl-price-old" style="display: none">$10</span>
+          </div>
+          <div class="ibl-altar-pack-name">Risers</div>
+        </a>
+        <a class="ibl-altar-pack-card" href="https://iamlamprey.com/b/glitch-supporter-pack" data-ibl-slug="glitch-supporter-pack" target="_blank" rel="noopener">
+          <div class="ibl-altar-pack-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=400/https://pe56d.s3.amazonaws.com/o_1jr5c1ac71lgm10b41pb22j4125i1a.png" alt="Glitch Supporter Pack" loading="lazy">
+            <span class="ibl-altar-pack-price">$10</span><span class="ibl-price-old" style="display: none">$10</span>
+          </div>
+          <div class="ibl-altar-pack-name">Glitches</div>
+        </a>
+        <a class="ibl-altar-pack-card" href="https://iamlamprey.com/b/sub-drop-supporter-pack" data-ibl-slug="sub-drop-supporter-pack" target="_blank" rel="noopener">
+          <div class="ibl-altar-pack-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=400/https://pe56d.s3.amazonaws.com/o_1jr5c725t1gb0nmbll2vr91b1c1a.png" alt="Sub Drop Supporter Pack" loading="lazy">
+            <span class="ibl-altar-pack-price">$10</span><span class="ibl-price-old" style="display: none">$10</span>
+          </div>
+          <div class="ibl-altar-pack-name">Sub Drops</div>
+        </a>
+      </div>
+
+      <!-- bundle -->
+      <div class="ibl-altar-bundle-card" data-ibl-bundle="supporter-bundle">
+        <a class="ibl-altar-bundle-img" href="https://iamlamprey.com/b/supporter-bundle" target="_blank" rel="noopener">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=400/https://pe56d.s3.amazonaws.com/o_1jr5cc0bg5vc163j1q2e1usf1jgh7.png" alt="Supporter Bundle" loading="lazy">
+        </a>
+        <div class="ibl-altar-bundle-copy">
+          <div class="ibl-altar-bundle-name">Bundle & Save</div>
+          <div class="ibl-altar-price-row">
+            <span class="ibl-altar-price">$20</span>
+            <span class="ibl-altar-price-old ibl-price-old" style="display: none">$20</span>
+          </div>
+          <p class="ibl-altar-bundle-desc">All four supporter sample packs in a single bundle at a discount. Your purchase directly helps fund development of free, open-source plugins like Altar.</p>
+        </div>
+        <div class="ibl-altar-bundle-actions">
+          <a class="ibl-altar-bundle-btn" href="https://iamlamprey.com/order?link=rVKe5&pricing_plan=18B151aABZ" rel="noopener">Buy Now</a>
+          <a class="ibl-altar-bundle-link" href="https://iamlamprey.com/b/supporter-bundle" target="_blank" rel="noopener">Learn More</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  var mainBtn = document.getElementById('ial-download-main');
+  var osLabel = document.getElementById('ial-os-label');
+  var versionEl = document.getElementById('ial-version');
+  var otherLinks = document.querySelectorAll('.ibl-altar-other-link');
+  if (!mainBtn || !versionEl) return;
+
+  // Detect operating system from browser
+  var p = (navigator.platform || '').toLowerCase();
+  var ua = (navigator.userAgent || '').toLowerCase();
+  var detectedOs = null;
+  if (p.includes('win') || ua.includes('windows')) detectedOs = 'windows';
+  else if (p.includes('mac') || ua.includes('macintosh')) detectedOs = 'macos';
+  else if (p.includes('linux') || p.includes('x11') || ua.includes('linux')) detectedOs = 'linux';
+
+  var osNames = { windows: 'Windows', macos: 'macOS', linux: 'Linux' };
+
+  // Update the main button label with detected OS
+  if (osLabel) {
+    osLabel.textContent = osNames[detectedOs] || 'your OS';
+  }
+
+  // Fetch all releases from GitHub (latest first)
+  fetch('https://api.github.com/repos/iamlamprey/altar/releases?per_page=10')
+    .then(function(r) {
+      if (!r.ok) throw new Error('API error: ' + r.status);
+      return r.json();
+    })
+    .then(function(releases) {
+      if (!releases || !releases.length) return;
+
+      var release = releases[0]; // latest release
+      var version = release.tag_name.replace(/^v/i, '');
+      versionEl.textContent = version;
+
+      var osKey = { windows: /windows/i, macos: /macos|darwin/i, linux: /linux/i };
+
+      // Point the main button to the detected OS asset
+      if (detectedOs) {
+        var pattern = osKey[detectedOs];
+        for (var j = 0; j < release.assets.length; j++) {
+          if (pattern.test(release.assets[j].name)) {
+            mainBtn.href = release.assets[j].browser_download_url;
+            break;
+          }
+        }
+      }
+
+      // Fill the other-platform links
+      for (var i = 0; i < otherLinks.length; i++) {
+        var link = otherLinks[i];
+        var pattern2 = osKey[link.getAttribute('data-os')];
+        if (!pattern2) continue;
+        for (var j = 0; j < release.assets.length; j++) {
+          if (pattern2.test(release.assets[j].name)) {
+            link.href = release.assets[j].browser_download_url;
+            break;
+          }
+        }
+      }
+
+      // Render changelog from latest release body
+      var changelogEl = document.getElementById('ial-changelog-content');
+      if (changelogEl && release.body) {
+        if (typeof marked !== 'undefined') {
+          changelogEl.innerHTML = marked.parse(release.body);
+        } else {
+          changelogEl.textContent = 'Failed to load changelog.';
+        }
+      }
+
+      // Build previous-versions list from remaining releases (skip index 0)
+      var prevEl = document.getElementById('ial-prev-versions');
+      if (prevEl && releases.length > 1) {
+        for (var i = 1; i < releases.length; i++) {
+          var rel = releases[i];
+          if (!rel.assets || !rel.assets.length) continue;
+          // Pick the first asset; prefer Windows if available
+          var asset = rel.assets[0];
+          for (var j = 0; j < rel.assets.length; j++) {
+            if (/windows/i.test(rel.assets[j].name)) {
+              asset = rel.assets[j];
+              break;
+            }
+          }
+          var pp = document.createElement('p');
+          var aa = document.createElement('a');
+          aa.href = asset.browser_download_url;
+          aa.textContent = rel.tag_name;
+          pp.appendChild(aa);
+          prevEl.appendChild(pp);
+        }
+      }
+    })
+    .catch(function() {
+      // API request failed — hardcoded hrefs serve as fallback
+    });
+
+  // Video playlist
+  var videoItems = document.querySelectorAll('.ibl-altar-video-item');
+  var mainVideo = document.getElementById('ial-main-video');
+  if (videoItems.length && mainVideo) {
+    for (var v = 0; v < videoItems.length; v++) {
+      videoItems[v].addEventListener('click', function() {
+        var id = this.getAttribute('data-video');
+        if (!id) return;
+        mainVideo.src = 'https://www.youtube-nocookie.com/embed/' + id;
+        for (var v2 = 0; v2 < videoItems.length; v2++) {
+          videoItems[v2].classList.remove('active');
+        }
+        this.classList.add('active');
+      });
+    }
+  }
+})();
+</script>
+
+
+<!-- Pricing module: canonical source is source/ibl-pricing.js — keep in sync -->
+<script>
+/*!
+ * iamLamprey pricing module — ibl-pricing.js
+ *
+ * Canonical source: source/ibl-pricing.js
+ * The exact contents of this file are inlined into each page so the embed
+ * stays standalone. Keep these copies in sync:
+ *   - source/instruments.html
+ *   - source/master-bundle.html
+ *   - source/plugins/altar.html
+ *   - source/plugins/muzzle.html
+ *   - source/sample-packs/supporter-bundle.html
+ *
+ * What it does: prices come from a static PRICES registry that mirrors
+ * config.json. The old Payhip scrape/sale-detection/iframe logic has been
+ * removed — Polar is the storefront and prices live in config.json. Each card
+ * keeps its truthfully hardcoded default price; FREE cards are left untouched.
+ * No "On sale" chips are rendered because Polar products are fixed-price.
+ */
+(function (root) {
+  'use strict';
+
+  /*
+   * Static price registry: slug -> price (USD, dollars). Mirrors config.json —
+   * keep it in sync by hand when prices change.
+   */
+  var PRICES = {
+  /* BEGIN PRICES — mirrors config.json (keep in sync by hand) */
+    'achromic': 40,
+    'aetheric': 20,
+    'atlas': 20,
+    'blackout': 20,
+    'blackout-2': 20,
+    'bloom': 20,
+    'cloudburst': 20,
+    'cloudburst-acoustic': 20,
+    'eidolon': 40,
+    'found-keys': 20,
+    'gloom': 40,
+    'oracle-2': 40,
+    'pdq-bass': 40,
+    'prismatic': 20,
+    'songbird': 0,
+    'zephyr': 0,
+    'tethys': 40,
+    'HZtFg': 40,
+    'master-bundle': 150,
+    'supporter-bundle': 20,
+    'ambience-supporter-pack': 10,
+    'riser-supporter-pack': 10,
+    'glitch-supporter-pack': 10,
+    'sub-drop-supporter-pack': 10,
+  /* END PRICES */
+  };
+
+  function money(n) {
+    var v = (typeof n === 'number' ? n : parseFloat(n) || 0);
+    return '$' + v.toFixed(2);
+  }
+
+  function setFirstTextNode(el, text) {
+    if (!el) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node = walker.nextNode();
+    if (node) node.textContent = text;
+  }
+
+  function resultFor(slug) {
+    var p = PRICES[slug];
+    return { price: typeof p === 'number' ? p : 0 };
+  }
+
+  function applyProduct(el, result) {
+    if (!result) return;
+    if (el.querySelector('.ibl-note') || el.querySelector('.ibl-free-label')) return; // FREE cards stay as-is
+    var priceEl = el.querySelector('.ibl-price');
+    var packPrice = el.querySelector('.ibl-altar-pack-price');
+    var display = money(result.price);
+    if (priceEl) priceEl.textContent = display;
+    if (packPrice) packPrice.textContent = display;
+  }
+
+  function applyBundle(el, result) {
+    if (!result) return;
+    var bPrice = el.querySelector('.ibl-bundle-price');      // master-bundle.html pricing block
+    var price = el.querySelector('.ibl-price');               // instruments.html bundle card
+    var altarPrice = el.querySelector('.ibl-altar-price');    // altar.html bundle price row
+    var name = el.querySelector('.ibl-altar-bundle-name');    // altar.html bundle card
+    var btn = el.querySelector('.ibl-pack-buy-btn');          // supporter-bundle.html
+    var priceLine = el.querySelector('.ibl-pack-price');
+    var display = money(result.price);
+    if (bPrice) bPrice.textContent = display;
+    if (price) price.textContent = display;
+    if (altarPrice) altarPrice.textContent = display;
+    if (name) name.textContent = name.textContent.replace(/\$[\d.]+/, display);
+    if (btn) btn.textContent = btn.textContent.replace(/-?\s*\$[\d.]+/, '- ' + display);
+    if (priceLine) setFirstTextNode(priceLine, display);
+  }
+
+  function applyTotal(el, bySlug) {
+    var sum = 0;
+    Object.keys(bySlug).forEach(function (slug) {
+      var r = bySlug[slug];
+      if (r && r.price > 0) sum += r.price;
+    });
+    var label = el.textContent.replace(/^\$[\d.]+/, '').trim();
+    el.textContent = money(sum) + (label ? ' ' + label : '');
+  }
+
+  function apply() {
+    var productEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-slug]'));
+    var bundleEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-bundle]'));
+    var totalEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-total-value]'));
+    if (!productEls.length && !bundleEls.length) return;
+
+    productEls.forEach(function (el) {
+      applyProduct(el, resultFor(el.getAttribute('data-ibl-slug')));
+    });
+    bundleEls.forEach(function (el) {
+      applyBundle(el, resultFor(el.getAttribute('data-ibl-bundle')));
+    });
+    // The total only counts individual products, never bundles.
+    var bySlug = {};
+    productEls.forEach(function (el) {
+      var slug = el.getAttribute('data-ibl-slug');
+      if (slug) bySlug[slug] = resultFor(slug);
+    });
+    totalEls.forEach(function (el) {
+      applyTotal(el, bySlug);
+    });
+  }
+
+  var api = {
+    money: money,
+    PRICES: PRICES,
+    applyProduct: applyProduct,
+    applyBundle: applyBundle,
+    applyTotal: applyTotal
+  };
+
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  } else {
+    if (typeof document === 'undefined') return;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply);
+    } else {
+      apply();
+    }
+  }
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+</div>

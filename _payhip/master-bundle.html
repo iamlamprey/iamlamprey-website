@@ -1,0 +1,768 @@
+<style>
+  html, body, .content-wrapper, .container, .page-width,
+  .main-content, #content, #main, #wrapper, .wrapper,
+  [class*="container"], [class*="wrapper"], [class*="content"],
+  [class*="page"], [class*="collection"], [class*="layout"],
+  [class*="col-"], [class*="row"], [class*="section"],
+  article, main, section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html, body { overflow-x: hidden !important; }
+
+  /* ensure Payhip cart sidebar keeps its designed width and right-side position */
+  .cart-block {
+    width: 460px !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+  .cart-block .cart-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+    width: 100% !important;
+  }
+  @media screen and (max-width: 480px) {
+    .cart-block { width: 100% !important; }
+  }
+
+  .ibl-bundle, .ibl-bundle * { box-sizing: border-box; }
+
+  .ibl-bundle {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-blue: #7ec8ff;
+    --ibl-green: #9fd8be;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-bundle a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-bundle a:hover,
+  .ibl-bundle a:focus,
+  .ibl-bundle a *,
+  .ibl-bundle a:hover *,
+  .ibl-bundle a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-bundle img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-shell {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  /* --- hero / header --- */
+  .ibl-bundle-hero {
+    text-align: center;
+    padding: 48px 0 28px;
+  }
+
+  .ibl-bundle-hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 8px;
+  }
+
+  .ibl-bundle-hero p {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    margin: 0 0 28px;
+  }
+
+  /* --- pricing block --- */
+  .ibl-bundle-pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .ibl-bundle-price {
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--ibl-text);
+  }
+
+  .ibl-bundle-price-old {
+    font-size: 20px;
+    font-weight: 600;
+    color: #8f8f8f;
+    text-decoration: line-through;
+    order: -1;
+  }
+
+  .ibl-bundle-savings {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border: 1px solid var(--ibl-green);
+    background: rgba(159, 216, 190, 0.08);
+    color: var(--ibl-green);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .ibl-bundle-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--ibl-line-soft);
+    padding-bottom: 28px;
+  }
+
+  .ibl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 15px 36px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .ibl-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .ibl-btn-primary {
+    outline: 1px solid var(--ibl-accent);
+    outline-offset: -1px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+  }
+
+  .ibl-bundle a.ibl-btn-primary,
+  .ibl-bundle a.ibl-btn-primary:hover,
+  .ibl-bundle a.ibl-btn-primary:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-btn-primary:hover {
+    background: #d8d8d8;
+  }
+
+  /* --- included products section --- */
+  .ibl-section-heading {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 24px;
+  }
+
+  .ibl-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 0 0 12px 12px;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-card:hover {
+    border-color: #343434;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-card-cover {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+
+  .ibl-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ibl-card .ibl-sale-chip {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+
+  .ibl-sale-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 4px 8px;
+    border: 1px solid rgba(159, 216, 190, 0.28);
+    border-radius: 4px;
+    background: rgba(159, 216, 190, 0.08);
+    color: var(--ibl-green);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  .ibl-free-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 4px 8px;
+    border: 1px solid var(--ibl-blue);
+    border-radius: 4px;
+    background: rgba(126, 200, 255, 0.08);
+    color: var(--ibl-blue);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+
+  .ibl-card-body {
+    padding: 12px 14px 14px;
+  }
+
+  .ibl-card-type {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--ibl-muted);
+  }
+
+  .ibl-led {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ibl-green);
+    flex-shrink: 0;
+  }
+
+  .ibl-card-name {
+    min-height: 0;
+    margin-top: 8px;
+    color: var(--ibl-text);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.18;
+  }
+
+  .ibl-card-price {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-top: 5px;
+  }
+
+  .ibl-card-price .ibl-price {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ibl-text);
+  }
+
+  .ibl-card-price .ibl-price-old {
+    font-size: 14px;
+    font-weight: 500;
+    color: #8f8f8f;
+    text-decoration: line-through;
+  }
+
+  .ibl-card-price .ibl-free-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ibl-blue);
+  }
+
+  /* --- total value note --- */
+  .ibl-total-value {
+    text-align: left;
+    color: var(--ibl-dim);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0 0 18px;
+    border-bottom: 1px solid var(--ibl-line-soft);
+    margin-bottom: 24px;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 1060px) {
+    .ibl-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .ibl-shell {
+      width: calc(100% - 24px);
+    }
+
+    .ibl-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ibl-bundle-actions {
+      flex-direction: column;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ibl-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="ibl-bundle">
+
+  <div class="ibl-shell">
+
+    <!-- header -->
+    <div class="ibl-bundle-hero">
+      <h1>The Master Bundle</h1>
+      <p>Every virtual instrument at a convenient price point.</p>
+
+      <div class="ibl-bundle-pricing" data-ibl-bundle="master-bundle">
+        <span class="ibl-bundle-price">$150.00</span>
+        <span class="ibl-bundle-price-old" style="display: none">$150.00</span>
+        <span class="ibl-bundle-savings" style="display: none">Save 0%</span>
+      </div>
+
+      <div class="ibl-bundle-actions">
+        <a class="ibl-btn ibl-btn-primary" href="https://iamlamprey.com/order?link=eMyFi&pricing_plan=4lW50qEXG3" target="_blank" rel="noopener">Purchase</a>
+      </div>
+    </div>
+
+    <!-- included products -->
+    <h2 class="ibl-section-heading">Included Products</h2>
+    <div class="ibl-total-value" data-ibl-total-value>$420 Total Value</div>
+
+    <div class="ibl-grid">
+      <a class="ibl-card" href="https://iamlamprey.com/b/achromic" data-ibl-slug="achromic" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvadfc2l9dn160qhof1vb218pe10.jpg" alt="Achromic - Aggressive Rhythm Guitars artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Rhythm guitars</div>
+          <div class="ibl-card-name">Achromic</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/aetheric" data-ibl-slug="aetheric" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvek8kqm12vg1ag73rp7lg207r.jpg" alt="Aetheric - Ambient Pads artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Ambient pads</div>
+          <div class="ibl-card-name">Aetheric</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/atlas" data-ibl-slug="atlas" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvagsm851os7fos11g66pk11ej10.png" alt="Atlas - Hybrid Synth artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Hybrid synth</div>
+          <div class="ibl-card-name">Atlas</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/blackout" data-ibl-slug="blackout" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvahf6fi105mg9k56nsddegd10.png" alt="Blackout - Lightweight Pulses artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Lightweight pulses</div>
+          <div class="ibl-card-name">Blackout</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/blackout-2" data-ibl-slug="blackout-2" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvahhmfu1l5i19qm1m5al5i12fu10.png" alt="Blackout Volume 2 - Lightweight Pulses artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Lightweight pulses</div>
+          <div class="ibl-card-name">Blackout 2</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/bloom" data-ibl-slug="bloom" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvahqqis1hu354a14vub1s13kl10.jpg" alt="Bloom - Lush Synth Arp artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Lush synth arp</div>
+          <div class="ibl-card-name">Bloom</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/cloudburst" data-ibl-slug="cloudburst" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvt6i0g9c576gqpkucl04ea11.jpg" alt="Cloudburst - Playable Guitar Harmonics artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Guitar harmonics</div>
+          <div class="ibl-card-name">Cloudburst</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/cloudburst-acoustic" data-ibl-slug="cloudburst-acoustic" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvai2d606d4vv21tuk14bf6hq10.png" alt="Cloudburst Acoustic - Playable Guitar Harmonics artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Guitar harmonics</div>
+          <div class="ibl-card-name">Cloudburst Acoustic</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/eidolon" data-ibl-slug="eidolon" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hval2l6k1fb61dt8rgrfcd4qm10.jpg" alt="Eidolon - Haunted Piano artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Haunted piano</div>
+          <div class="ibl-card-name">Eidolon</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/found-keys" data-ibl-slug="found-keys" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvflgeob3pl1bk21ehj1gmi1iuhr.jpg" alt="Found Keys - Hybrid Synth artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Hybrid synth</div>
+          <div class="ibl-card-name">Found Keys</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/gloom" data-ibl-slug="gloom" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvalofgr141c1s961jqt1ji0d1810.jpg" alt="Gloom - Time-Stretched Piano artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Time-stretched piano</div>
+          <div class="ibl-card-name">Gloom</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/oracle-2" data-ibl-slug="oracle-2" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvblbagk1rm04baf2q10q18bu10.jpg" alt="Oracle Volume 2 - Ambient Guitars artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Ambient guitars</div>
+          <div class="ibl-card-name">Oracle Vol 2</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/pdq-bass" data-ibl-slug="pdq-bass" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvblq8b910fhkshuup1pajm1s10.jpg" alt="PDQ Bass - Aggressive Bass Guitar artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Aggressive bass</div>
+          <div class="ibl-card-name">PDQ Bass</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/prismatic" data-ibl-slug="prismatic" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvh3pcrmapuv0d1jjn1eck13fnr.jpg" alt="Prismatic - Shining Keys artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Shining keys</div>
+          <div class="ibl-card-name">Prismatic</div>
+          <div class="ibl-card-price"><span class="ibl-price">$20.00</span><span class="ibl-price-old" style="display: none">$20.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/songbird" data-ibl-slug="songbird" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvbn8ank1mkq1aua15lnmierl110.jpg" alt="Songbird - Toy Kalimba artwork" loading="lazy">
+          <span class="ibl-free-chip">Free</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Toy kalimba</div>
+          <div class="ibl-card-name">Songbird</div>
+          <div class="ibl-card-price"><span class="ibl-free-label">Free</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/tethys" data-ibl-slug="tethys" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvbnb0ma1bl913kc6endh71log10.jpg" alt="Tethys - Expressive Synth Keys artwork" loading="lazy">
+          <span class="ibl-sale-chip" style="display: none">On sale</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Expressive synth</div>
+          <div class="ibl-card-name">Tethys</div>
+          <div class="ibl-card-price"><span class="ibl-price">$40.00</span><span class="ibl-price-old" style="display: none">$40.00</span></div>
+        </div>
+      </a>
+
+      <a class="ibl-card" href="https://iamlamprey.com/b/zephyr" data-ibl-slug="zephyr" target="_blank" rel="noopener">
+        <div class="ibl-card-cover">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvbo7c9117c51065mgj18fo1lls12.jpg" alt="Zephyr - Panpipe Pads artwork" loading="lazy">
+          <span class="ibl-free-chip">Free</span>
+        </div>
+        <div class="ibl-card-body">
+          <div class="ibl-card-type"><span class="ibl-led"></span>Panpipe pads</div>
+          <div class="ibl-card-name">Zephyr</div>
+          <div class="ibl-card-price"><span class="ibl-free-label">Free</span></div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+
+<!-- Pricing module: canonical source is source/ibl-pricing.js — keep in sync -->
+<script>
+/*!
+ * iamLamprey pricing module — ibl-pricing.js
+ *
+ * Canonical source: source/ibl-pricing.js
+ * The exact contents of this file are inlined into each page so the embed
+ * stays standalone. Keep these copies in sync:
+ *   - source/instruments.html
+ *   - source/master-bundle.html
+ *   - source/plugins/altar.html
+ *   - source/plugins/muzzle.html
+ *   - source/sample-packs/supporter-bundle.html
+ *
+ * What it does: prices come from a static PRICES registry that mirrors
+ * config.json. The old Payhip scrape/sale-detection/iframe logic has been
+ * removed — Polar is the storefront and prices live in config.json. Each card
+ * keeps its truthfully hardcoded default price; FREE cards are left untouched.
+ * No "On sale" chips are rendered because Polar products are fixed-price.
+ */
+(function (root) {
+  'use strict';
+
+  /*
+   * Static price registry: slug -> price (USD, dollars). Mirrors config.json —
+   * keep it in sync by hand when prices change.
+   */
+  var PRICES = {
+  /* BEGIN PRICES — mirrors config.json (keep in sync by hand) */
+    'achromic': 40,
+    'aetheric': 20,
+    'atlas': 20,
+    'blackout': 20,
+    'blackout-2': 20,
+    'bloom': 20,
+    'cloudburst': 20,
+    'cloudburst-acoustic': 20,
+    'eidolon': 40,
+    'found-keys': 20,
+    'gloom': 40,
+    'oracle-2': 40,
+    'pdq-bass': 40,
+    'prismatic': 20,
+    'songbird': 0,
+    'zephyr': 0,
+    'tethys': 40,
+    'HZtFg': 40,
+    'master-bundle': 150,
+    'supporter-bundle': 20,
+    'ambience-supporter-pack': 10,
+    'riser-supporter-pack': 10,
+    'glitch-supporter-pack': 10,
+    'sub-drop-supporter-pack': 10,
+  /* END PRICES */
+  };
+
+  function money(n) {
+    var v = (typeof n === 'number' ? n : parseFloat(n) || 0);
+    return '$' + v.toFixed(2);
+  }
+
+  function setFirstTextNode(el, text) {
+    if (!el) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node = walker.nextNode();
+    if (node) node.textContent = text;
+  }
+
+  function resultFor(slug) {
+    var p = PRICES[slug];
+    return { price: typeof p === 'number' ? p : 0 };
+  }
+
+  function applyProduct(el, result) {
+    if (!result) return;
+    if (el.querySelector('.ibl-note') || el.querySelector('.ibl-free-label')) return; // FREE cards stay as-is
+    var priceEl = el.querySelector('.ibl-price');
+    var packPrice = el.querySelector('.ibl-altar-pack-price');
+    var display = money(result.price);
+    if (priceEl) priceEl.textContent = display;
+    if (packPrice) packPrice.textContent = display;
+  }
+
+  function applyBundle(el, result) {
+    if (!result) return;
+    var bPrice = el.querySelector('.ibl-bundle-price');      // master-bundle.html pricing block
+    var price = el.querySelector('.ibl-price');               // instruments.html bundle card
+    var altarPrice = el.querySelector('.ibl-altar-price');    // altar.html bundle price row
+    var name = el.querySelector('.ibl-altar-bundle-name');    // altar.html bundle card
+    var btn = el.querySelector('.ibl-pack-buy-btn');          // supporter-bundle.html
+    var priceLine = el.querySelector('.ibl-pack-price');
+    var display = money(result.price);
+    if (bPrice) bPrice.textContent = display;
+    if (price) price.textContent = display;
+    if (altarPrice) altarPrice.textContent = display;
+    if (name) name.textContent = name.textContent.replace(/\$[\d.]+/, display);
+    if (btn) btn.textContent = btn.textContent.replace(/-?\s*\$[\d.]+/, '- ' + display);
+    if (priceLine) setFirstTextNode(priceLine, display);
+  }
+
+  function applyTotal(el, bySlug) {
+    var sum = 0;
+    Object.keys(bySlug).forEach(function (slug) {
+      var r = bySlug[slug];
+      if (r && r.price > 0) sum += r.price;
+    });
+    var label = el.textContent.replace(/^\$[\d.]+/, '').trim();
+    el.textContent = money(sum) + (label ? ' ' + label : '');
+  }
+
+  function apply() {
+    var productEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-slug]'));
+    var bundleEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-bundle]'));
+    var totalEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-total-value]'));
+    if (!productEls.length && !bundleEls.length) return;
+
+    productEls.forEach(function (el) {
+      applyProduct(el, resultFor(el.getAttribute('data-ibl-slug')));
+    });
+    bundleEls.forEach(function (el) {
+      applyBundle(el, resultFor(el.getAttribute('data-ibl-bundle')));
+    });
+    // The total only counts individual products, never bundles.
+    var bySlug = {};
+    productEls.forEach(function (el) {
+      var slug = el.getAttribute('data-ibl-slug');
+      if (slug) bySlug[slug] = resultFor(slug);
+    });
+    totalEls.forEach(function (el) {
+      applyTotal(el, bySlug);
+    });
+  }
+
+  var api = {
+    money: money,
+    PRICES: PRICES,
+    applyProduct: applyProduct,
+    applyBundle: applyBundle,
+    applyTotal: applyTotal
+  };
+
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  } else {
+    if (typeof document === 'undefined') return;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply);
+    } else {
+      apply();
+    }
+  }
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+</div>

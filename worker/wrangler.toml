@@ -1,0 +1,12 @@
+# Deployed by .github/workflows/contact-worker.yml on any push that touches worker/.
+# Nothing secret belongs in this file: it is committed and, once the repo is public,
+# readable. RESEND_API_KEY and TURNSTILE_SECRET are Worker secrets set in the
+# Cloudflare dashboard (Workers -> the script -> Settings -> Variables).
+name = "iamlamprey-contact"
+main = "src/index.js"
+compatibility_date = "2026-09-11"
+
+[vars]
+ALLOWED_ORIGINS = "https://iamlamprey.com,https://www.iamlamprey.com,https://iamlamprey.github.io,http://127.0.0.1:4000,http://localhost:4000"
+TO_EMAIL = "support@iamlamprey.com"
+FROM_EMAIL = "iamlamprey contact form <noreply@iamlamprey.com>"

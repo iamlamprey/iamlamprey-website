@@ -1,0 +1,373 @@
+<style>
+.ibl-cloudburst, .ibl-cloudburst * { box-sizing: border-box; }
+
+  .ibl-cloudburst {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-blue: #7ec8ff;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-cloudburst a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-cloudburst a:hover,
+  .ibl-cloudburst a:focus,
+  .ibl-cloudburst a *,
+  .ibl-cloudburst a:hover *,
+  .ibl-cloudburst a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-cloudburst img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-cloudburst-shell {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+
+  .ibl-cloudburst-section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-cloudburst-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .ibl-cloudburst-section-heading {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 18px;
+  }
+
+  .ibl-cloudburst-section-text {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 700px;
+  }
+
+  .ibl-cloudburst-section-text strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-cloudburst-section-text em {
+    color: var(--ibl-text);
+    font-style: italic;
+  }
+
+  .ibl-cloudburst-section-text + .ibl-cloudburst-section-text {
+    margin-top: 14px;
+  }
+
+  /* --- tabs --- */
+  .ibl-cloudburst-tabs {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-cloudburst-tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--ibl-line);
+    margin-bottom: 28px;
+  }
+
+  .ibl-cloudburst-tab-btn {
+    padding: 14px 28px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ibl-muted);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--ibl-font);
+    cursor: pointer;
+    transition: color 180ms ease, border-color 180ms ease;
+    margin-bottom: -1px;
+  }
+
+  .ibl-cloudburst-tab-btn:hover {
+    color: var(--ibl-text);
+  }
+
+  .ibl-cloudburst-tab-btn.active {
+    color: var(--ibl-text);
+    border-bottom-color: var(--ibl-text);
+  }
+
+  .ibl-cloudburst-tab-panel {
+    display: none;
+  }
+
+  .ibl-cloudburst-tab-panel.active {
+    display: block;
+  }
+
+  .ibl-cloudburst-tab-panel h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  .ibl-cloudburst-tab-panel p {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 0 16px;
+    max-width: 650px;
+  }
+
+  .ibl-cloudburst-tab-panel p strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-cloudburst-features {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 20px;
+  }
+
+  .ibl-cloudburst-features li {
+    padding: 8px 0 8px 18px;
+    color: var(--ibl-muted);
+    font-size: 15px;
+    position: relative;
+  }
+
+  .ibl-cloudburst-features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: var(--ibl-dim);
+  }
+
+  .ibl-cloudburst-tab-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 24px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 6px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .ibl-cloudburst a.ibl-cloudburst-tab-link,
+  .ibl-cloudburst a.ibl-cloudburst-tab-link:hover,
+  .ibl-cloudburst a.ibl-cloudburst-tab-link:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-cloudburst-tab-link:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  /* --- soundcloud --- */
+  .ibl-cloudburst-audio {
+    padding: 48px 0;
+  }
+
+  .ibl-cloudburst-audio-wrap {
+    max-width: 100%;
+    margin: 24px auto 0;
+  }
+
+  .ibl-cloudburst-audio-wrap iframe {
+    width: 100%;
+    height: 450px;
+    border: 0;
+    border-radius: 8px;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 760px) {
+    .ibl-cloudburst-audio-wrap iframe {
+      height: 350px;
+    }
+
+    .ibl-cloudburst-features {
+      grid-template-columns: 1fr;
+    }
+
+  }
+  /* --- rhapsody tutorial videos --- */
+  .ibl-rhapsody-tutorials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .ibl-rhapsody-tutorial {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-rhapsody-tutorial iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    .ibl-rhapsody-tutorials {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
+
+<div class="ibl-cloudburst">
+    <div class="ibl-cloudburst-shell">
+    <!-- description: Guitar Purity --><!-- description: Guitar Purity -->
+    <div class="ibl-cloudburst-section">
+      <h2 class="ibl-cloudburst-section-heading">Guitar Purity</h2>
+      <p class="ibl-cloudburst-section-text">
+        Natural harmonics are played by lightly touching the string above the fret. It is a warm, pure sound, closer to a soft piano than a guitar.
+      </p>
+
+    </div>
+
+    <!-- tabs: Rhapsody / Kontakt -->
+    <div class="ibl-cloudburst-tabs">
+      <div class="ibl-cloudburst-tab-bar">
+        <button class="ibl-cloudburst-tab-btn active" data-tab="rhapsody">Rhapsody</button>
+        <button class="ibl-cloudburst-tab-btn" data-tab="kontakt">Kontakt</button>
+      </div>
+
+      <!-- Rhapsody panel (default open) -->
+      <div class="ibl-cloudburst-tab-panel active" id="tab-rhapsody">
+        <p>
+          <strong>Rhapsody</strong> is a free and open-source VST, AU &amp; Standalone player by <a href="https://librewave.com" target="_blank" rel="noopener" style="color: var(--ibl-text) !important; text-decoration: underline !important;">Libre Wave</a>.
+        </p>
+        <p>
+          Gone are the days of needing $400 software to open virtual instruments. Rhapsody is fast, powerful and most importantly&hellip; <strong>it's free.</strong>
+        </p>
+
+                <ul class="ibl-cloudburst-features">
+          <li>Multi-Velocity Samples</li>
+          <li>3 Round-Robin cycles</li>
+          <li>Free Player Plugin by Libre Wave</li>
+          <li>VST, AU &amp; Standalone Support</li>
+          <li>83MB download size</li>
+          <li>88MB uncompressed</li>
+        </ul>
+
+                <div class="ibl-rhapsody-tutorials">
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/dM-e2spiqwE" title="Install Rhapsody &amp; Add Libraries" allowfullscreen loading="lazy"></iframe>
+          </div>
+
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/VAHXQSWKKIY" title="Library Walkthrough" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <a class="ibl-cloudburst-tab-link" href="https://codeberg.org/LibreWave/Rhapsody/releases/tag/2.5.2" target="_blank" rel="noopener">Download Rhapsody</a>
+      </div>
+
+      <!-- Kontakt panel -->
+      <div class="ibl-cloudburst-tab-panel" id="tab-kontakt">
+        <p>
+          <strong>Kontakt 5.8</strong> or higher (full version) required. This library will <strong>not</strong> work in the free Kontakt Player.
+        </p>
+
+                <ul class="ibl-cloudburst-features">
+          <li>Multi-Velocity Samples</li>
+          <li>3 Round-Robin cycles</li>
+          <li>Kontakt 5.8 or higher (full)</li>
+          <li>All major DAWs supported</li>
+          <li>125MB download size</li>
+          <li>125MB uncompressed</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- audio / soundcloud -->
+    <div class="ibl-cloudburst-audio">
+      <h2 class="ibl-cloudburst-section-heading">Listen to Cloudburst</h2>
+      <div class="ibl-cloudburst-audio-wrap">
+        <iframe src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1330881919&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- tabs ---
+  var tabs = document.querySelectorAll('.ibl-cloudburst-tab-btn');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      var allBtns = document.querySelectorAll('.ibl-cloudburst-tab-btn');
+      var allPanels = document.querySelectorAll('.ibl-cloudburst-tab-panel');
+      for (var j = 0; j < allBtns.length; j++) allBtns[j].classList.remove('active');
+      for (var k = 0; k < allPanels.length; k++) allPanels[k].classList.remove('active');
+      this.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  }
+
+})();
+</script>

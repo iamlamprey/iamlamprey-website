@@ -1,0 +1,19 @@
+title: iamlamprey
+description: Virtual instruments, plugins and sample packs.
+url: https://iamlamprey.github.io
+baseurl: /iamlamprey-website    # project-page URL; set to "" at custom-domain cutover
+# where /contact/ posts — the Worker that relays to Resend (see README). The
+# form is dead until YOUR-SUBDOMAIN is replaced with the subdomain wrangler
+# prints on the first deploy.
+contact_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/
+exclude:
+  - README.md
+  - PROMPT.md
+  - CONTEXT.md
+  - serve.bat
+  - Gemfile
+  - Gemfile.lock
+  - requirements.txt
+  - scripts/
+  - worker/
+  - keys.txt

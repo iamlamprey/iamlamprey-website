@@ -1,0 +1,99 @@
+---
+layout: default
+permalink: /contact/
+title: Contact
+glitch: true
+contact: true
+description: Questions about a library, a licence, an order or a refund — get in touch.
+---
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-shell">
+  <section class="ibl-section ibl-contact-section" aria-label="Contact">
+    <p class="ibl-contact-status" id="iblContactSent" role="status" aria-live="polite" hidden>
+      Transmission received &mdash; thanks, I&rsquo;ll get back to you shortly.
+    </p>
+
+    <p class="ibl-contact-status ibl-contact-status-error" id="iblContactError" role="alert" aria-live="polite" hidden>
+      Transmission failed &mdash; please email the address below instead.
+    </p>
+
+    <form class="ibl-contact-form" method="post" action="{{ site.contact_endpoint }}">
+      <div class="ibl-contact-row">
+        <label class="ibl-contact-field">
+          <span class="ibl-contact-label">First Name</span>
+          <input class="ibl-contact-input" type="text" name="firstName" autocomplete="given-name" required>
+        </label>
+
+        <label class="ibl-contact-field">
+          <span class="ibl-contact-label">Last Name</span>
+          <input class="ibl-contact-input" type="text" name="lastName" autocomplete="family-name" required>
+        </label>
+      </div>
+
+      <label class="ibl-contact-field">
+        <span class="ibl-contact-label">Email Address</span>
+        <input class="ibl-contact-input" type="email" name="email" autocomplete="email" required>
+      </label>
+
+      <label class="ibl-contact-field">
+        <span class="ibl-contact-label">Message</span>
+        <textarea class="ibl-contact-input" name="message" rows="5" required></textarea>
+      </label>
+
+      <!-- honeypot: a bot that fills this is handed a decoy success -->
+      <input class="ibl-contact-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <!-- Turnstile draws nothing unless Cloudflare decides to challenge, and the
+           token is optional — a no-JS submission carries none at all -->
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEv1ytG_PqPSKdDW" data-theme="dark" data-appearance="interaction-only"></div>
+
+      <button class="ibl-contact-submit" type="submit">Send</button>
+    </form>
+
+    <p class="ibl-contact-fallback">
+      If the form gives you any trouble, email
+      <!--email_off--><a href="mailto:&#99;ontact&#64;iamlamprey&#46;com">&#99;ontact&#64;iamlamprey&#46;com</a><!--/email_off-->
+      instead &mdash; it reaches the same inbox.
+    </p>
+  </section>
+</div>
+
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>

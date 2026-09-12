@@ -1,0 +1,34 @@
+_old/
+meta pixel setup.html
+CONTEXT.md
+.hana/
+PROMPT.md
+orders.csv
+
+# API key / secret — never commit
+keys.txt
+
+# Cloudflare Worker (worker/) — local deploy state and the dev-only Resend key
+worker/.wrangler/
+worker/.dev.vars
+worker/node_modules/
+
+# Python tooling (scripts/*.py)
+__pycache__/
+*.pyc
+
+scripts/orders-gumroad.csv
+scripts/orders-gumroad-test.csv
+scripts/orders-payhip.csv
+scripts/orders-payhip-test.csv
+scripts/orders-shopify.csv
+scripts/orders-shopify-test.csv
+
+# Jekyll build output / caches
+_site/
+.jekyll-cache/
+.sass-cache/
+
+# Local preview only — GitHub's builder ignores the Gemfile entirely
+Gemfile.lock
+

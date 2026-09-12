@@ -1,0 +1,1975 @@
+/* iamlamprey — shared design tokens and site chrome. */
+
+:root {
+  --ibl-bg: #090909;
+  --ibl-surface: #111111;
+  --ibl-surface-2: #171717;
+  --ibl-line: #242424;
+  --ibl-line-soft: #1a1a1a;
+  --ibl-text: #e8e8e8;
+  --ibl-muted: #999999;
+  --ibl-dim: #4a4a4a;
+  --ibl-accent: #f2f2f2;
+  --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+  --ibl-blue: #7ec8ff;
+  --ibl-amber: #ffc247;
+  --ibl-orange: #ff7d2b;
+  --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--ibl-bg);
+  color: var(--ibl-text);
+  font-family: var(--ibl-font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body.ibl-menu-open {
+  overflow: hidden !important;
+}
+
+.ibl-shell {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.ibl-section {
+  /* 12px + 12px between two sections, matching the page's top padding block */
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-section:last-of-type {
+  border-bottom: none;
+}
+
+/* a divider only sits between the SoundCloud embed and the FAQs: the
+   description and the FAQ block run straight into what follows them */
+.ibl-product-section + .ibl-section,
+.ibl-section.ibl-faq {
+  border-bottom: none;
+}
+
+/* the same goes for the description on a page whose bundle card has taken the
+   slot under the product block — the card is furniture, not a band, so it does
+   not change where the page's dividers fall */
+.ibl-section:has(> .ibl-upsell) + .ibl-section {
+  border-bottom: none;
+}
+
+.ibl-section-heading {
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin: 0 0 18px;
+}
+
+.ibl-section-text {
+  color: var(--ibl-muted);
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 700px;
+}
+
+.ibl-section-text strong {
+  color: var(--ibl-text);
+}
+
+.ibl-section-text em {
+  color: var(--ibl-text);
+  font-style: italic;
+}
+
+.ibl-section-text + .ibl-section-text {
+  margin-top: 14px;
+}
+
+.ibl-section-text a {
+  color: var(--ibl-text);
+  text-decoration: underline;
+}
+
+/* --- announcement bar --- */
+
+.ibl-announce-bar {
+  --ibl-glitch-red: #8b1a1a;
+  --ibl-glitch-cyan: #1a6b6b;
+
+  position: relative;
+  overflow: hidden;
+  background: var(--ibl-bg);
+  border-bottom: 1px solid var(--ibl-line-soft);
+  font-family: var(--ibl-mono);
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ibl-announce-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 12px 0;
+  gap: 16px;
+}
+
+.ibl-announce-bar-url {
+  position: absolute;
+  inset: 0;
+  outline: none;
+}
+
+.ibl-announce-glitch {
+  font-size: 11px;
+  color: #3a3a3a;
+  white-space: nowrap;
+  overflow: hidden;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.ibl-announce-glitch span.glitched {
+  animation: ibl-glitch-pop 0.15s ease 2;
+}
+
+@keyframes ibl-glitch-pop {
+  0% { text-shadow: 0 0 0 transparent; }
+  25% { text-shadow: -1px 0 #8b1a1a, 1px 0 #1a6b6b; }
+  50% { text-shadow: 0 0 0 transparent; }
+  75% { text-shadow: 1px 0 #1a6b6b, -1px 0 #8b1a1a; }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+.ibl-announce-text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ibl-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media screen and (max-width: 700px) {
+  .ibl-announce-glitch {
+    display: none;
+  }
+
+  .ibl-announce-text {
+    font-size: 11px;
+  }
+}
+
+/* --- masthead --- */
+
+.ibl-navbar {
+  background: var(--ibl-bg);
+  color: var(--ibl-text);
+}
+
+.ibl-navbar a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ibl-navbar-masthead {
+  background: var(--ibl-bg);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-navbar-masthead-inner {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.ibl-navbar-masthead-logo img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.ibl-navbar-masthead-nav {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  display: flex;
+}
+
+.ibl-navbar-masthead-nav a {
+  color: var(--ibl-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ibl-navbar-masthead-nav a:hover {
+  color: var(--ibl-text);
+}
+
+.ibl-navbar-nav-item-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ibl-navbar-nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  display: none;
+  flex-direction: column;
+  padding: 8px;
+  background: var(--ibl-surface);
+  border: 1px solid var(--ibl-line);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.ibl-navbar-nav-item-dropdown:hover .ibl-navbar-nav-dropdown,
+.ibl-navbar-nav-item-dropdown:focus-within .ibl-navbar-nav-dropdown {
+  display: flex;
+}
+
+.ibl-navbar-nav-dropdown::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  height: 8px;
+}
+
+.ibl-navbar-nav-dropdown a {
+  color: var(--ibl-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.ibl-navbar-nav-dropdown a:hover {
+  color: var(--ibl-text);
+  background: var(--ibl-surface-2);
+}
+
+.ibl-navbar-masthead-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.ibl-navbar-masthead-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.ibl-navbar-masthead-login img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* --- mobile hamburger button (hidden on desktop) --- */
+
+.ibl-navbar-masthead-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ibl-navbar-masthead-burger:hover {
+  background: var(--ibl-accent-soft);
+}
+
+.ibl-navbar-masthead-burger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--ibl-text);
+  border-radius: 2px;
+  margin: 3px 0;
+}
+
+/* --- mobile overlay menu --- */
+
+.ibl-navbar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--ibl-bg);
+  transform: translateY(-100%);
+  transition: transform 260ms ease;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+.ibl-navbar.ibl-open .ibl-navbar-overlay {
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.ibl-navbar-overlay-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-navbar-overlay-bar img {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
+.ibl-navbar-overlay-close {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ibl-text);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ibl-navbar-overlay-close:hover {
+  background: var(--ibl-accent-soft);
+}
+
+.ibl-navbar-overlay-nav {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 20px 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(100vh - 60px);
+}
+
+.ibl-navbar-overlay-nav > a {
+  color: var(--ibl-muted);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-navbar-overlay-nav > a:hover {
+  color: var(--ibl-text);
+}
+
+.ibl-navbar-overlay-group-title {
+  color: var(--ibl-dim);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 16px 0 6px;
+}
+
+.ibl-navbar-overlay-group a {
+  color: var(--ibl-muted);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 0 12px 8px;
+  border-bottom: 1px solid var(--ibl-line-soft);
+  display: block;
+}
+
+.ibl-navbar-overlay-group a:hover {
+  color: var(--ibl-text);
+}
+
+@media screen and (max-width: 760px) {
+  .ibl-navbar-masthead-inner {
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+
+  .ibl-navbar-masthead-nav {
+    display: none !important;
+  }
+
+  .ibl-navbar-masthead-logo img {
+    height: 26px;
+  }
+
+  .ibl-navbar-masthead-burger {
+    display: inline-flex !important;
+  }
+
+  .ibl-navbar-nav-dropdown {
+    display: none !important;
+  }
+}
+
+/* --- light theme (opt in with `nav_theme: light` in a page's front matter) --- */
+
+.ibl-navbar.ibl-theme-light {
+  --ibl-bg: #FFFFFF;
+  --ibl-surface: #FFFFFF;
+  --ibl-surface-2: #F0F0EC;
+  --ibl-line: #E6E6E2;
+  --ibl-line-soft: #E6E6E2;
+  --ibl-text: #1A1A1A;
+  --ibl-muted: #5C5C58;
+  --ibl-dim: #888888;
+  --ibl-accent: #000000;
+  --ibl-accent-soft: rgba(0, 0, 0, 0.06);
+  --ibl-blue: #0E7BA8;
+}
+
+/* invert the white logo / login icon so they stay visible on a light header */
+.ibl-navbar.ibl-theme-light .ibl-navbar-masthead-logo img,
+.ibl-navbar.ibl-theme-light .ibl-navbar-masthead-login img,
+.ibl-navbar.ibl-theme-light .ibl-navbar-overlay-bar img {
+  filter: invert(1);
+}
+
+/* --- footer --- */
+
+.ibl-footer {
+  border-top: 1px solid var(--ibl-line-soft);
+  background: var(--ibl-bg);
+  padding: 36px 0 44px;
+}
+
+.ibl-footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 32px;
+  justify-content: space-between;
+}
+
+.ibl-footer-wordmark img {
+  height: 24px;
+  width: auto;
+}
+
+.ibl-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.ibl-footer-nav a {
+  color: var(--ibl-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ibl-footer-nav a:hover {
+  color: var(--ibl-text);
+}
+
+/* the footer follows the header's `nav_theme: light` flag */
+.ibl-footer.ibl-theme-light {
+  --ibl-bg: #FFFFFF;
+  --ibl-text: #1A1A1A;
+  --ibl-muted: #5C5C58;
+  --ibl-line-soft: #E6E6E2;
+}
+
+.ibl-footer.ibl-theme-light .ibl-footer-wordmark img {
+  filter: invert(1);
+}
+
+/* --- hero --- */
+
+.ibl-hero {
+  background: var(--ibl-bg);
+  padding-top: 24px;
+}
+
+/* the artwork is a 1.75:1 image, so capping the width at 90vh holds it to about
+   51vh tall, which keeps the cover + buy block above the fold on a desktop
+   viewport; max-height is a guard for a hero with a taller aspect ratio */
+.ibl-hero-art {
+  width: min(1100px, calc(100% - 32px), 90vh);
+  max-height: 60vh;
+  object-fit: contain;
+  margin: 0 auto;
+  height: auto;
+}
+
+/* --- product block --- */
+
+.ibl-product-section {
+  display: grid;
+  /* cover + buy box are sized to their content and the pair is centred on the
+     page, rather than the cover lining up with the hero's left edge; the cover
+     is 285px because that is the buy box height, so the two bottom edges meet */
+  grid-template-columns: 285px auto;
+  justify-content: center;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: end;
+  padding: 18px 0 48px;
+}
+
+/* the product block is the first thing on a page with no hero */
+.ibl-product-section-top {
+  padding-top: 40px;
+}
+
+.ibl-product-cover {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--ibl-line);
+  border-radius: 12px;
+  background: var(--ibl-surface);
+}
+
+.ibl-product-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ibl-product-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ibl-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ibl-price {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.ibl-price-old {
+  color: var(--ibl-muted);
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: 0.75;
+  text-decoration: line-through;
+}
+
+.ibl-sale-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border: 1px solid rgba(126, 200, 255, 0.28);
+  border-radius: 4px;
+  background: rgba(126, 200, 255, 0.08);
+  color: var(--ibl-blue);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.ibl-sale-timer {
+  margin-top: 12px;
+  color: var(--ibl-blue);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.ibl-sale-timer-amber {
+  color: var(--ibl-amber);
+}
+
+.ibl-sale-timer-orange {
+  color: var(--ibl-orange);
+  font-size: 16px;
+}
+
+.ibl-price-note {
+  margin: 14px 0 0;
+  color: var(--ibl-muted);
+  font-size: 13px;
+}
+
+.ibl-product-points {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+}
+
+.ibl-product-points li {
+  position: relative;
+  padding: 4px 0 4px 16px;
+  color: var(--ibl-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.ibl-product-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: var(--ibl-muted);
+}
+
+.ibl-buy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 12px 24px;
+  margin-top: 20px;
+  border: 1px solid var(--ibl-accent);
+  border-radius: 6px;
+  background: var(--ibl-accent);
+  color: #070707;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: transform 180ms ease, background 180ms ease;
+  cursor: pointer;
+}
+
+.ibl-buy:hover {
+  transform: translateY(-1px);
+  background: #d8d8d8;
+}
+
+.ibl-buy-disabled,
+.ibl-buy-disabled:hover {
+  transform: none;
+  border-color: var(--ibl-line);
+  background: var(--ibl-surface-2);
+  color: var(--ibl-muted);
+  cursor: default;
+}
+
+/* --- product page body --- */
+
+/* every section under the product block — description, details, audio, FAQs,
+   tabs, the bundle card — shares one column, a fifth of the way back from the
+   30% reduction the shell would allow: 1100 x 0.76 */
+.ibl-shell-product .ibl-section {
+  width: min(836px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- sample pack pages --- */
+
+/* a pack page has no hero, so its product block opens the page: the block keeps
+   the 770px column it was designed around — cover at the left edge, buy box at
+   the right — and sits centred in the wider body column */
+.ibl-shell-pack .ibl-product-section {
+  width: min(770px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* desktop only: below 901px the shared rule stacks the block into one centred
+   column, and a two-column pack block would not fit anyway */
+@media screen and (min-width: 901px) {
+  .ibl-shell-pack .ibl-product-section {
+    /* the buy box is only as wide as its own content — the button label — so a
+       cover sized by the leftover space would come out bigger on the pages whose
+       label is shorter; a fixed 442px cover (what the widest label in the set
+       leaves), an 80px gap and the box taking the rest of the column put the art
+       and the text in the same place on all four pack pages */
+    grid-template-columns: 442px minmax(0, 1fr);
+    column-gap: 80px;
+    align-items: center;
+  }
+}
+
+/* --- bundle upsell --- */
+
+/* one card under the product block: the copy on the left, the bundle's own price
+   row and buy button on the right, stacking on a narrow screen */
+.ibl-upsell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  padding: clamp(18px, 2.4vw, 26px) clamp(18px, 2.4vw, 28px);
+  border: 1px solid var(--ibl-line);
+  border-radius: 12px;
+  background: var(--ibl-surface);
+}
+
+.ibl-upsell-copy {
+  flex: 1 1 320px;
+}
+
+.ibl-upsell-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.ibl-upsell-text {
+  margin: 8px 0 0;
+  /* a desktop card's copy column is narrower than this, so the cap only bites
+     once the card stacks and the copy runs its full width */
+  max-width: 700px;
+  color: var(--ibl-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.ibl-upsell-buy {
+  flex: 0 0 auto;
+}
+
+/* the price row leads the column, so it needs no gap above it; the button sits
+   clear of the countdown, and both stay left like the card's copy rather than
+   taking the centred row the shared rule gives a stacked product block */
+.ibl-upsell-buy .ibl-price-row {
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+.ibl-upsell-buy .ibl-buy {
+  margin-top: 14px;
+}
+
+@media screen and (max-width: 640px) {
+  /* the shared rule below makes .ibl-buy full width at this size */
+  .ibl-upsell-buy {
+    width: 100%;
+  }
+}
+
+/* --- plugin pages --- */
+
+.ibl-plugin {
+  /* the hero's design box is 760px wide and 34vh tall; the calc shrinks it
+     further when the viewport is too short to hold the hero, the head and the
+     page's buy block (640px covers the chrome, the head and Muzzle's grid) */
+  --ibl-hero-width: 760px;
+  --ibl-hero-cap: 34vh;
+  --ibl-hero-budget: 640px;
+
+  background: var(--ibl-bg);
+  color: var(--ibl-text);
+  font-family: var(--ibl-font);
+}
+
+/* Altar's buy block is shorter than a tier grid, so its screenshot runs bigger
+   and still sits above the fold */
+.ibl-plugin:has(.ibl-plugin-buy) {
+  --ibl-hero-width: 990px;
+  --ibl-hero-cap: 57vh;
+  --ibl-hero-budget: 530px;
+}
+
+/* Muzzle runs light and monospaced, matching its band on the home page */
+.ibl-plugin.ibl-plugin-light {
+  --ibl-bg: #FFFFFF;
+  --ibl-surface: #F0F0EC;
+  --ibl-surface-2: #E6E6E2;
+  --ibl-line: #CCCCC8;
+  --ibl-line-soft: #E6E6E2;
+  --ibl-text: #1A1A1A;
+  --ibl-muted: #5C5C58;
+  --ibl-dim: #888888;
+  --ibl-accent: #000000;
+  --ibl-accent-soft: rgba(0, 0, 0, 0.06);
+  --ibl-blue: #0E7BA8;
+  --ibl-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* the accent is black on the light theme, so the button label flips to white;
+   the disabled state keeps its own muted label */
+.ibl-plugin-light .ibl-buy:not(.ibl-buy-disabled) {
+  color: #FFFFFF;
+}
+
+.ibl-plugin-light .ibl-buy:not(.ibl-buy-disabled):hover {
+  background: #2E2E2C;
+}
+
+/* the hero is capped so the buy block below it lands above the fold, and
+   shrinks further on a short viewport, where the fixed-height head and buy
+   block would otherwise push the prices off the bottom of the screen */
+.ibl-plugin-hero {
+  padding: 20px 16px 0;
+}
+
+.ibl-plugin-hero-art {
+  width: auto;
+  height: auto;
+  max-width: min(var(--ibl-hero-width), 100%);
+  max-height: min(var(--ibl-hero-cap), max(150px, calc(100vh - var(--ibl-hero-budget))));
+  margin: 0 auto;
+  border: 1px solid var(--ibl-line);
+  object-fit: contain;
+}
+
+.ibl-plugin-head {
+  padding: 20px 0 4px;
+  text-align: center;
+}
+
+.ibl-plugin-head-title {
+  margin: 0;
+  color: var(--ibl-text);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ibl-plugin-head-tagline {
+  margin: 6px 0 0;
+  color: var(--ibl-muted);
+  font-size: 15px;
+}
+
+/* .ibl-product-section without a cover: the same price row, points and button,
+   centred on their own */
+.ibl-plugin-buy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 0 48px;
+  text-align: center;
+}
+
+.ibl-plugin-buy .ibl-section-text {
+  max-width: 620px;
+}
+
+.ibl-plugin-tiers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+  padding: 12px 0 32px;
+}
+
+.ibl-plugin-tier {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 1px solid var(--ibl-line);
+  border-radius: 12px;
+  background: var(--ibl-surface);
+}
+
+.ibl-plugin-tier-name {
+  margin: 0;
+  color: var(--ibl-text);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.ibl-plugin-tier-sub {
+  margin: 10px 0 0;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.ibl-plugin-tier-list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 20px;
+}
+
+.ibl-plugin-tier-list li {
+  position: relative;
+  padding: 4px 0 4px 16px;
+  color: var(--ibl-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.ibl-plugin-tier-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: var(--ibl-muted);
+}
+
+/* the buy button bottoms out whatever the cards' bullet lists run to */
+.ibl-plugin-tier .ibl-buy {
+  margin-top: auto;
+}
+
+@media screen and (max-width: 900px) {
+  .ibl-plugin-tiers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* the shared product rule centres the price row; a tier card stays left */
+  .ibl-plugin-tier .ibl-price-row {
+    justify-content: flex-start;
+  }
+}
+
+/* the tagline line, version line and accordions, ported from the live page */
+
+.ibl-plugin-label {
+  margin: 28px 0 16px;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.ibl-plugin-version {
+  margin: 20px 0 0;
+  color: var(--ibl-muted);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ibl-plugin-accordion {
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-plugin-accordion:first-child {
+  border-top: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-plugin-accordion-cb {
+  display: none;
+}
+
+.ibl-plugin-accordion-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 18px 0;
+  color: var(--ibl-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+  transition: color 180ms ease;
+}
+
+.ibl-plugin-accordion-label:hover {
+  color: var(--ibl-accent);
+}
+
+.ibl-plugin-accordion-text {
+  white-space: nowrap;
+}
+
+.ibl-plugin-accordion-triangle {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--ibl-muted);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.ibl-plugin-accordion-cb:checked ~ .ibl-plugin-accordion-label .ibl-plugin-accordion-triangle {
+  transform: rotate(180deg);
+}
+
+.ibl-plugin-accordion-body {
+  display: none;
+  padding: 0 0 20px;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ibl-plugin-accordion-cb:checked ~ .ibl-plugin-accordion-body {
+  display: block;
+}
+
+.ibl-plugin-accordion-content a {
+  color: #9fd8be;
+  text-decoration: underline;
+}
+
+.ibl-plugin-accordion-content p {
+  margin: 0 0 6px;
+}
+
+.ibl-plugin-accordion-content ul {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.ibl-plugin-accordion-content li {
+  margin-bottom: 4px;
+}
+
+/* feature cards and source links, ported from the live page */
+
+.ibl-plugin-features-heading {
+  margin: 0 0 32px;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.ibl-plugin-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ibl-plugin-feature-card {
+  padding: 22px 20px;
+  border: 1px solid var(--ibl-line);
+  border-radius: 10px;
+  background: var(--ibl-surface);
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.ibl-plugin-feature-card:hover {
+  border-color: #343434;
+  background: var(--ibl-surface-2);
+}
+
+.ibl-plugin-feature-name {
+  margin: 0 0 8px;
+  color: var(--ibl-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ibl-plugin-feature-desc {
+  margin: 0;
+  color: var(--ibl-muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.ibl-plugin-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ibl-plugin-link-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 20px;
+  border: 1px solid var(--ibl-line);
+  border-radius: 12px;
+  background: var(--ibl-surface);
+  text-align: center;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.ibl-plugin-link-card:hover {
+  border-color: #343434;
+  background: var(--ibl-surface-2);
+}
+
+.ibl-plugin-link-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.ibl-plugin-link-label {
+  color: var(--ibl-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ibl-plugin-link-text {
+  margin: 0;
+  max-width: 300px;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media screen and (max-width: 760px) {
+  .ibl-plugin-features-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ibl-plugin-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .ibl-plugin-features-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- plugins landing page: the home page's split screen, rotated --- */
+
+.ibl-plugins-split {
+  /* the announcement bar (38px) + the masthead (69px), so each half fills the
+     rest of the viewport */
+  --ibl-chrome: 107px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ibl-plugins-half {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 72px) 24px;
+  text-align: center;
+  min-height: calc(100vh - var(--ibl-chrome));
+  min-height: calc(100svh - var(--ibl-chrome));
+}
+
+.ibl-plugins-half:focus-visible {
+  outline: 2px solid var(--ibl-blue);
+  outline-offset: -2px;
+}
+
+.ibl-plugins-half-shot {
+  width: min(100%, 480px);
+  max-height: 40vh;
+  height: auto;
+  border: 1px solid var(--ibl-line);
+}
+
+.ibl-plugins-half-name {
+  margin: 28px 0 0;
+  color: var(--ibl-text);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ibl-plugins-half-tagline {
+  margin: 8px 0 0;
+  color: var(--ibl-muted);
+  font-size: 15px;
+}
+
+@media screen and (max-width: 760px) {
+  .ibl-plugins-split {
+    grid-template-columns: 1fr;
+  }
+
+  /* bands size to their content, like the home page's */
+  .ibl-plugins-half {
+    min-height: auto;
+  }
+
+  .ibl-plugins-half-shot {
+    max-height: none;
+  }
+}
+
+/* --- faq --- */
+
+.ibl-faq-item {
+  border-bottom: 1px solid var(--ibl-line-soft);
+}
+
+.ibl-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  color: var(--ibl-text);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ibl-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.ibl-faq-item summary::after {
+  content: "+";
+  color: var(--ibl-muted);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.ibl-faq-item[open] summary::after {
+  content: "\2212";
+}
+
+.ibl-faq-item summary:hover {
+  color: #ffffff;
+}
+
+.ibl-faq-answer {
+  padding: 0 0 20px;
+}
+
+.ibl-faq-answer p {
+  color: var(--ibl-muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 760px;
+}
+
+.ibl-faq-answer p + p {
+  margin-top: 12px;
+}
+
+.ibl-faq-answer strong {
+  color: var(--ibl-text);
+}
+
+.ibl-faq-answer ol {
+  color: var(--ibl-muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+  padding-left: 20px;
+  max-width: 760px;
+}
+
+.ibl-faq-answer a {
+  color: var(--ibl-text);
+  text-decoration: underline;
+}
+
+/* --- instrument page: tabs, features, tutorials, audio --- */
+
+.ibl-tab-bar {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 24px;
+  border: 1px solid var(--ibl-line);
+  border-radius: 10px;
+  background: var(--ibl-surface);
+}
+
+.ibl-tab-btn {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--ibl-muted);
+  font-family: var(--ibl-font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.ibl-tab-btn:hover {
+  color: var(--ibl-text);
+}
+
+.ibl-tab-btn.active {
+  background: var(--ibl-accent);
+  color: #111111;
+}
+
+.ibl-tab-panel {
+  display: none;
+  padding: clamp(20px, 2.6vw, 32px);
+  border: 1px solid var(--ibl-line);
+  border-radius: 12px;
+  background: var(--ibl-surface);
+}
+
+.ibl-tab-panel.active {
+  display: block;
+}
+
+.ibl-tab-lead {
+  margin: 0;
+  color: var(--ibl-text);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 660px;
+}
+
+.ibl-tab-note {
+  margin: 8px 0 0;
+  color: var(--ibl-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 660px;
+}
+
+.ibl-tab-note strong {
+  color: var(--ibl-text);
+}
+
+.ibl-tab-panel p a {
+  color: var(--ibl-text);
+  text-decoration: underline;
+}
+
+.ibl-tab-label {
+  margin: 28px 0 0;
+  color: var(--ibl-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.ibl-features {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+}
+
+.ibl-features li {
+  position: relative;
+  padding: 10px 0 10px 16px;
+  border-top: 1px solid var(--ibl-line-soft);
+  color: var(--ibl-muted);
+  font-size: 15px;
+}
+
+.ibl-features li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: var(--ibl-dim);
+}
+
+.ibl-tab-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 24px;
+  margin-top: 28px;
+  border: 1px solid var(--ibl-accent);
+  border-radius: 6px;
+  background: var(--ibl-accent);
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.ibl-tab-link:hover {
+  transform: translateY(-1px);
+  background: #d8d8d8;
+}
+
+.ibl-tutorials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 12px;
+}
+
+.ibl-tutorial {
+  margin: 0;
+}
+
+.ibl-tutorial-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--ibl-line);
+  border-radius: 8px;
+  background: #000;
+}
+
+.ibl-tutorial iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.ibl-tutorial figcaption {
+  margin-top: 10px;
+  color: var(--ibl-muted);
+  font-size: 13px;
+}
+
+.ibl-audio-wrap {
+  margin: 24px auto 0;
+}
+
+.ibl-audio-wrap iframe {
+  width: 100%;
+  height: 450px;
+  border: 0;
+  border-radius: 8px;
+}
+
+/* Songbird's preview is a video rather than a playlist, so it plays in a
+   centred 16:9 frame instead of the 450px-tall player */
+.ibl-audio-wrap.ibl-audio-wrap-video iframe {
+  display: block;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 760px) {
+  .ibl-features {
+    grid-template-columns: 1fr;
+  }
+
+  .ibl-audio-wrap iframe {
+    height: 350px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .ibl-tutorials {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- catalogue grid --- */
+
+.ibl-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  width: min(920px, 100%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* a short catalogue reads better two-up; below 901px it keeps the shared
+   grid's two columns, and below 641px its horizontal scroller */
+@media screen and (min-width: 901px) {
+  .ibl-grid.ibl-grid-2 {
+    width: min(620px, 100%);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ibl-card {
+  display: block;
+  transition: transform 200ms ease;
+}
+
+.ibl-card:hover {
+  transform: translateY(-3px);
+}
+
+.ibl-card-art {
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--ibl-surface-2);
+}
+
+.ibl-card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ibl-card-info {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.ibl-card-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.ibl-card-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ibl-muted);
+}
+
+.ibl-card-price-old {
+  color: var(--ibl-dim);
+  font-size: 12px;
+  text-decoration: line-through;
+}
+
+@media screen and (max-width: 900px) {
+  .ibl-product-section {
+    grid-template-columns: minmax(0, 1fr);
+    text-align: center;
+    justify-items: center;
+  }
+
+  .ibl-product-cover {
+    width: min(285px, 100%);
+  }
+
+  .ibl-shell-pack .ibl-product-cover {
+    width: min(360px, 100%);
+  }
+
+  .ibl-price-row {
+    justify-content: center;
+  }
+
+  .ibl-product-points {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .ibl-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .ibl-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    width: calc(100% - 28px);
+    padding: 4px 0 12px;
+    scrollbar-width: none;
+  }
+
+  .ibl-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ibl-card {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    width: min(160px, 42vw);
+  }
+
+  .ibl-buy {
+    width: 100%;
+  }
+}
+
+/* --- music page: the corrupted signal screen --- */
+
+.ibl-music {
+  --ibl-surface: #0f0f0f;
+  --ibl-line: #1a1a1a;
+  --ibl-text: #e0e0e0;
+  --ibl-muted: #6b6b6b;
+  --ibl-dim: #3a3a3a;
+  --ibl-glitch-red: #8b1a1a;
+  --ibl-glitch-cyan: #1a6b6b;
+
+  overflow: hidden;
+  background: var(--ibl-bg);
+  color: var(--ibl-text);
+  font-family: var(--ibl-font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ibl-music-shell {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 96px) 0;
+  text-align: center;
+}
+
+.ibl-music-corruption {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 28px 24px;
+  min-height: 320px;
+  overflow: hidden;
+  background: var(--ibl-surface);
+  border: 1px solid var(--ibl-line);
+  border-radius: 10px;
+  text-align: left;
+}
+
+/* crt scan lines over the buffer */
+.ibl-music-corruption::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.08) 2px, rgba(0, 0, 0, 0.08) 4px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ibl-music-screen {
+  position: relative;
+  z-index: 1;
+  min-height: 280px;
+  color: #c8c8c8;
+  font-family: var(--ibl-mono);
+  font-size: 14px;
+  line-height: 1.65;
+  word-break: break-all;
+  white-space: pre-wrap;
+  transition: color 0.15s ease;
+}
+
+@keyframes ibl-music-glitch {
+  0% { text-shadow: 0 0 0 transparent; }
+  10% { text-shadow: -1px 0 var(--ibl-glitch-red), 1px 0 var(--ibl-glitch-cyan); }
+  20% { text-shadow: 0 0 0 transparent; }
+  30% { text-shadow: 2px 0 var(--ibl-glitch-cyan), -2px 0 var(--ibl-glitch-red); }
+  40% { text-shadow: 0 0 0 transparent; }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+.ibl-music-screen.glitch {
+  animation: ibl-music-glitch 0.15s ease 3;
+}
+
+.ibl-music-fragment {
+  color: var(--ibl-blue);
+}
+
+.ibl-music-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #888888;
+  font-family: var(--ibl-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ibl-music-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #555555;
+  transition: background 0.3s ease;
+}
+
+@media screen and (max-width: 600px) {
+  .ibl-music-corruption {
+    padding: 20px 14px;
+    min-height: 260px;
+  }
+
+  .ibl-music-screen {
+    font-size: 12px;
+  }
+}
+
+/* --- catalogue page --- */
+
+.ibl-catalog-grid {
+  margin: 12px auto 48px;
+}
+
+/* the list value a grid asks for with data-ibl-total, under its heading */
+.ibl-total-value {
+  margin: 0;
+  color: var(--ibl-dim);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* --- glitch line: the flickering noise rows on /contact/ --- */
+
+.ibl-glitch-line {
+  --ibl-glitch-red: #8b1a1a;
+  --ibl-glitch-cyan: #1a6b6b;
+
+  background: var(--ibl-bg);
+  font-family: var(--ibl-mono);
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ibl-glitch-line-inner {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 11px 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ibl-glitch-line-screen {
+  min-height: 0;
+  color: #6b6b6b;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  word-break: break-all;
+  white-space: nowrap;
+}
+
+@keyframes ibl-glitch-line-flicker {
+  0% { text-shadow: 0 0 0 transparent; }
+  8% { text-shadow: -1px 0 var(--ibl-glitch-red), 1px 0 var(--ibl-glitch-cyan); }
+  16% { text-shadow: 0 0 0 transparent; }
+  24% { text-shadow: 2px 0 var(--ibl-glitch-cyan), -2px 0 var(--ibl-glitch-red); }
+  32% { text-shadow: 0 0 0 transparent; }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+.ibl-glitch-line-screen.flicker {
+  animation: ibl-glitch-line-flicker 0.12s ease 3;
+}
+
+/* --- thank-you page --- */
+
+/* the confirmation page is a single centred band, so it takes the page-level
+   padding the contact form's section carries */
+.ibl-thanks-section {
+  padding: clamp(48px, 7vw, 72px) 0;
+}
+
+/* --- contact page --- */
+
+.ibl-contact-section {
+  padding: clamp(48px, 7vw, 72px) 0;
+}
+
+/* the form sits centred on its own, as on the live page */
+.ibl-contact-form {
+  display: grid;
+  gap: 20px;
+  width: min(670px, 100%);
+  margin: 0 auto;
+}
+
+.ibl-contact-field {
+  display: grid;
+  gap: 8px;
+}
+
+.ibl-contact-label {
+  color: #c6cdd1;
+  font-size: 16px;
+  text-align: center;
+}
+
+.ibl-contact-input {
+  padding: 12px 16px;
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+  background: #0f0f0f;
+  color: #e0e0e0;
+  font-family: var(--ibl-font);
+  font-size: 15px;
+}
+
+.ibl-contact-input:focus {
+  border-color: #3a3a3a;
+  outline: none;
+}
+
+.ibl-contact-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ibl-contact-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  min-height: 50px;
+  padding: 13px 32px;
+  border: 1px solid var(--ibl-accent);
+  border-radius: 8px;
+  background: var(--ibl-accent);
+  color: #070707;
+  font-family: var(--ibl-font);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.ibl-contact-submit:hover {
+  transform: translateY(-1px);
+  background: #d8d8d8;
+}
+
+.ibl-contact-submit[disabled] {
+  transform: none;
+  border-color: var(--ibl-line);
+  background: var(--ibl-surface-2);
+  color: var(--ibl-muted);
+  cursor: default;
+}
+
+.ibl-contact-honey {
+  display: none;
+}
+
+.ibl-contact-status {
+  width: min(670px, 100%);
+  margin: 0 auto 24px;
+  color: var(--ibl-blue);
+  font-family: var(--ibl-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.ibl-contact-status-error {
+  color: var(--ibl-orange);
+}
+
+.ibl-contact-fallback {
+  width: min(670px, 100%);
+  margin: 28px auto 0;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.ibl-contact-fallback a {
+  color: var(--ibl-text);
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 760px) {
+  .ibl-contact-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* the two bands on /contact/ get a little air at the page's edges, so the noise
+   doesn't sit hard against the header and the footer */
+.ibl-glitch-line:first-child {
+  padding-top: 24px;
+}
+
+.ibl-glitch-line:last-child {
+  padding-bottom: 24px;
+}

@@ -1,0 +1,52 @@
+<style>
+  /* --- Contact page overrides (leaks onto parent page when embedded) --- */
+  .contact-us-main-text {
+    display: none !important;
+  }
+  .col-md-7 {
+    flex: 0 0 100% !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+  }
+  .col-md-1 {
+    display: none !important;
+  }
+  .js-contact-us-form-block {
+    text-align: center !important;
+  }
+  .js-contact-us-form-block .form-row {
+    justify-content: center !important;
+  }
+  .js-contact-us-form-block input,
+  .js-contact-us-form-block textarea {
+    background: #0f0f0f !important;
+    border: 1px solid #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-radius: 6px !important;
+    padding: 12px 16px !important;
+  }
+  button.submit-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 50px !important;
+    padding: 13px 32px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase !important;
+    outline: 1px solid #f2f2f2 !important;
+    outline-offset: -1px !important;
+    background: #f2f2f2 !important;
+    color: #070707 !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: transform 180ms ease, background 180ms ease !important;
+  }
+  button.submit-button:hover {
+    transform: translateY(-1px) !important;
+    background: #d8d8d8 !important;
+  }
+  /* --- End contact overrides --- */
+</style>

@@ -1,0 +1,429 @@
+<style>
+  .ibl-pack, .ibl-pack * { box-sizing: border-box; }
+
+  .ibl-pack {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-green: #9fd8be;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-pack a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-pack a:hover,
+  .ibl-pack a:focus,
+  .ibl-pack a *,
+  .ibl-pack a:hover *,
+  .ibl-pack a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-pack img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-pack-shell {
+    width: 100%;
+    margin: 0;
+  }
+
+  .ibl-pack-section {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-pack-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .ibl-pack-section-heading {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 16px;
+  }
+
+  .ibl-pack-section-text {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .ibl-pack-section-text strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-pack-section-text + .ibl-pack-section-text {
+    margin-top: 14px;
+  }
+
+  .ibl-pack-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ibl-pack-features li {
+    padding: 8px 0 8px 18px;
+    color: var(--ibl-muted);
+    font-size: 15px;
+    position: relative;
+  }
+
+  .ibl-pack-features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: var(--ibl-dim);
+  }
+
+  .ibl-pack-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--ibl-green);
+    border-radius: 4px;
+    color: var(--ibl-green) !important;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .ibl-pack-buy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 16px 48px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 8px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    transition: transform 180ms ease, background 180ms ease;
+    cursor: pointer;
+  }
+
+  .ibl-pack a.ibl-pack-buy-btn,
+  .ibl-pack a.ibl-pack-buy-btn:hover,
+  .ibl-pack a.ibl-pack-buy-btn:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-pack-buy-btn:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  .ibl-pack-price {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-top: 12px;
+  }
+
+  .ibl-pack-price small {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ibl-muted);
+    letter-spacing: 0;
+  }
+
+  .ibl-pack-price .ibl-price-old {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ibl-dim);
+    text-decoration: line-through;
+    margin-left: 6px;
+  }
+
+  /* --- carousel --- */
+
+  .ibl-pack-pack-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .ibl-pack-pack-card {
+    text-align: center;
+  }
+
+  .ibl-pack-pack-card img {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-pack-pack-card-label {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ibl-text);
+  }
+
+  @media screen and (max-width: 600px) {
+    .ibl-pack-pack-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<div class="ibl-pack">
+  <div class="ibl-pack-shell">
+
+    <!-- description -->
+    <div class="ibl-pack-section">
+      <div class="ibl-pack-badge">Supporter Pack</div>
+      <h1 class="ibl-pack-section-heading">Supporter Bundle</h1>
+      <p class="ibl-pack-section-text">
+        All four sample packs in a single bundle at a discount. Offer your support and receive the complete collection of hand-designed (and algorithmically-generated) textures, drops, risers, and glitches.
+      </p>
+      <p class="ibl-pack-section-text">
+        Your purchase directly helps fund development of free, open-source plugins like Altar.
+      </p>
+    </div>
+
+    <!-- what's inside -->
+    <div class="ibl-pack-section">
+      <h2 class="ibl-pack-section-heading">What's Inside</h2>
+
+      <div class="ibl-pack-pack-grid">
+        <a class="ibl-pack-pack-card" href="https://iamlamprey.com/b/ambience-supporter-pack" target="_blank" rel="noopener">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jr5bh5ab1h281pg9bhnj4260h1a.png" alt="Ambience Supporter Pack" loading="lazy">
+          <div class="ibl-pack-pack-card-label">Ambiences</div>
+        </a>
+        <a class="ibl-pack-pack-card" href="https://iamlamprey.com/b/riser-supporter-pack" target="_blank" rel="noopener">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jr5c4mqs1d2v1jvv1ascuub1vdc1a.png" alt="Riser Supporter Pack" loading="lazy">
+          <div class="ibl-pack-pack-card-label">Risers</div>
+        </a>
+        <a class="ibl-pack-pack-card" href="https://iamlamprey.com/b/glitch-supporter-pack" target="_blank" rel="noopener">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jr5c1ac71lgm10b41pb22j4125i1a.png" alt="Glitch Supporter Pack" loading="lazy">
+          <div class="ibl-pack-pack-card-label">Glitches</div>
+        </a>
+        <a class="ibl-pack-pack-card" href="https://iamlamprey.com/b/sub-drop-supporter-pack" target="_blank" rel="noopener">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jr5c725t1gb0nmbll2vr91b1c1a.png" alt="Sub Drop Supporter Pack" loading="lazy">
+          <div class="ibl-pack-pack-card-label">Sub Drops</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- details -->
+    <div class="ibl-pack-section">
+      <h2 class="ibl-pack-section-heading">Details</h2>
+      <ul class="ibl-pack-features">
+        <li>4 sample packs</li>
+        <li>180+ samples total</li>
+        <li>24-bit 96kHz .wav</li>
+        <li>50% off individual prices</li>
+      </ul>
+    </div>
+
+    <!-- buy -->
+    <div class="ibl-pack-section" data-ibl-bundle="supporter-bundle">
+      <a class="ibl-pack-buy-btn" href="https://iamlamprey.com/order?link=rVKe5&pricing_plan=18B151aABZ" rel="noopener" style="min-width: 260px;">Purchase - $20</a>
+      <div class="ibl-pack-price">
+        $20 <span class="ibl-price-old" style="display: none">$20</span> 
+      </div>
+    </div>
+
+  </div>
+
+
+<!-- Pricing module: canonical source is source/ibl-pricing.js — keep in sync -->
+<script>
+/*!
+ * iamLamprey pricing module — ibl-pricing.js
+ *
+ * Canonical source: source/ibl-pricing.js
+ * The exact contents of this file are inlined into each page so the embed
+ * stays standalone. Keep these copies in sync:
+ *   - source/instruments.html
+ *   - source/master-bundle.html
+ *   - source/plugins/altar.html
+ *   - source/plugins/muzzle.html
+ *   - source/sample-packs/supporter-bundle.html
+ *
+ * What it does: prices come from a static PRICES registry that mirrors
+ * config.json. The old Payhip scrape/sale-detection/iframe logic has been
+ * removed — Polar is the storefront and prices live in config.json. Each card
+ * keeps its truthfully hardcoded default price; FREE cards are left untouched.
+ * No "On sale" chips are rendered because Polar products are fixed-price.
+ */
+(function (root) {
+  'use strict';
+
+  /*
+   * Static price registry: slug -> price (USD, dollars). Mirrors config.json —
+   * keep it in sync by hand when prices change.
+   */
+  var PRICES = {
+  /* BEGIN PRICES — mirrors config.json (keep in sync by hand) */
+    'achromic': 40,
+    'aetheric': 20,
+    'atlas': 20,
+    'blackout': 20,
+    'blackout-2': 20,
+    'bloom': 20,
+    'cloudburst': 20,
+    'cloudburst-acoustic': 20,
+    'eidolon': 40,
+    'found-keys': 20,
+    'gloom': 40,
+    'oracle-2': 40,
+    'pdq-bass': 40,
+    'prismatic': 20,
+    'songbird': 0,
+    'zephyr': 0,
+    'tethys': 40,
+    'HZtFg': 40,
+    'master-bundle': 150,
+    'supporter-bundle': 20,
+    'ambience-supporter-pack': 10,
+    'riser-supporter-pack': 10,
+    'glitch-supporter-pack': 10,
+    'sub-drop-supporter-pack': 10,
+  /* END PRICES */
+  };
+
+  function money(n) {
+    var v = (typeof n === 'number' ? n : parseFloat(n) || 0);
+    return '$' + v.toFixed(2);
+  }
+
+  function setFirstTextNode(el, text) {
+    if (!el) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node = walker.nextNode();
+    if (node) node.textContent = text;
+  }
+
+  function resultFor(slug) {
+    var p = PRICES[slug];
+    return { price: typeof p === 'number' ? p : 0 };
+  }
+
+  function applyProduct(el, result) {
+    if (!result) return;
+    if (el.querySelector('.ibl-note') || el.querySelector('.ibl-free-label')) return; // FREE cards stay as-is
+    var priceEl = el.querySelector('.ibl-price');
+    var packPrice = el.querySelector('.ibl-altar-pack-price');
+    var display = money(result.price);
+    if (priceEl) priceEl.textContent = display;
+    if (packPrice) packPrice.textContent = display;
+  }
+
+  function applyBundle(el, result) {
+    if (!result) return;
+    var bPrice = el.querySelector('.ibl-bundle-price');      // master-bundle.html pricing block
+    var price = el.querySelector('.ibl-price');               // instruments.html bundle card
+    var altarPrice = el.querySelector('.ibl-altar-price');    // altar.html bundle price row
+    var name = el.querySelector('.ibl-altar-bundle-name');    // altar.html bundle card
+    var btn = el.querySelector('.ibl-pack-buy-btn');          // supporter-bundle.html
+    var priceLine = el.querySelector('.ibl-pack-price');
+    var display = money(result.price);
+    if (bPrice) bPrice.textContent = display;
+    if (price) price.textContent = display;
+    if (altarPrice) altarPrice.textContent = display;
+    if (name) name.textContent = name.textContent.replace(/\$[\d.]+/, display);
+    if (btn) btn.textContent = btn.textContent.replace(/-?\s*\$[\d.]+/, '- ' + display);
+    if (priceLine) setFirstTextNode(priceLine, display);
+  }
+
+  function applyTotal(el, bySlug) {
+    var sum = 0;
+    Object.keys(bySlug).forEach(function (slug) {
+      var r = bySlug[slug];
+      if (r && r.price > 0) sum += r.price;
+    });
+    var label = el.textContent.replace(/^\$[\d.]+/, '').trim();
+    el.textContent = money(sum) + (label ? ' ' + label : '');
+  }
+
+  function apply() {
+    var productEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-slug]'));
+    var bundleEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-bundle]'));
+    var totalEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-total-value]'));
+    if (!productEls.length && !bundleEls.length) return;
+
+    productEls.forEach(function (el) {
+      applyProduct(el, resultFor(el.getAttribute('data-ibl-slug')));
+    });
+    bundleEls.forEach(function (el) {
+      applyBundle(el, resultFor(el.getAttribute('data-ibl-bundle')));
+    });
+    // The total only counts individual products, never bundles.
+    var bySlug = {};
+    productEls.forEach(function (el) {
+      var slug = el.getAttribute('data-ibl-slug');
+      if (slug) bySlug[slug] = resultFor(slug);
+    });
+    totalEls.forEach(function (el) {
+      applyTotal(el, bySlug);
+    });
+  }
+
+  var api = {
+    money: money,
+    PRICES: PRICES,
+    applyProduct: applyProduct,
+    applyBundle: applyBundle,
+    applyTotal: applyTotal
+  };
+
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  } else {
+    if (typeof document === 'undefined') return;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply);
+    } else {
+      apply();
+    }
+  }
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+</div>

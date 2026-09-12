@@ -1,0 +1,17 @@
+---
+layout: default
+---
+<div class="ibl-plugin{% if page.theme == 'light' %} ibl-plugin-light{% endif %}">
+  <section class="ibl-plugin-hero">
+    <img class="ibl-plugin-hero-art" src="{{ page.hero | relative_url }}" alt="{{ page.title }} interface">
+  </section>
+  <div class="ibl-shell">
+    {% unless page.head == false %}
+    <section class="ibl-plugin-head">
+      <h1 class="ibl-plugin-head-title">{{ page.title }}</h1>
+      {% if page.tagline %}<p class="ibl-plugin-head-tagline">{{ page.tagline }}</p>{% endif %}
+    </section>
+    {% endunless %}
+{{ content }}
+  </div>
+</div>

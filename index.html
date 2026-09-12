@@ -1,0 +1,215 @@
+---
+layout: default
+permalink: /
+title: iamlamprey
+catalog: true
+---
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  .ibl-home {
+    overflow: hidden;
+  }
+
+  /* --- shared button base --- */
+  .ibl-home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+  }
+
+  .ibl-home-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .ibl-home-shell {
+    width: min(760px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  /* --- Muzzle (light, JetBrains Mono) --- */
+  .ibl-home-muzzle {
+    --hm-midgrey: #CCCCC8;
+    --hm-softgrey: #5C5C58;
+    --hm-text: #1A1A1A;
+    --hm-black: #000;
+    --hm-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: #FFFFFF;
+    color: var(--hm-text);
+    font-family: var(--hm-mono);
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-muzzle .ibl-home-shot {
+    width: min(620px, 100%);
+    margin: 0 auto;
+    border: 1px solid var(--hm-midgrey);
+    border-radius: 0;
+  }
+
+  .ibl-home-muzzle .ibl-home-name {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hm-text);
+    margin: 28px 0 8px;
+  }
+
+  .ibl-home-muzzle .ibl-home-tagline {
+    color: var(--hm-softgrey);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  .ibl-home-muzzle .ibl-home-btn {
+    background: var(--hm-black);
+    color: #fff;
+  }
+
+  .ibl-home-muzzle .ibl-home-btn:hover {
+    background: #2E2E2C;
+  }
+
+  /* --- Altar (dark, Segoe UI) --- */
+  .ibl-home-altar {
+    --ha-bg: #090909;
+    --ha-text: #e8e8e8;
+    --ha-muted: #7d7d7d;
+    --ha-line: #242424;
+    --ha-accent: #f2f2f2;
+    background: var(--ha-bg);
+    color: var(--ha-text);
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-altar .ibl-home-shot {
+    width: min(720px, 100%);
+    margin: 0 auto;
+    border-radius: 10px;
+    border: 1px solid var(--ha-line);
+  }
+
+  .ibl-home-altar .ibl-home-name {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ha-text);
+    margin: 28px 0 8px;
+  }
+
+  .ibl-home-altar .ibl-home-tagline {
+    color: var(--ha-muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  .ibl-home-altar .ibl-home-btn {
+    background: var(--ha-accent);
+    color: #111111;
+    border: 1px solid var(--ha-accent);
+    border-radius: 8px;
+  }
+
+  .ibl-home-altar .ibl-home-btn:hover {
+    background: #d8d8d8;
+    border-color: #d8d8d8;
+  }
+
+  /* --- Instruments (darker grey + uniform square grid) --- */
+  .ibl-home-instruments {
+    --hi-bg: #222222;
+    --hi-text: #f2f2f2;
+    --hi-muted: #b8b8b8;
+    --hi-accent: #f2f2f2;
+    background: var(--hi-bg);
+    color: var(--hi-text);
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-instr-title {
+    font-size: clamp(22px, 3.5vw, 30px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hi-text);
+    margin: 0 0 12px;
+  }
+
+  .ibl-home-instr-desc {
+    color: var(--hi-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto 28px;
+  }
+
+  .ibl-home-instruments .ibl-grid {
+    margin-bottom: 36px;
+  }
+
+  .ibl-home-instruments .ibl-card-name {
+    color: var(--hi-text);
+  }
+
+  .ibl-home-instruments .ibl-home-btn {
+    background: var(--hi-accent);
+    color: #111111;
+    border: 1px solid var(--hi-accent);
+    border-radius: 8px;
+  }
+
+  .ibl-home-instruments .ibl-home-btn:hover {
+    background: #d8d8d8;
+    border-color: #d8d8d8;
+  }
+
+  @media screen and (max-width: 480px) {
+    .ibl-home-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="ibl-home">
+  <section class="ibl-home-muzzle" aria-label="Muzzle">
+    <div class="ibl-home-shell">
+      <img class="ibl-home-shot" src="{{ '/images/plugins/muzzle-UI-screenshot.jpg' | relative_url }}" alt="Muzzle de-esser interface (light theme)" width="641" height="485">
+      <h2 class="ibl-home-name">Muzzle</h2>
+      <p class="ibl-home-tagline">Stem the screaming</p>
+      <a class="ibl-home-btn" href="{{ '/plugins/muzzle/' | relative_url }}">Learn More</a>
+    </div>
+  </section>
+
+  <section class="ibl-home-altar" aria-label="Altar">
+    <div class="ibl-home-shell">
+      <img class="ibl-home-shot" src="{{ '/images/plugins/altar-UI-screenshot.jpg' | relative_url }}" alt="Altar interface screenshot" width="1149" height="676" loading="lazy">
+      <h2 class="ibl-home-name">Altar</h2>
+      <p class="ibl-home-tagline">A gift from The Lake</p>
+      <a class="ibl-home-btn" href="{{ '/plugins/altar/' | relative_url }}">Learn More</a>
+    </div>
+  </section>
+
+  <section class="ibl-home-instruments" aria-label="Instruments">
+    <div class="ibl-home-shell">
+      <h2 class="ibl-home-instr-title">Instruments</h2>
+      <p class="ibl-home-instr-desc">A few from the catalogue.</p>
+    </div>
+    <ul class="ibl-grid" data-ibl-catalog data-ibl-slugs="achromic,bloom,cloudburst,eidolon,oracle-2,prismatic,blackout-2,pdq-bass,tethys"></ul>
+    <div class="ibl-home-shell">
+      <a class="ibl-home-btn" href="{{ '/instruments/' | relative_url }}">Browse Instruments</a>
+    </div>
+  </section>
+</div>

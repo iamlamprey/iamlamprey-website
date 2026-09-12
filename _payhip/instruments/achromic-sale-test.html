@@ -1,0 +1,348 @@
+<style>
+  .ibl-sale-achromic,
+  .ibl-sale-achromic * {
+    box-sizing: border-box;
+  }
+
+  .ibl-sale-achromic {
+    --ibl-sale-bg: #090909;
+    --ibl-sale-surface: #111111;
+    --ibl-sale-line: #242424;
+    --ibl-sale-text: #e8e8e8;
+    --ibl-sale-muted: #999999;
+    --ibl-sale-accent: #f2f2f2;
+    --ibl-sale-blue: #7ec8ff;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    background: var(--ibl-sale-bg);
+    color: var(--ibl-sale-text);
+    font-family: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-sale-achromic a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-sale-achromic a:hover,
+  .ibl-sale-achromic a:focus,
+  .ibl-sale-achromic a *,
+  .ibl-sale-achromic a:hover *,
+  .ibl-sale-achromic a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-sale-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 22px 24px;
+    background: var(--ibl-sale-surface);
+    border: 1px solid var(--ibl-sale-line);
+    border-radius: 12px;
+  }
+
+  .ibl-sale-info {
+    min-width: 0;
+  }
+
+  .ibl-sale-label {
+    color: var(--ibl-sale-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+  }
+
+  .ibl-sale-prices {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .ibl-sale-price {
+    color: var(--ibl-sale-text);
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .ibl-sale-price-old {
+    color: #8f8f8f;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: line-through;
+  }
+
+  .ibl-sale-off {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 4px 8px;
+    border: 1px solid rgba(126, 200, 255, 0.28);
+    border-radius: 4px;
+    background: rgba(126, 200, 255, 0.08);
+    color: var(--ibl-sale-blue);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  .ibl-sale-timer {
+    margin-top: 10px;
+    color: var(--ibl-sale-blue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+  }
+
+  .ibl-sale-buy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 13px 24px;
+    border: 1px solid var(--ibl-sale-accent);
+    border-radius: 8px;
+    background: var(--ibl-sale-accent);
+    color: #070707 !important;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .ibl-sale-achromic a.ibl-sale-buy,
+  .ibl-sale-achromic a.ibl-sale-buy:hover,
+  .ibl-sale-achromic a.ibl-sale-buy:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-sale-buy:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  .ibl-sale-hidden {
+    display: none !important;
+  }
+
+  @media screen and (max-width: 600px) {
+    .ibl-sale-card {
+      padding: 18px;
+    }
+
+    .ibl-sale-buy {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="ibl-sale-achromic">
+  <div class="ibl-sale-card">
+    <div class="ibl-sale-info">
+      <div class="ibl-sale-label">Achromic — Aggressive Rhythm Guitars</div>
+      <div class="ibl-sale-prices">
+        <span class="ibl-sale-price" id="ibl-sale-price">$40.00</span>
+        <span class="ibl-sale-price-old ibl-sale-hidden" id="ibl-sale-price-old">$40.00</span>
+        <span class="ibl-sale-off ibl-sale-hidden" id="ibl-sale-off">On sale</span>
+      </div>
+      <div class="ibl-sale-timer ibl-sale-hidden" id="ibl-sale-timer"></div>
+    </div>
+    <a class="ibl-sale-buy" id="ibl-sale-buy" href="https://buy.polar.sh/polar_cl_yUYP1MtbAmv6Ak8vqI22SGnOWh1tB4Aantu4c0CKPCX" target="_blank" rel="noopener">Buy Achromic</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CONFIG_URL = 'https://raw.githubusercontent.com/iamlamprey/iamlamprey-website/main/config.json';
+  var PRODUCT_SLUG = 'achromic';
+
+  /* Shown before config.json arrives and whenever the fetch fails. */
+  var FALLBACK = {
+    price: 40,
+    checkout: 'https://buy.polar.sh/polar_cl_yUYP1MtbAmv6Ak8vqI22SGnOWh1tB4Aantu4c0CKPCX'
+  };
+
+  /* Australia/Brisbane is a fixed UTC+10 with no daylight saving. */
+  var LOCAL_OFFSET = '+10:00';
+
+  var elements = null;
+  var tick = null;
+
+  function money(value) {
+    var amount = typeof value === 'number' ? value : parseFloat(value) || 0;
+    return '$' + (Math.round(amount * 100) / 100).toFixed(2);
+  }
+
+  function pad2(value) {
+    return (value < 10 ? '0' : '') + value;
+  }
+
+  /* Parses DD/MM/YYYY (Australia/Brisbane) into a fixed UTC instant. */
+  function parseDate(value, endOfDay) {
+    var parts = String(value || '').split('/');
+    if (parts.length !== 3) return null;
+    var day = parseInt(parts[0], 10);
+    var month = parseInt(parts[1], 10);
+    var year = parseInt(parts[2], 10);
+    if (!day || !month || !year) return null;
+    var time = endOfDay ? '23:59:59' : '00:00:00';
+    var date = new Date(year + '-' + pad2(month) + '-' + pad2(day) + 'T' + time + LOCAL_OFFSET);
+    return isNaN(date.getTime()) ? null : date;
+  }
+
+  function formatRemaining(ms) {
+    var total = Math.max(0, Math.floor(ms / 1000));
+    var days = Math.floor(total / 86400);
+    var hours = Math.floor((total % 86400) / 3600);
+    var minutes = Math.floor((total % 3600) / 60);
+    var seconds = total % 60;
+    var clock = pad2(hours) + ':' + pad2(minutes) + ':' + pad2(seconds);
+    return days > 0 ? days + 'd ' + clock : clock;
+  }
+
+  function findItem(items, slug) {
+    var list = items || [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] && list[i].slug === slug) return list[i];
+    }
+    return null;
+  }
+
+  function saleWindow(discount) {
+    if (!discount) return null;
+    var start = parseDate(discount.start, false);
+    var end = parseDate(discount.end, true);
+    if (!start || !end) return null;
+    return { start: start, end: end };
+  }
+
+  function coversSlug(products) {
+    if (products === 'ALL') return true;
+    if (Object.prototype.toString.call(products) === '[object Array]') {
+      return products.indexOf(PRODUCT_SLUG) !== -1;
+    }
+    return false;
+  }
+
+  function withCode(url, code) {
+    if (!code) return url;
+    var separator = url.indexOf('?') === -1 ? '?' : '&';
+    return url + separator + 'discount_code=' + encodeURIComponent(code);
+  }
+
+  function cacheElements() {
+    return {
+      price: document.getElementById('ibl-sale-price'),
+      priceOld: document.getElementById('ibl-sale-price-old'),
+      off: document.getElementById('ibl-sale-off'),
+      timer: document.getElementById('ibl-sale-timer'),
+      buy: document.getElementById('ibl-sale-buy')
+    };
+  }
+
+  function stopTimer() {
+    if (tick) {
+      clearInterval(tick);
+      tick = null;
+    }
+  }
+
+  function showBase(basePrice, checkout) {
+    stopTimer();
+    elements.price.textContent = money(basePrice);
+    elements.priceOld.classList.add('ibl-sale-hidden');
+    elements.off.classList.add('ibl-sale-hidden');
+    elements.timer.classList.add('ibl-sale-hidden');
+    elements.timer.textContent = '';
+    elements.buy.setAttribute('href', checkout);
+  }
+
+  function showSale(basePrice, checkout, discount, window_) {
+    var salePrice = basePrice * (1 - (discount.amount || 0) / 100);
+
+    elements.price.textContent = money(salePrice);
+    elements.priceOld.textContent = money(basePrice);
+    elements.priceOld.classList.remove('ibl-sale-hidden');
+    elements.off.textContent = (discount.amount || 0) + '% off';
+    elements.off.classList.remove('ibl-sale-hidden');
+    elements.timer.classList.remove('ibl-sale-hidden');
+    elements.buy.setAttribute('href', withCode(checkout, discount.code));
+
+    function draw() {
+      var remaining = window_.end.getTime() - Date.now();
+      if (remaining <= 0) {
+        showBase(basePrice, checkout);
+        return;
+      }
+      elements.timer.textContent = 'Ends in ' + formatRemaining(remaining);
+    }
+
+    stopTimer();
+    draw();
+    tick = setInterval(draw, 1000);
+  }
+
+  function applyConfig(config) {
+    elements = elements || cacheElements();
+    if (!elements.price || !elements.buy) return;
+
+    var item = findItem(config && config.items, PRODUCT_SLUG) || {};
+    var basePrice = typeof item.price === 'number' ? item.price : FALLBACK.price;
+    var checkout = item.checkout || FALLBACK.checkout;
+    var discount = (config && config.discount) || null;
+    var window_ = saleWindow(discount);
+    var now = Date.now();
+
+    var active = window_ && coversSlug(discount.products) &&
+      now >= window_.start.getTime() && now <= window_.end.getTime();
+
+    if (active) {
+      showSale(basePrice, checkout, discount, window_);
+    } else {
+      showBase(basePrice, checkout);
+    }
+  }
+
+  function load() {
+    if (typeof fetch !== 'function') {
+      applyConfig(null);
+      return;
+    }
+    fetch(CONFIG_URL)
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(applyConfig)
+      .catch(function () {
+        applyConfig(null);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', load);
+  } else {
+    load();
+  }
+})();
+</script>

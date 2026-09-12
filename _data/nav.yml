@@ -1,0 +1,39 @@
+# nav is the single source for the desktop dropdowns, the mobile overlay and the
+# footer link row. hrefs point at the new canonical paths; flip them here when
+# the site moves to iamlamprey.com.
+- { label: Music, href: /music/ }
+- label: Plug-Ins
+  href: /plugins/
+  children:
+    - { label: Altar, href: /plugins/altar/ }
+    - { label: Muzzle, href: /plugins/muzzle/ }
+- label: Instruments
+  href: /instruments/
+  children:
+    - { label: Master Bundle, href: /master-bundle/ }
+    - { label: Achromic, href: /instruments/achromic/ }
+    - { label: Aetheric, href: /instruments/aetheric/ }
+    - { label: Atlas, href: /instruments/atlas/ }
+    - { label: Blackout, href: /instruments/blackout/ }
+    - { label: Blackout 2, href: /instruments/blackout-2/ }
+    - { label: Bloom, href: /instruments/bloom/ }
+    - { label: Cloudburst, href: /instruments/cloudburst/ }
+    - { label: Cloudburst Acoustic, href: /instruments/cloudburst-acoustic/ }
+    - { label: Eidolon, href: /instruments/eidolon/ }
+    - { label: Found Keys, href: /instruments/found-keys/ }
+    - { label: Gloom, href: /instruments/gloom/ }
+    - { label: Oracle Vol 2, href: /instruments/oracle-2/ }
+    - { label: PDQ Bass, href: /instruments/pdq-bass/ }
+    - { label: Prismatic, href: /instruments/prismatic/ }
+    - { label: Songbird, href: /instruments/songbird/ }
+    - { label: Tethys, href: /instruments/tethys/ }
+    - { label: Zephyr, href: /instruments/zephyr/ }
+- label: Sample Packs
+  href: /sample-packs/
+  children:
+    - { label: Ambience, href: /sample-packs/ambiences/ }
+    - { label: Glitch, href: /sample-packs/glitches/ }
+    - { label: Risers, href: /sample-packs/risers/ }
+    - { label: Sub Drops, href: /sample-packs/sub-drops/ }
+- { label: Contact, href: /contact/ }
+- { label: Login, href: https://polar.sh/iamlamprey/portal, external: true }

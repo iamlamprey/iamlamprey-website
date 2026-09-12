@@ -1,0 +1,64 @@
+{% assign portal = 'https://polar.sh/iamlamprey/portal' %}
+{% for entry in site.data.nav %}
+  {% if entry.external %}
+    {% assign portal = entry.href %}
+  {% endif %}
+{% endfor %}
+<div class="ibl-navbar{% if page.nav_theme == 'light' %} ibl-theme-light{% endif %}">
+  <div class="ibl-navbar-masthead">
+    <div class="ibl-navbar-masthead-inner">
+      <a class="ibl-navbar-masthead-logo" href="{{ '/' | relative_url }}" aria-label="iamlamprey home">
+        <img src="{{ '/images/logo-transparent.png' | relative_url }}" alt="iamlamprey" width="480" height="120">
+      </a>
+      <nav class="ibl-navbar-masthead-nav">
+        {% for item in site.data.nav %}
+          {% if item.external %}
+          {% elsif item.children %}
+          <div class="ibl-navbar-nav-item-dropdown">
+            <a class="ibl-navbar-nav-toggle" href="{{ item.href | relative_url }}">{{ item.label }}</a>
+            <div class="ibl-navbar-nav-dropdown">
+              {% for child in item.children %}
+              <a href="{{ child.href | relative_url }}">{{ child.label }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+          <a href="{{ item.href | relative_url }}">{{ item.label }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+      <div class="ibl-navbar-masthead-actions">
+        <a class="ibl-navbar-masthead-login" data-ibl-portal href="{{ portal }}" target="_blank" rel="noopener" aria-label="Login">
+          <img src="{{ '/images/login.png' | relative_url }}" alt="" width="32" height="32">
+        </a>
+        <button class="ibl-navbar-masthead-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="iblNavOverlay">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ibl-navbar-overlay" id="iblNavOverlay">
+    <div class="ibl-navbar-overlay-bar">
+      <a href="{{ '/' | relative_url }}">
+        <img src="{{ '/images/logo-transparent.png' | relative_url }}" alt="iamlamprey" width="480" height="120">
+      </a>
+      <button class="ibl-navbar-overlay-close" type="button" aria-label="Close menu">&times;</button>
+    </div>
+    <nav class="ibl-navbar-overlay-nav">
+      {% for item in site.data.nav %}
+        {% if item.external %}
+        {% elsif item.children %}
+      <div class="ibl-navbar-overlay-group">
+        <div class="ibl-navbar-overlay-group-title">{{ item.label }}</div>
+        {% for child in item.children %}
+        <a href="{{ child.href | relative_url }}">{{ child.label }}</a>
+        {% endfor %}
+      </div>
+        {% else %}
+      <a href="{{ item.href | relative_url }}">{{ item.label }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+---
+layout: default
+---
+{% if page.hero %}
+<section class="ibl-hero">
+  <img class="ibl-hero-art" src="{{ page.hero | relative_url }}" alt="{{ page.title }} artwork">
+</section>
+{% endif %}
+<div class="ibl-shell ibl-shell-product{% if page.pack %} ibl-shell-pack{% endif %}">
+  <section class="ibl-product-section{% unless page.hero %} ibl-product-section-top{% endunless %}">
+    <div class="ibl-product-cover">
+      <img src="{{ page.cover | relative_url }}" alt="{{ page.title }} cover art" loading="lazy">
+    </div>
+    <div class="ibl-product" data-ibl-product="{{ page.slug }}" data-ibl-tagline="{{ page.tagline }}">
+      <div class="ibl-product-name">{{ page.title }}{% if page.tagline %} - {{ page.tagline }}{% endif %}</div>
+      <div class="ibl-price-row" hidden>
+        <span class="ibl-price"></span>
+        <span class="ibl-price-old" hidden></span>
+        <span class="ibl-sale-chip" hidden></span>
+      </div>
+      <div class="ibl-sale-timer" hidden></div>
+      <p class="ibl-price-note" hidden>Pricing unavailable &mdash; reload the page</p>
+      <ul class="ibl-product-points">
+        <li>No subscriptions</li>
+        <li>No license manager</li>
+        <li>No iLok</li>
+      </ul>
+      <a class="ibl-buy" href="#" hidden>Buy {{ page.title }}</a>
+    </div>
+  </section>
+{{ content }}
+</div>

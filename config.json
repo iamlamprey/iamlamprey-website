@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "currency": "USD",
+  "org": {
+    "name": "iamlamprey",
+    "storeDomain": "iamlamprey.com",
+    "customerPortal": "https://polar.sh/iamlamprey/portal",
+    "embeddingAllowlist": [
+      "iamlamprey.com",
+      "iamlamprey.github.io",
+      "127.0.0.1:4000",
+      "localhost:4000"
+    ]
+  },
+  "notes": [
+    "config.json is the single source of truth for the Polar setup (scripts/polar_init.py), the migration (scripts/polar_migrate.py), the static price config in source/ibl-pricing.js (kept in sync by hand), and the checkout conversion (scripts/convert_checkout.py).",
+    "benefit_id / product_id / legacy_product_id / checkout are filled in by scripts/polar_init.py after it talks to Polar (benefit_id may alternatively be created in the Polar dashboard and entered here).",
+    "checkout is populated by scripts/convert_checkout.py at cutover once real Polar checkout IDs exist.",
+    "payhipLinks maps the Payhip checkout 'link=' value (the product key) to a catalog slug so scripts/convert_checkout.py can substitute Polar checkout URLs.",
+    "Free Muzzle is catalogued: item 'bfVo0' (Muzzle Free) and the displayNames mapping 'Muzzle (Free)' cover the free-Muzzle orders in the Payhip export.",
+    "License keys: the Payhip export has a 'License Key' column. If any plugin uses Payhip-issued serials, that is a separate Polar 'license_keys' benefit type and must be added; without it, the new downloads are unsigned files.",
+    "discount drives the storewide sale on product pages: amount (whole percent off), products ('ALL' or a list of item slugs), start/end (DD/MM/YYYY, Australia/Brisbane), and code (appended to links as ?discount_code= and created on Polar by scripts/apply_discount.py).",
+    "announcement shows the site-wide announcement bar: text and link (site-relative or absolute). There is no date window \u2014 non-empty text renders the bar and empty text hides it, so clearing the text is how the bar comes down."
+  ],
+  "discount": {
+    "amount": 25,
+    "products": "ALL",
+    "start": "01/09/2026",
+    "end": "20/09/2026",
+    "code": "septembersale2"
+  },
+  "announcement": {
+    "text": "September Sale - 25% Off Everything",
+    "link": "/instruments/"
+  },
+  "items": [
+    {
+      "slug": "achromic",
+      "name": "Achromic",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "340bd582-1383-4041-9039-ba316a9b9736",
+      "legacy_product_id": "1195e5be-c15e-4894-98d8-cc0e2835f92e",
+      "checkout": "https://buy.polar.sh/polar_cl_yUYP1MtbAmv6Ak8vqI22SGnOWh1tB4Aantu4c0CKPCX"
+    },
+    {
+      "slug": "aetheric",
+      "name": "Aetheric",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "09417d15-9158-4195-aaef-34fb1f6ae239",
+      "legacy_product_id": "56e63423-958b-41ed-8cc5-e771643230f8",
+      "checkout": "https://buy.polar.sh/polar_cl_46xXppscGuagDU20iP4NNoD2GPrI2tlcga50W38Y0SI"
+    },    
+    {
+      "slug": "atlas",
+      "name": "Atlas",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "d153f3ee-2658-43d8-ba4a-c4537bbeef20",
+      "legacy_product_id": "8ff641ad-330c-4c56-9836-8d0d15952bba",
+      "checkout": "https://buy.polar.sh/polar_cl_V0tA1SgOOTvuoNMb3Il9MF9VczHx9WHwjHJjB2hzT1E"
+    },
+    {
+      "slug": "blackout",
+      "name": "Blackout",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "fdb2ce28-5163-4f9b-b0b4-6dcb1d27cab8",
+      "legacy_product_id": "01b7ca71-3a1e-4117-acbb-80647035f7e3",
+      "checkout": "https://buy.polar.sh/polar_cl_0KZQcRiw46lcUdZJlUwFmsPYa326BReDNJ6Ej41Rz9G"
+    },
+    {
+      "slug": "blackout-2",
+      "name": "Blackout Volume 2",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "65612e39-5215-453e-9cba-7119e29b8a54",
+      "legacy_product_id": "d47eaa2b-e599-4384-b688-98dea4c9f672",
+      "checkout": "https://buy.polar.sh/polar_cl_XrKt6nKI3iSWDsjay8l6VK9D9CDCUEAnqzfCD4QKzSO"
+    },
+    {
+      "slug": "bloom",
+      "name": "Bloom",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "b59fd4ab-d857-45cb-9278-5af3abb379c2",
+      "legacy_product_id": "5f568e92-133f-4ba6-ae60-e78a376a81f6",
+      "checkout": "https://buy.polar.sh/polar_cl_FdHTQAX5pAUmKNqdEF9tuNhEyXjtnehJ7qKgt08FsVk"
+    },
+    {
+      "slug": "cloudburst",
+      "name": "Cloudburst",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "5d6691dd-31e8-494c-8777-095352563d22",
+      "legacy_product_id": "9931f791-6418-49e6-a743-df1a6a12cbaa",
+      "checkout": "https://buy.polar.sh/polar_cl_2iGSnIf9htjCW6K2je8A7htRD1O4xkiJ088h73sCHfY"
+    },
+    {
+      "slug": "cloudburst-acoustic",
+      "name": "Cloudburst Acoustic",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "88021dd4-8254-4f16-80ea-03e1e64ec14c",
+      "legacy_product_id": "c57218a6-2fb4-43e8-b176-88caa89d0597",
+      "checkout": "https://buy.polar.sh/polar_cl_AtsScjyqWubBxCdeOhlz6ZzkM9WBIZANj78fT0lbJcF"
+    },
+    {
+      "slug": "eidolon",
+      "name": "Eidolon",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "91e75940-effa-40cb-9f35-821982aee3cd",
+      "legacy_product_id": "a26693c0-bbce-4204-b948-94e6c7e4d93d",
+      "checkout": "https://buy.polar.sh/polar_cl_aWE6XfE1706HqEQRHHBX5oCog0KZvJUO2pZ0C0gMN6B"
+    },
+    {
+      "slug": "found-keys",
+      "name": "Found Keys",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "e876fda0-9475-4290-a07e-4eb2a68caa25",
+      "legacy_product_id": "cfe6673a-632f-43c1-a4a6-c7265d7f5de6",
+      "checkout": "https://buy.polar.sh/polar_cl_eMpgkc9IUH5o6cbAJK9pkqXonLj243NbgZRRX2saoUz"
+    },
+    {
+      "slug": "gloom",
+      "name": "Gloom",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "4ab1b80f-30eb-426b-a6d4-adc5c8f0fbad",
+      "legacy_product_id": "27226870-4276-455a-87d4-90ff7795a950",
+      "checkout": "https://buy.polar.sh/polar_cl_3xnpP88E9ZJ87gk5reFWv5xc3q6GE2xejyDqN4ZTFOf"
+    },
+    {
+      "slug": "oracle-2",
+      "name": "Oracle Volume 2",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "68078e4f-4cbb-4ec4-b4af-3da153c78f49",
+      "legacy_product_id": "cfaab3c6-59cf-4afa-aec3-c57acb064c2b",
+      "checkout": "https://buy.polar.sh/polar_cl_6l4RBT31R82JmFXSo8qgYzFQxb4pASxFihPaL4OVtMk"
+    },
+    {
+      "slug": "pdq-bass",
+      "name": "PDQ Bass",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "01f3eaaf-b664-49a2-a1de-74875cd6b205",
+      "legacy_product_id": "33b686e3-c51e-48d4-b002-aea1106bf3d6",
+      "checkout": "https://buy.polar.sh/polar_cl_j1wa7WSUxY1H7prI97VfPr1nzBQ6s2h19NglI2hjk6P"
+    },
+    {
+      "slug": "prismatic",
+      "name": "Prismatic",
+      "price": 20,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "5b4e2a58-fad6-4b13-b95c-c1030da2610b",
+      "legacy_product_id": "7348908f-9a1e-4471-bd28-c60e58cef249",
+      "checkout": "https://buy.polar.sh/polar_cl_f6te16RJaAuUoCa2CSlIsH82pl0qSXAUcdFR82vQKn3"
+    },
+    {
+      "slug": "songbird",
+      "name": "Songbird",
+      "price": 0,
+      "kind": "free",
+      "benefit_id": "",
+      "product_id": "dbd81174-7648-4709-ae07-768d6bb08870",
+      "legacy_product_id": "d3ea9617-f7e9-4f0b-a648-2bbf34437d33",
+      "checkout": "https://buy.polar.sh/polar_cl_4RHvEZK28OlKE9jReIfDrfHmq2piFpkTzzNz84Y5cC7"
+    },
+    {
+      "slug": "tethys",
+      "name": "Tethys",
+      "price": 40,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "25008b92-ec80-4449-9495-882bacff7507",
+      "legacy_product_id": "d0cbb58a-8b60-46aa-9949-bf45728f64f1",
+      "checkout": "https://buy.polar.sh/polar_cl_MLAvvQm2x31chsQ5dJxbTMAMETJFS5r7kdcK42MLlDK"
+    },
+    {
+      "slug": "zephyr",
+      "name": "Zephyr",
+      "price": 0,
+      "kind": "free",
+      "benefit_id": "",
+      "product_id": "59053179-a83e-49b8-89e1-4330e74b0541",
+      "legacy_product_id": "6b48e9fa-2301-4976-a618-f8b61d0ee4a9",
+      "checkout": "https://buy.polar.sh/polar_cl_JFAzHDVjkrdYFF5RjOWGG9ErNCjic1Ku2YrEP2PzXvF"
+    }, 
+    {
+      "slug": "altar",
+      "name": "Altar",
+      "price": 0,
+      "kind": "free",
+      "benefit_id": "",
+      "product_id": "4908c6ad-bb15-4dbb-8599-f60cd616a01d",
+      "legacy_product_id": "",
+      "checkout": "https://buy.polar.sh/polar_cl_ql0Dfq7xgaqnZeuu44NZ9QoKMxhQsOqlPznyI2XZHZb"
+    },   
+    {
+      "slug": "bfVo0",
+      "name": "Muzzle Free",
+      "price": 0,
+      "kind": "plugin",
+      "benefit_id": "",
+      "product_id": "21aa080e-9c54-49f3-b5e5-40302dbecb8b",
+      "legacy_product_id": "43f28704-67d6-4619-97bc-0f677df9ada3",
+      "checkout": "https://buy.polar.sh/polar_cl_mSl1MvRzq2rYUdyaYU5wPExU3pP9SKgWvyZqV45RIKM"
+    },
+    {
+      "slug": "HZtFg",
+      "name": "Muzzle Pro",
+      "price": 40,
+      "kind": "plugin",
+      "benefit_id": "",
+      "product_id": "0b510565-a41c-400a-80a1-ce572401fac8",
+      "legacy_product_id": "6e74750a-3520-49de-b7ec-70c5385755da",
+      "checkout": "https://buy.polar.sh/polar_cl_LXVzPAwYojcXsfWpXCxIWeEZvuW7OF0Y9tGST0Fx8ky"
+    },
+    {
+      "slug": "master-bundle",
+      "name": "Master Bundle",
+      "price": 150,
+      "kind": "bundle",
+      "benefit_id": "",
+      "product_id": "c7bb9396-cf01-44b4-96c2-b5e6269b7317",
+      "legacy_product_id": "51962808-824a-43fa-bf2e-c7f019eb854e",
+      "checkout": "https://buy.polar.sh/polar_cl_77U0Mqsntv2GIBlT83NMTz2cqHuhzADeKN7YC04I5GG"
+    },
+    {
+      "slug": "supporter-bundle",
+      "name": "Supporter Bundle",
+      "price": 20,
+      "kind": "bundle",
+      "benefit_id": "",
+      "product_id": "fd6eb91e-6cd5-4e8e-a0df-0b5fc19474e1",
+      "legacy_product_id": "407eb040-3c0d-4abb-be2c-a194c6895682",
+      "checkout": "https://buy.polar.sh/polar_cl_h0QsPVTt7wid5N6zkKxdTb6AvzAAJUTaMgRox2dPjBH"
+    },
+    {
+      "slug": "ambience-supporter-pack",
+      "name": "Ambience Supporter Pack",
+      "price": 10,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "d17271a6-7d42-469f-9564-bbcf22f2a2a1",
+      "legacy_product_id": "638ab351-0441-4123-8f58-cadf612ab704",
+      "checkout": "https://buy.polar.sh/polar_cl_ZBDtcP1GTr0RkRFHSTGsr3ky33qDJ1WmIn1nS0mzbLq"
+    },
+    {
+      "slug": "glitch-supporter-pack",
+      "name": "Glitch Supporter Pack",
+      "price": 10,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "9e5b1b4d-312e-4ef9-8c39-c1d3ed739ad6",
+      "legacy_product_id": "e7216d3d-657b-4c82-9040-dc2489d0e06d",
+      "checkout": "https://buy.polar.sh/polar_cl_sXNjGmpZNuLyvX97Wbza35RQEjpjgEEknKbZW2LUB53"
+    },
+    {
+      "slug": "riser-supporter-pack",
+      "name": "Riser Supporter Pack",
+      "price": 10,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "b8b9372c-8bb8-4d85-9613-c75b2e781258",
+      "legacy_product_id": "769a343e-7783-455a-91b7-76a9de6564ca",
+      "checkout": "https://buy.polar.sh/polar_cl_xIaJGXBZmpObU3rHtyjc30SSaRWMGyVauuTeb2ODELt"
+    },    
+    {
+      "slug": "sub-drop-supporter-pack",
+      "name": "Sub Drop Supporter Pack",
+      "price": 10,
+      "kind": "one-time",
+      "benefit_id": "",
+      "product_id": "76533245-3497-4579-b9b0-953daf4852e3",
+      "legacy_product_id": "f3ad942b-6430-4ede-b6c7-d65f8be306c0",
+      "checkout": "https://buy.polar.sh/polar_cl_PLtZkGpvf2uHR1TDzEYcm019ErDrdT6fnKVYJ0GRHXI"
+    }
+  ],
+  "payhipLinks": {
+    "6FY9Q": "achromic",
+    "7ClYh": "aetheric",
+    "7q2Fw": "atlas",
+    "KcPLZ": "blackout",
+    "I0ROt": "blackout-2",
+    "mTR97": "bloom",
+    "MArga": "cloudburst",
+    "2ZvjL": "cloudburst-acoustic",
+    "psw2o": "eidolon",
+    "oUa2b": "found-keys",
+    "9dBaj": "gloom",
+    "mL6Dy": "oracle-2",
+    "Fc1xe": "pdq-bass",
+    "Gqou9": "prismatic",
+    "vG96V": "songbird",
+    "p15wX": "tethys",
+    "LIwvn": "zephyr",
+    "HZtFg": "HZtFg",
+    "eMyFi": "master-bundle",
+    "rVKe5": "supporter-bundle"
+  },
+  "displayNames": {
+    "Atlas - Hybrid Synth": "atlas",
+    "Achromic - Aggressive Rhythm Guitars": "achromic",
+    "Aetheric - Ambient Pads": "aetheric",
+    "Blackout - Lightweight Pulses": "blackout",
+    "Blackout Volume 2 - Lightweight Pulses": "blackout-2",
+    "Bloom - Lush Synth Arp": "bloom",
+    "Cloudburst - Playable Guitar Harmonics": "cloudburst",
+    "Cloudburst Acoustic - Playable Guitar Harmonics": "cloudburst-acoustic",
+    "Eidolon - Haunted Piano": "eidolon",
+    "Found Keys - Hybrid Synth": "found-keys",
+    "Gloom - Time-Stretched Piano": "gloom",
+    "Oracle Volume 2 - Ambient Guitars": "oracle-2",
+    "Oracle Vol 2 - Ambient Guitars": "oracle-2",
+    "PDQ Bass - Aggressive Bass Guitar": "pdq-bass",
+    "PDQ Bass - Aggressive Bass": "pdq-bass",
+    "Prismatic - Shining Keys": "prismatic",
+    "Songbird - Toy Kalimba": "songbird",
+    "Tethys - Expressive Synth Keys": "tethys",
+    "Zephyr - Panpipe Pads": "zephyr",
+    "Muzzle Pro": "HZtFg",
+    "Muzzle (Pro)": "HZtFg",
+    "Muzzle (Free)": "bfVo0",
+    "Muzzle": "HZtFg",
+    "Master Bundle": "master-bundle",
+    "Supporters Bundle": "supporter-bundle",
+    "Supporter Bundle": "supporter-bundle",
+    "Ambience Supporter Pack": "ambience-supporter-pack",
+    "Riser Supporter Pack": "riser-supporter-pack",
+    "Glitch Supporter Pack": "glitch-supporter-pack",
+    "Sub Drop Supporter Pack": "sub-drop-supporter-pack"
+  }
+}

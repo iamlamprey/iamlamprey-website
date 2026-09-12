@@ -1,0 +1,30 @@
+name: Contact worker
+
+# Deploys worker/ to Cloudflare whenever it changes — the twin of polar-discount.yml.
+# Only code travels through here: RESEND_API_KEY and TURNSTILE_SECRET are Worker
+# secrets set in the Cloudflare dashboard, so the repo secrets below never hold a
+# sending key.
+#
+# Requires CLOUDFLARE_API_TOKEN (scopes: Workers Scripts: Edit, Account Settings:
+# Read) and CLOUDFLARE_ACCOUNT_ID as repository secrets.
+
+on:
+  push:
+    branches: [main]
+    paths: ['worker/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker

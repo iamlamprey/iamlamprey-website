@@ -1,0 +1,16 @@
+<footer class="ibl-footer{% if page.nav_theme == 'light' %} ibl-theme-light{% endif %}">
+  <div class="ibl-shell">
+    <div class="ibl-footer-top">
+      <a class="ibl-footer-wordmark" href="{{ '/' | relative_url }}" aria-label="iamlamprey home">
+        <img src="{{ '/images/logo-transparent.png' | relative_url }}" alt="iamlamprey" width="480" height="120">
+      </a>
+      <nav class="ibl-footer-nav">
+        {% for item in site.data.nav %}
+          {% unless item.external %}
+        <a href="{{ item.href | relative_url }}">{{ item.label }}</a>
+          {% endunless %}
+        {% endfor %}
+      </nav>
+    </div>
+  </div>
+</footer>
