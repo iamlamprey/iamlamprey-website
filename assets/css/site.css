@@ -14,6 +14,7 @@
   --ibl-blue: #7ec8ff;
   --ibl-amber: #ffc247;
   --ibl-orange: #ff7d2b;
+  --ibl-star: #FFFFFF;
   --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
 }
@@ -683,6 +684,76 @@ body.ibl-menu-open {
   background: var(--ibl-muted);
 }
 
+/* store-wide rating widget */
+.ibl-rating {
+  /* resizing the row is these two values and nothing else: the track, the
+     fill layer and the clip wrapper all read them, and the pair has to keep
+     the SVG's 128:24 ratio or the glyphs squash */
+  --ibl-star-row-width: 89.6px;
+  --ibl-star-row-height: 16.8px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 3px;
+  margin: 6px 0 4px;
+}
+
+.ibl-rating-stars {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: var(--ibl-star-row-width);
+  height: var(--ibl-star-row-height);
+}
+
+/* the track and the fill layer must render at the same size: the fill wraps
+   a full-width copy of the row and is clipped by its own inline width */
+.ibl-rating-track,
+.ibl-rating-fill-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: var(--ibl-star-row-width);
+  height: var(--ibl-star-row-height);
+}
+
+.ibl-rating-track path {
+  fill: none;
+  stroke: var(--ibl-dim);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.ibl-rating-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: var(--ibl-star-row-height);
+  overflow: hidden;
+}
+
+.ibl-rating-fill-layer path {
+  fill: var(--ibl-star);
+}
+
+.ibl-rating-value {
+  color: var(--ibl-text);
+  font-weight: 700;
+}
+
+/* the caption under the row. its full-width basis is what breaks the line,
+   which also means the row's text-align, not its justify-content, is what
+   centres it on the pages that centre the row */
+.ibl-rating-count {
+  flex: 0 0 100%;
+  color: var(--ibl-muted);
+  font-size: 13px;
+}
+
 .ibl-buy {
   display: inline-flex;
   align-items: center;
@@ -848,6 +919,7 @@ body.ibl-menu-open {
   --ibl-accent: #000000;
   --ibl-accent-soft: rgba(0, 0, 0, 0.06);
   --ibl-blue: #0E7BA8;
+  --ibl-star: #000000;
   --ibl-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -896,6 +968,13 @@ body.ibl-menu-open {
   margin: 6px 0 0;
   color: var(--ibl-muted);
   font-size: 15px;
+}
+
+/* both plugin pages centre their head and buy block, so the widget between
+   them follows */
+.ibl-plugin .ibl-rating {
+  justify-content: center;
+  text-align: center;
 }
 
 /* .ibl-product-section without a cover: the same price row, points and button,
@@ -1625,6 +1704,12 @@ body.ibl-menu-open {
 
   .ibl-price-row {
     justify-content: center;
+  }
+
+  /* the stacked product block centres everything above the points */
+  .ibl-rating {
+    justify-content: center;
+    text-align: center;
   }
 
   .ibl-product-points {

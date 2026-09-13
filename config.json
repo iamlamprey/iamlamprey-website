@@ -20,7 +20,8 @@
     "Free Muzzle is catalogued: item 'bfVo0' (Muzzle Free) and the displayNames mapping 'Muzzle (Free)' cover the free-Muzzle orders in the Payhip export.",
     "License keys: the Payhip export has a 'License Key' column. If any plugin uses Payhip-issued serials, that is a separate Polar 'license_keys' benefit type and must be added; without it, the new downloads are unsigned files.",
     "discount drives the storewide sale on product pages: amount (whole percent off), products ('ALL' or a list of item slugs), start/end (DD/MM/YYYY, Australia/Brisbane), and code (appended to links as ?discount_code= and created on Polar by scripts/apply_discount.py).",
-    "announcement shows the site-wide announcement bar: text and link (site-relative or absolute). There is no date window \u2014 non-empty text renders the bar and empty text hides it, so clearing the text is how the bar comes down."
+    "announcement shows the site-wide announcement bar: text and link (site-relative or absolute). There is no date window \u2014 non-empty text renders the bar and empty text hides it, so clearing the text is how the bar comes down.",
+    "rating drives the store-wide star widget on every product page: average is the weighted mean across every product and every marketplace (\u03a3(rating \u00d7 review count) \u00f7 \u03a3 review counts) and count is the sum of those review counts. The widget rounds average to one decimal for the text but uses the exact value for the star fill. Removing the block, or a count below 1, hides the widget. Note: any push touching config.json also triggers .github/workflows/polar-discount.yml, which deletes and recreates the discount \u2014 harmless and idempotent, but the workflow will run on rating-only edits."
   ],
   "discount": {
     "amount": 25,
@@ -32,6 +33,10 @@
   "announcement": {
     "text": "September Sale - 25% Off Everything",
     "link": "/instruments/"
+  },
+  "rating": {
+    "average": 4.6138,
+    "count": 935
   },
   "items": [
     {

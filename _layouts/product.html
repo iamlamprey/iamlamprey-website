@@ -13,6 +13,7 @@ layout: default
     </div>
     <div class="ibl-product" data-ibl-product="{{ page.slug }}" data-ibl-tagline="{{ page.tagline }}">
       <div class="ibl-product-name">{{ page.title }}{% if page.tagline %} - {{ page.tagline }}{% endif %}</div>
+      {% include product-rating.html %}
       <div class="ibl-price-row" hidden>
         <span class="ibl-price"></span>
         <span class="ibl-price-old" hidden></span>

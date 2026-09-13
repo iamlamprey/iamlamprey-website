@@ -4,11 +4,11 @@
  * iamLamprey data layer — ibl-config.js
  *
  * config.json is the single source of truth for every commerce value on the
- * site: product name, price, sale price, countdown and Polar checkout link.
- * One fetch per page load, memoised, so the announcement bar, the product
- * block and any catalogue grid share the same request — and a sale created or
- * changed by the polar-discount Action shows up on the next page load with no
- * site rebuild.
+ * site: product name, price, sale price, countdown, Polar checkout link and
+ * the store-wide rating. One fetch per page load, memoised, so the
+ * announcement bar, the rating widget, the product block and any catalogue
+ * grid share the same request — and a sale created or changed by the
+ * polar-discount Action shows up on the next page load with no site rebuild.
  */
 (function (root) {
   'use strict';
@@ -94,6 +94,20 @@
     return { text: announcement.text, link: announcement.link || '' };
   }
 
+  /* the store-wide rating widget reads "average" (0-5) and "count" from
+     config.json; anything missing or out of range hides the widget */
+  function ratingFor(config) {
+    var rating = config && config.rating;
+    if (!rating) return null;
+
+    var average = Number(rating.average);
+    var count = Number(rating.count);
+    if (!isFinite(average) || average < 0 || average > 5) return null;
+    if (!isFinite(count) || count < 1) return null;
+
+    return { average: average, count: Math.round(count) };
+  }
+
   /* builds the resolved view of a config (or of a failed fetch) */
   function build(config) {
     var discount = (config && config.discount) || null;
@@ -118,7 +132,8 @@
       discount: discount,
       saleActive: saleActive,
       saleEnd: saleEnd,
-      announcement: announcementFor(config)
+      announcement: announcementFor(config),
+      rating: ratingFor(config)
     };
   }
 
