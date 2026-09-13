@@ -205,7 +205,7 @@
     link.setAttribute('href', IBLConfig.resolve('/' + group + '/' + key + '/'));
 
     art.className = 'ibl-card-art';
-    image.setAttribute('src', IBLConfig.resolve('/images/' + group + '/' + key + '-cover.jpg'));
+    image.setAttribute('src', IBLConfig.resolve('/images/' + group + '/' + key + '-cover.webp'));
     image.setAttribute('alt', item.name + ' artwork');
     image.setAttribute('loading', 'lazy');
     art.appendChild(image);
