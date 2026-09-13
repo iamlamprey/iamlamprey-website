@@ -1,0 +1,22 @@
+{%- comment -%}
+Payhip-era redirect stub. GitHub Pages cannot issue a server-side 301, so every
+legacy URL under redirects/ renders this layout: an HTML page whose only job is to
+send the browser on. The target is site-relative (relative_url), so the same file is
+correct on the github.io preview, on localhost, and on iamlamprey.com after the
+cutover, with no reference to _config.yml's url:/baseurl: pair. The canonical link and
+noindex keep the stub out of search results and hand the signal to the real page.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting&hellip;</title>
+  <link rel="canonical" href="{{ page.redirect_to | absolute_url }}">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="0; url={{ page.redirect_to | relative_url }}">
+  <script>location.replace("{{ page.redirect_to | relative_url }}");</script>
+</head>
+<body>
+  <p>Moved to <a href="{{ page.redirect_to | relative_url }}">{{ page.redirect_to | absolute_url }}</a>.</p>
+</body>
+</html>
