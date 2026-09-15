@@ -9,4 +9,7 @@
 #
 # generated_at dates the figures rather than the hourly run, so it arrives with
 # the first one: an empty product block is a site with no ratings yet.
+generated_at: 2026-09-15T15:18:14Z
 product:
+  cloudburst-acoustic: { average: 5.0, count: 1 }
+  eidolon: { average: 5.0, count: 1 }
