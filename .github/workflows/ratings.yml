@@ -6,8 +6,8 @@ name: Ratings mirror
 # for — so the commit must never carry [skip ci], because that would suppress the
 # rebuild as well as every other workflow.
 #
-# The mirror moves data and nothing else: the display rule (10 ratings at 4.0 or
-# more) lives in _includes/product-rating.html. A non-200, a timeout or an
+# The mirror moves data and nothing else: the display rule (a blended average of
+# 4.0 or more) lives in _includes/product-rating.html. A non-200, a timeout or an
 # unparseable body leaves the file as it was and only warns, so the build keeps
 # working on the last good figures. The commit never touches config.json, so it
 # does not wake polar-discount.yml.

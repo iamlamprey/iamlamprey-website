@@ -1,19 +1,25 @@
-<!-- the per-product rating: the product's own figure where it has earned one,
-     the pooled marketplace figure where it has not, and nothing at all where it
-     has neither.
+<!-- the per-product rating: one pool of the product's two sources, and nothing at
+     all where neither of them has anything.
 
      two sources. site.data.ratings-live is generated hourly from this site's own
      verified-purchase ratings (worker/ plus .github/workflows/ratings.yml);
-     site.data.ratings is the marketplace figure pooled by hand. a product's live
-     figure takes over once there are 10 of them: below that the live sample is
-     too thin to displace the pooled figure, and at 10 or more the live figure IS
-     the figure — one whose live average has slipped below 4.0 shows nothing
-     rather than quietly reverting to another source's number.
+     site.data.ratings is the marketplace figure pooled by hand. the two are
+     pooled rather than chosen between: their counts are summed and their averages
+     weighted by those counts, so a product's own ratings join the marketplace
+     ones instead of displacing them. there is no gate on the number of ratings,
+     so a single live rating renders.
+
+     the average is (sum of average x count) over (sum of count), and times: 1.0
+     forces a float before the division — divided_by floors when both operands are
+     integers, and a hand-written `average: 4` in either data file parses as one.
+     the figure prints rounded to one place, and data-ibl-average carries four,
+     which is the precision worker/src/index.js already publishes.
 
      the rule, in one place: a badge is shown only at an average of 4.0 or more,
      compared exactly rather than after rounding, so a 3.96 average is below 4.0
-     however it would print. there is no rule per product, and none in the
-     generated file.
+     however it would print. the comparison is against the blended average, and it
+     is the only gate — there is no rule per product, and none in the generated
+     file.
 
      nothing here filters a rating. every rating posted is stored and every one
      counts toward the average, so the low ratings are part of what a figure is
@@ -28,19 +34,28 @@
      on Muzzle's light one -->
 {% assign live = site.data.ratings-live.product[page.slug] %}
 {% assign pooled = site.data.ratings.product[page.slug] %}
-{% assign rating = nil %}
 
-{% if live and live.count >= 10 %}
-  {% if live.average >= 4 %}
-    {% assign rating = live %}
-  {% endif %}
-{% elsif pooled and pooled.average >= 4 %}
-  {% assign rating = pooled %}
+{% assign rating_count = 0 %}
+{% assign rating_total = 0 %}
+
+{% if pooled %}
+  {% assign contribution = pooled.average | times: pooled.count %}
+  {% assign rating_count = rating_count | plus: pooled.count %}
+  {% assign rating_total = rating_total | plus: contribution %}
 {% endif %}
 
-{% if rating %}
-<div class="ibl-rating" id="iblRating" data-ibl-average="{{ rating.average }}">
-  <span class="ibl-rating-stars" id="iblRatingStars" role="img" aria-label="Rated {{ rating.average | round: 1 }} out of 5">
+{% if live %}
+  {% assign contribution = live.average | times: live.count %}
+  {% assign rating_count = rating_count | plus: live.count %}
+  {% assign rating_total = rating_total | plus: contribution %}
+{% endif %}
+
+{% if rating_count > 0 %}
+  {% assign average = rating_total | times: 1.0 | divided_by: rating_count %}
+
+  {% if average >= 4 %}
+<div class="ibl-rating" id="iblRating" data-ibl-average="{{ average | round: 4 }}">
+  <span class="ibl-rating-stars" id="iblRatingStars" role="img" aria-label="Rated {{ average | round: 1 }} out of 5">
     <svg class="ibl-rating-track" viewBox="0 0 128 24" aria-hidden="true" focusable="false">
       <path transform="translate(0,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
       <path transform="translate(26,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -58,7 +73,8 @@
       </svg>
     </span>
   </span>
-  <strong class="ibl-rating-value" id="iblRatingValue">{{ rating.average | round: 1 }}</strong>
-  <span class="ibl-rating-count" id="iblRatingCount">({{ rating.count }} ratings)</span>
+  <strong class="ibl-rating-value" id="iblRatingValue">{{ average | round: 1 }}</strong>
+  <span class="ibl-rating-count" id="iblRatingCount">({% if rating_count == 1 %}1 rating{% else %}{{ rating_count }} ratings{% endif %})</span>
 </div>
+  {% endif %}
 {% endif %}
