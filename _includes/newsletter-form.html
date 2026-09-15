@@ -1,0 +1,27 @@
+<form class="ibl-newsletter-form" method="post" action="{{ site.newsletter_endpoint }}">
+  <label class="ibl-newsletter-field">
+    <span class="ibl-newsletter-label">Email address</span>
+    <input class="ibl-newsletter-input" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+  </label>
+
+  <!-- honeypot: a bot that fills this is handed a decoy success -->
+  <input class="ibl-newsletter-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+  <!-- Turnstile is fetched on the first focus in this form, so no page carries
+       challenges.cloudflare.com for a footer widget. Its token is required — the
+       Worker refuses a submission without one — so this form needs JavaScript,
+       and ibl-newsletter.js waits for the token before it posts. -->
+  <div class="cf-turnstile" data-sitekey="0x4AAAAAAEv1ytG_PqPSKdDW" data-theme="dark" data-appearance="interaction-only"></div>
+
+  <button class="ibl-newsletter-submit" type="submit">Join</button>
+
+  <!-- every instance carries its own pair, so the two forms on /thanks/ answer
+       independently and the page needs no shared IDs -->
+  <p class="ibl-newsletter-status" role="status" aria-live="polite" hidden>
+    You&rsquo;re on the list &mdash; new releases, free packs and sales will come to this address.
+  </p>
+
+  <p class="ibl-newsletter-status ibl-newsletter-status-error" role="alert" aria-live="polite" hidden>
+    That didn&rsquo;t go through &mdash; please try again, or <a href="{{ '/contact/' | relative_url }}">get in touch</a>.
+  </p>
+</form>

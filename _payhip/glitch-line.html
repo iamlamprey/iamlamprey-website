@@ -1,0 +1,94 @@
+<style>
+  .ibl-glitch-line { box-sizing: border-box; }
+  .ibl-glitch-line * { box-sizing: border-box; }
+
+  .ibl-glitch-line {
+    --ibl-bg: #090909;
+    --ibl-glitch-red: #8b1a1a;
+    --ibl-glitch-cyan: #1a6b6b;
+    --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    font-family: var(--ibl-mono);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-glitch-line-inner {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 2px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .ibl-glitch-line-screen {
+    font-size: 12px;
+    line-height: 1.2;
+    color: #6b6b6b;
+    word-break: break-all;
+    white-space: nowrap;
+    min-height: 0;
+    letter-spacing: 1px;
+  }
+
+  @keyframes glitch-line-flicker {
+    0% { text-shadow: 0 0 0 transparent; }
+    8% { text-shadow: -1px 0 var(--ibl-glitch-red), 1px 0 var(--ibl-glitch-cyan); }
+    16% { text-shadow: 0 0 0 transparent; }
+    24% { text-shadow: 2px 0 var(--ibl-glitch-cyan), -2px 0 var(--ibl-glitch-red); }
+    32% { text-shadow: 0 0 0 transparent; }
+    100% { text-shadow: 0 0 0 transparent; }
+  }
+
+  .ibl-glitch-line-screen.flicker {
+    animation: glitch-line-flicker 0.12s ease 3;
+  }
+</style>
+
+<div class="ibl-glitch-line">
+  <div class="ibl-glitch-line-inner">
+    <div class="ibl-glitch-line-screen"></div>
+  </div>
+</div>
+<script>
+(function() {
+  // find OUR container — the div just before this script
+  var scripts = document.getElementsByTagName('script');
+  var me = scripts[scripts.length - 1];
+  var container = me.previousElementSibling;
+  if (!container) return;
+  var el = container.querySelector('.ibl-glitch-line-screen');
+  if (!el) return;
+
+  var seed = Date.now() + Math.random() * 99999;
+  function rand() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?/\\\\~`';
+  function rchar() { return chars[Math.floor(rand() * chars.length)]; }
+
+  var LEN = 85;
+  var buf = [];
+  for (var i = 0; i < LEN; i++) buf.push(rchar());
+
+  el.textContent = buf.join('');
+
+  setInterval(function() {
+    for (var i = 0; i < LEN; i++) {
+      if (rand() < 0.18) buf[i] = rchar();
+    }
+    el.textContent = buf.join('');
+    el.classList.remove('flicker');
+    void el.offsetWidth;
+    el.classList.add('flicker');
+    setTimeout(function() { el.classList.remove('flicker'); }, 150);
+  }, 700);
+})();
+</script>

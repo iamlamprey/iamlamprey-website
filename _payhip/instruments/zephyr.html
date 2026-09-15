@@ -1,0 +1,396 @@
+<style>
+.ibl-zephyr, .ibl-zephyr * { box-sizing: border-box; }
+
+  .ibl-zephyr {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-blue: #7ec8ff;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-zephyr a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-zephyr a:hover,
+  .ibl-zephyr a:focus,
+  .ibl-zephyr a *,
+  .ibl-zephyr a:hover *,
+  .ibl-zephyr a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-zephyr img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-zephyr-shell {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+
+  .ibl-zephyr-section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-zephyr-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .ibl-zephyr-section-heading {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 18px;
+  }
+
+  .ibl-zephyr-section-text {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 700px;
+  }
+
+  .ibl-zephyr-section-text strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-zephyr-section-text em {
+    color: var(--ibl-text);
+    font-style: italic;
+  }
+
+  .ibl-zephyr-section-text + .ibl-zephyr-section-text {
+    margin-top: 14px;
+  }
+
+  /* --- tabs --- */
+  .ibl-zephyr-tabs {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-zephyr-tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--ibl-line);
+    margin-bottom: 28px;
+  }
+
+  .ibl-zephyr-tab-btn {
+    padding: 14px 28px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ibl-muted);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--ibl-font);
+    cursor: pointer;
+    transition: color 180ms ease, border-color 180ms ease;
+    margin-bottom: -1px;
+  }
+
+  .ibl-zephyr-tab-btn:hover {
+    color: var(--ibl-text);
+  }
+
+  .ibl-zephyr-tab-btn.active {
+    color: var(--ibl-text);
+    border-bottom-color: var(--ibl-text);
+  }
+
+  .ibl-zephyr-tab-panel {
+    display: none;
+  }
+
+  .ibl-zephyr-tab-panel.active {
+    display: block;
+  }
+
+  .ibl-zephyr-tab-panel h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  .ibl-zephyr-tab-panel p {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 0 16px;
+    max-width: 650px;
+  }
+
+  .ibl-zephyr-tab-panel p strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-zephyr-features {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 20px;
+  }
+
+  .ibl-zephyr-features li {
+    padding: 8px 0 8px 18px;
+    color: var(--ibl-muted);
+    font-size: 15px;
+    position: relative;
+  }
+
+  .ibl-zephyr-features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: var(--ibl-dim);
+  }
+
+  .ibl-zephyr-tab-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 24px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 6px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .ibl-zephyr a.ibl-zephyr-tab-link,
+  .ibl-zephyr a.ibl-zephyr-tab-link:hover,
+  .ibl-zephyr a.ibl-zephyr-tab-link:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-zephyr-tab-link:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  /* --- audio --- */
+  .ibl-zephyr-audio {
+    padding: 48px 0;
+  }
+
+  .ibl-zephyr-audio-wrap {
+    max-width: 100%;
+    margin: 24px auto 0;
+  }
+
+  .ibl-zephyr-audio-wrap iframe {
+    width: 100%;
+    height: 450px;
+    border: 0;
+    border-radius: 8px;
+  }
+  
+  /* YouTube-specific: maintain 16:9 aspect ratio */
+  .ibl-zephyr-audio-wrap-youtube {
+    max-width: 100%;
+    margin: 24px auto 0;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+  }
+
+  .ibl-zephyr-audio-wrap-youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 760px) {
+    .ibl-zephyr-audio-wrap iframe {
+      height: 350px;
+    }
+
+    .ibl-zephyr-features {
+      grid-template-columns: 1fr;
+    }
+
+  }
+  /* --- rhapsody tutorial videos --- */
+  .ibl-rhapsody-tutorials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .ibl-rhapsody-tutorial {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-rhapsody-tutorial iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    .ibl-rhapsody-tutorials {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
+
+<div class="ibl-zephyr">
+    <div class="ibl-zephyr-shell">
+    <!-- description: A Gift From The Lake --><!-- description: A Gift From The Lake -->
+    <div class="ibl-zephyr-section">
+      <h2 class="ibl-zephyr-section-heading">A Gift From The Lake</h2>
+      <p class="ibl-zephyr-section-text">Zephyr is a free lightweight pad library designed from heavily processing a series of Panpipe Recordings.</p>
+      <p class="ibl-zephyr-section-text">The recordings are heavily stretched and layered to create an ethereal, piercing, almost haunting timbre.</p>
+    </div>
+
+    <!-- tabs: Rhapsody / Kontakt -->
+    <div class="ibl-zephyr-tabs">
+      <div class="ibl-zephyr-tab-bar">
+        <button class="ibl-zephyr-tab-btn active" data-tab="rhapsody">Rhapsody</button>
+        <button class="ibl-zephyr-tab-btn" data-tab="kontakt">Kontakt</button>
+      </div>
+
+      <!-- Rhapsody panel (default open) -->
+      <div class="ibl-zephyr-tab-panel active" id="tab-rhapsody">
+        <p>
+          <strong>Rhapsody</strong> is a free and open-source VST, AU &amp; Standalone player by <a href="https://librewave.com" target="_blank" rel="noopener" style="color: var(--ibl-text) !important; text-decoration: underline !important;">Libre Wave</a>.
+        </p>
+        <p>
+          Gone are the days of needing $400 software to open virtual instruments. Rhapsody is fast, powerful and most importantly&hellip; <strong>it's free.</strong>
+        </p>
+
+        <ul class="ibl-zephyr-features">
+          <li>C4-C7 Keyrange</li>
+          <li>ADSR Controls</li>
+          <li>Built-in FX Suite</li>
+          <li>Free Player Plugin by Libre Wave</li>
+          <li>VST, AU & Standalone Support</li>
+          <li>24MB download size</li>
+          <li>24MB uncompressed</li>
+        </ul>
+
+                <div class="ibl-rhapsody-tutorials">
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/dM-e2spiqwE" title="Install Rhapsody &amp; Add Libraries" allowfullscreen loading="lazy"></iframe>
+          </div>
+
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/VAHXQSWKKIY" title="Library Walkthrough" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <a class="ibl-zephyr-tab-link" href="https://codeberg.org/LibreWave/Rhapsody/releases/tag/2.5.2" target="_blank" rel="noopener">Download Rhapsody</a>
+      </div>
+
+      <!-- Kontakt panel -->
+      <div class="ibl-zephyr-tab-panel" id="tab-kontakt">
+        <p>
+          <strong>Kontakt 5.8</strong> or higher (full version) required. This library will <strong>not</strong> work in the free Kontakt Player.
+        </p>
+
+        <ul class="ibl-zephyr-features">
+          <li>C4-C7 Keyrange</li>
+          <li>ADSR Controls</li>
+          <li>Built-in FX Suite</li>
+          <li>Kontakt 5.8 or higher (full)</li>
+          <li>All major DAWs supported</li>
+          <li>8GB RAM minimum</li>
+          <li>40MB download size</li>
+          <li>40MB uncompressed</li>
+          <li>Does NOT work in the Free Kontakt Player.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- audio -->
+    <div class="ibl-zephyr-audio">
+      <h2 class="ibl-zephyr-section-heading">Listen to Zephyr</h2>
+      <div class="ibl-zephyr-audio-wrap">
+        <iframe src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1570590565%3Fsecret_token%3Ds-aM4vo&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- tabs ---
+  var tabs = document.querySelectorAll('.ibl-zephyr-tab-btn');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      var allBtns = document.querySelectorAll('.ibl-zephyr-tab-btn');
+      var allPanels = document.querySelectorAll('.ibl-zephyr-tab-panel');
+      for (var j = 0; j < allBtns.length; j++) allBtns[j].classList.remove('active');
+      for (var k = 0; k < allPanels.length; k++) allPanels[k].classList.remove('active');
+      this.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  }
+
+})();
+</script>

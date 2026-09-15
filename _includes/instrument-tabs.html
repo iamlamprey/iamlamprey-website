@@ -1,0 +1,47 @@
+<section class="ibl-section" aria-label="Rhapsody and Kontakt versions">
+  <div class="ibl-tab-bar">
+    <button class="ibl-tab-btn active" type="button" data-tab="rhapsody">Rhapsody</button>
+    <button class="ibl-tab-btn" type="button" data-tab="kontakt">Kontakt</button>
+  </div>
+
+  <div class="ibl-tab-panel active" id="tab-rhapsody">
+    <p class="ibl-tab-lead"><strong>Rhapsody</strong> is a free and open-source VST, AU &amp; Standalone player by <a href="https://librewave.com" target="_blank" rel="noopener">Libre Wave</a>.</p>
+    <p class="ibl-tab-note">Gone are the days of needing $400 software to open virtual instruments. Rhapsody is fast, powerful and most importantly&hellip; <strong>it's free.</strong></p>
+
+    <h3 class="ibl-tab-label">Specs</h3>
+    <ul class="ibl-features">
+      {% for feature in page.rhapsody_features %}
+      <li>{{ feature }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3 class="ibl-tab-label">Setup guides</h3>
+    <div class="ibl-tutorials">
+      <figure class="ibl-tutorial">
+        <div class="ibl-tutorial-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/dM-e2spiqwE" title="Install Rhapsody &amp; Add Libraries" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <figcaption>Install Rhapsody &amp; add libraries</figcaption>
+      </figure>
+      <figure class="ibl-tutorial">
+        <div class="ibl-tutorial-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/VAHXQSWKKIY" title="Library Walkthrough" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <figcaption>Library walkthrough</figcaption>
+      </figure>
+    </div>
+
+    <a class="ibl-tab-link" href="https://codeberg.org/LibreWave/Rhapsody/releases/tag/2.5.2" target="_blank" rel="noopener">Download Rhapsody</a>
+  </div>
+
+  <div class="ibl-tab-panel" id="tab-kontakt">
+    <p class="ibl-tab-lead"><strong>Kontakt 5.8</strong> or higher (full version) required. This library will <strong>not</strong> work in the free Kontakt Player.</p>
+
+    <h3 class="ibl-tab-label">Specs</h3>
+    <ul class="ibl-features">
+      {% for feature in page.kontakt_features %}
+      <li>{{ feature }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

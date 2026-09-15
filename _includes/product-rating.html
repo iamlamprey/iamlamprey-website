@@ -1,0 +1,64 @@
+<!-- the per-product rating: the product's own figure where it has earned one,
+     the pooled marketplace figure where it has not, and nothing at all where it
+     has neither.
+
+     two sources. site.data.ratings-live is generated hourly from this site's own
+     verified-purchase ratings (worker/ plus .github/workflows/ratings.yml);
+     site.data.ratings is the marketplace figure pooled by hand. a product's live
+     figure takes over once there are 10 of them: below that the live sample is
+     too thin to displace the pooled figure, and at 10 or more the live figure IS
+     the figure — one whose live average has slipped below 4.0 shows nothing
+     rather than quietly reverting to another source's number.
+
+     the rule, in one place: a badge is shown only at an average of 4.0 or more,
+     compared exactly rather than after rounding, so a 3.96 average is below 4.0
+     however it would print. there is no rule per product, and none in the
+     generated file.
+
+     nothing here filters a rating. every rating posted is stored and every one
+     counts toward the average, so the low ratings are part of what a figure is
+     made of: hiding a badge is not hiding a rating. a product under the
+     threshold simply does not wear one, which is not the failure the ACCC's
+     HealthEngine case was about — that was suppressing and editing negative
+     reviews.
+
+     the track is the empty outline, the fill layer is a full-width copy of the
+     row clipped to the average by ibl-site.js, which reads data-ibl-average off
+     the wrapper. the star itself is --ibl-star: white on the dark themes, black
+     on Muzzle's light one -->
+{% assign live = site.data.ratings-live.product[page.slug] %}
+{% assign pooled = site.data.ratings.product[page.slug] %}
+{% assign rating = nil %}
+
+{% if live and live.count >= 10 %}
+  {% if live.average >= 4 %}
+    {% assign rating = live %}
+  {% endif %}
+{% elsif pooled and pooled.average >= 4 %}
+  {% assign rating = pooled %}
+{% endif %}
+
+{% if rating %}
+<div class="ibl-rating" id="iblRating" data-ibl-average="{{ rating.average }}">
+  <span class="ibl-rating-stars" id="iblRatingStars" role="img" aria-label="Rated {{ rating.average | round: 1 }} out of 5">
+    <svg class="ibl-rating-track" viewBox="0 0 128 24" aria-hidden="true" focusable="false">
+      <path transform="translate(0,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      <path transform="translate(26,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      <path transform="translate(52,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      <path transform="translate(78,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      <path transform="translate(104,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+    <span class="ibl-rating-fill" id="iblRatingFill">
+      <svg class="ibl-rating-fill-layer" viewBox="0 0 128 24" aria-hidden="true" focusable="false">
+        <path transform="translate(0,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <path transform="translate(26,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <path transform="translate(52,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <path transform="translate(78,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <path transform="translate(104,0)" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      </svg>
+    </span>
+  </span>
+  <strong class="ibl-rating-value" id="iblRatingValue">{{ rating.average | round: 1 }}</strong>
+  <span class="ibl-rating-count" id="iblRatingCount">({{ rating.count }} ratings)</span>
+</div>
+{% endif %}

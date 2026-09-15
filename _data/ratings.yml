@@ -1,0 +1,34 @@
+# Per-product ratings, pooled by hand from the marketplaces each product is/was
+# sold on. Keyed by the page's `slug:` front matter.
+#
+# This is the *pooled* source and the fallback badge. _data/ratings-live.yml —
+# generated hourly from this site's own verified-purchase ratings — supersedes it
+# for a product once that product has 10 of them, and the choice between the two
+# is made in one place: _includes/product-rating.html. Every rating counts,
+# including the low ones, and a badge is shown only at an average of 4.0 or more.
+#
+# A product with no entry here (or in the live file) renders NO stars at all, and
+# that is deliberate: a page with no reviews of its own shows none rather than
+# borrowing a store-wide figure, which reads as a rating the product has not
+# earned. The sample packs have no entry for exactly that reason; Altar and Muzzle
+# carry a `slug:` of their own now but no entry here, so their badge waits on 10
+# ratings of their own.
+product:
+  achromic: { average: 4.4, count: 119 }
+  aetheric: { average: 4.2, count: 52 }
+  atlas: { average: 4.5, count: 44 }
+  blackout: { average: 4.6, count: 37 }
+  blackout-2: { average: 4.7, count: 25 }
+  bloom: { average: 4.3, count: 101 }
+  cloudburst: { average: 4.5, count: 98 }
+  cloudburst-acoustic: { average: 4.6, count: 65 }
+  eidolon: { average: 4.7, count: 3 }
+  found-keys: { average: 4.5, count: 20 }
+  gloom: { average: 4.4, count: 46 }
+  oracle-2: { average: 4.6, count: 97 }
+  pdq-bass: { average: 4.6, count: 29 }
+  prismatic: { average: 4.5, count: 17 }
+  songbird: { average: 4.4, count: 32 }
+  tethys: { average: 4.8, count: 5 }
+  zephyr: { average: 4.4, count: 40 }
+  master-bundle: { average: 4.5, count: 614 }

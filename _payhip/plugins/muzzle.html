@@ -1,0 +1,747 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+  html,
+  body,
+  .content-wrapper,
+  .container,
+  .page-width,
+  .main-content,
+  #content,
+  #main,
+  #wrapper,
+  .wrapper,
+  [class*="container"],
+  [class*="wrapper"],
+  [class*="content"],
+  [class*="page"],
+  [class*="collection"],
+  [class*="layout"],
+  [class*="col-"],
+  [class*="row"],
+  [class*="section"],
+  article,
+  main,
+  section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .ibl-muzzle,
+  .ibl-muzzle * {
+    box-sizing: border-box;
+  }
+
+  .ibl-muzzle {
+    --mz-bg: #FFFFFF;
+    --mz-panel: #F0F0EC;
+    --mz-raised: #E6E6E2;
+    --mz-midgrey: #CCCCC8;
+    --mz-grey: #888888;
+    --mz-softgrey: #5C5C58;
+    --mz-lightgrey: #2E2E2C;
+    --mz-text: #1A1A1A;
+    --mz-white: #FFFFFF;
+    --mz-black: #000000;
+    --mz-violet: #4A3FD8;
+    --mz-cyan: #0E7BA8;
+    --mz-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    overflow: hidden;
+    background: var(--mz-bg);
+    color: var(--mz-text);
+    font-family: var(--mz-font) !important;
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* reset link decoration (Payhip globals add underline/box-shadow); force heading color */
+  .ibl-muzzle a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-muzzle a:hover,
+  .ibl-muzzle a:focus,
+  .ibl-muzzle a *,
+  .ibl-muzzle a:hover *,
+  .ibl-muzzle a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-muzzle h1,
+  .ibl-muzzle h2,
+  .ibl-muzzle h3,
+  .ibl-muzzle h4,
+  .ibl-muzzle h5,
+  .ibl-muzzle h6 {
+    color: var(--mz-text) !important;
+  }
+
+  .ibl-muzzle img {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* --- dot-grid main area --- */
+  .imz-main {
+    background-image: radial-gradient(circle, rgba(204, 204, 200, 0.22) 1px, transparent 1.5px);
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--mz-midgrey) 45%, transparent) 1px, transparent 1.5px);
+    background-size: 16px 16px;
+    padding-bottom: 56px;
+  }
+
+  .imz-shell {
+    width: min(940px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  /* --- hero screenshot --- */
+  .imz-hero {
+    padding: 28px 0 8px;
+    text-align: center;
+  }
+
+  .imz-hero img {
+    width: min(620px, calc(100% - 32px));
+    margin: 0 auto;
+    outline: 1px solid var(--mz-midgrey);
+    outline-offset: -1px;
+    border-radius: 0;
+  }
+
+  /* --- video --- */
+  .imz-video-section {
+    padding: 28px 0 8px;
+    text-align: center;
+  }
+
+  .imz-video {
+    width: min(720px, calc(100% - 32px));
+    margin: 0 auto;
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+    outline: 1px solid var(--mz-midgrey);
+    outline-offset: -1px;
+  }
+
+  .imz-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* --- sections --- */
+  .imz-section {
+    padding: 40px 0 16px;
+  }
+
+  .imz-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+    border-bottom: 1px solid var(--mz-midgrey);
+    padding-bottom: 10px;
+  }
+
+  /* --- overview --- */
+  .imz-tagline {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0 0 16px;
+    color: var(--mz-text);
+  }
+
+  .imz-overview-text {
+    color: var(--mz-softgrey);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .imz-overview-text strong {
+    color: var(--mz-text);
+  }
+
+  /* --- features list --- */
+  .imz-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .imz-features li {
+    position: relative;
+    padding-left: 24px;
+    color: var(--mz-softgrey);
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  .imz-features li::before {
+    content: "▪";
+    position: absolute;
+    left: 0;
+    color: var(--mz-lightgrey);
+  }
+
+  /* --- pricing tiers --- */
+  .imz-pricing-note {
+    color: var(--mz-softgrey);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 22px;
+    max-width: 620px;
+  }
+
+  .imz-pricing-note strong {
+    color: var(--mz-text);
+  }
+
+  .imz-tiers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .imz-tier {
+    display: flex;
+    flex-direction: column;
+    background: var(--mz-panel);
+    outline: 1px solid var(--mz-midgrey);
+    outline-offset: -1px;
+    padding: 22px;
+  }
+
+  .imz-tier-name {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+
+  .imz-tier-sub {
+    color: var(--mz-softgrey);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 0 0 14px;
+  }
+
+  .imz-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+  }
+
+  .imz-price-row .ibl-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--mz-text);
+  }
+
+  .imz-price-row .ibl-price-old {
+    color: var(--mz-grey);
+    font-size: 16px;
+    text-decoration: line-through;
+  }
+
+  .imz-price-row .ibl-sale-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    outline: 1px solid var(--mz-violet);
+    outline-offset: -1px;
+    color: var(--mz-violet);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .imz-tier-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .imz-tier-list li {
+    position: relative;
+    padding-left: 20px;
+    color: var(--mz-softgrey);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .imz-tier-list li::before {
+    content: "▪";
+    position: absolute;
+    left: 0;
+    color: var(--mz-lightgrey);
+  }
+
+  .imz-tier-list li.locked {
+    color: var(--mz-grey);
+  }
+
+  .imz-tier-list li.locked::before {
+    content: "—";
+    color: var(--mz-midgrey);
+  }
+
+  /* --- cta (inverse-video, outline trick) --- */
+  .imz-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 20px;
+    background: var(--mz-black);
+    outline: 1px solid var(--mz-black);
+    outline-offset: -1px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: background 180ms ease, color 180ms ease;
+    cursor: pointer;
+    margin-top: auto;
+  }
+
+  .ibl-muzzle a.imz-cta,
+  .ibl-muzzle a.imz-cta:focus {
+    color: var(--mz-white) !important;
+  }
+
+  .ibl-muzzle a.imz-cta:hover {
+    background: var(--mz-panel);
+    color: var(--mz-text) !important;
+  }
+
+  /* --- transparency --- */
+  .imz-transparency {
+    color: var(--mz-softgrey);
+    font-size: 14.5px;
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .imz-transparency a {
+    color: var(--mz-cyan) !important;
+    font-weight: 600;
+  }
+
+  .imz-transparency a:hover {
+    color: var(--mz-text) !important;
+    text-decoration: underline !important;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 760px) {
+    .imz-shell {
+      width: min(100% - 24px, 940px);
+    }
+
+    .imz-hero img {
+      width: calc(100% - 24px);
+    }
+
+    .imz-video {
+      width: calc(100% - 24px);
+    }
+
+    .imz-tiers {
+      grid-template-columns: 1fr;
+    }
+
+  }
+  /* --- light footer (Muzzle page only; this embed is page-scoped) --- */
+  [data-section-key="footer"] {
+    --mz-footer-bg: #FFFFFF;
+    --mz-footer-text: #5C5C58;
+    --mz-footer-heading: #1A1A1A;
+    --mz-footer-line: #E6E6E2;
+  }
+
+  [data-section-key="footer"],
+  [data-section-key="footer"] .section-contents-wrapper {
+    background-color: var(--mz-footer-bg) !important;
+    color: var(--mz-footer-text) !important;
+  }
+
+  [data-section-key="footer"] .section-background,
+  [data-section-key="footer"] .section-background-overlay,
+  [data-section-key="footer"] .custom-style-color-misc-gradient {
+    background-color: var(--mz-footer-bg) !important;
+    background-image: none !important;
+  }
+
+  [data-section-key="footer"] .richtext,
+  [data-section-key="footer"] .custom-style-color-text-regular {
+    color: var(--mz-footer-text) !important;
+  }
+
+  [data-section-key="footer"] h1,
+  [data-section-key="footer"] h2,
+  [data-section-key="footer"] h3,
+  [data-section-key="footer"] h4,
+  [data-section-key="footer"] .custom-style-color-text-heading {
+    color: var(--mz-footer-heading) !important;
+  }
+
+  [data-section-key="footer"] a,
+  [data-section-key="footer"] .footer-nav a,
+  [data-section-key="footer"] .section-contents-wrapper a:not(.social-link) {
+    color: var(--mz-footer-text) !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  [data-section-key="footer"] a:hover,
+  [data-section-key="footer"] a:focus {
+    color: var(--mz-footer-heading) !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  [data-section-key="footer"] .custom-style-color-misc-border,
+  [data-section-key="footer"] hr {
+    border-color: var(--mz-footer-line) !important;
+  }
+
+  /* white-on-dark footer icons (social / payment / payhip badge) -> dark on white */
+  [data-section-key="footer"] .social-link svg,
+  [data-section-key="footer"] .social-link img,
+  [data-section-key="footer"] img[src*="payhip"],
+  [data-section-key="footer"] svg.icon {
+    filter: invert(1) !important;
+  }
+
+</style>
+
+<div class="ibl-muzzle">
+
+  <div class="imz-main">
+    <div class="imz-shell">
+
+      <!-- video -->
+      <section class="imz-video-section" aria-label="Muzzle video">
+        <div class="imz-video">
+          <iframe src="https://www.youtube-nocookie.com/embed/u8oZQ-0nriI" title="Muzzle" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </section>
+      
+      <section class="imz-section">
+        <p class="imz-tagline">TAME HARSH VOCALS IN SECONDS</p>
+        <p class="imz-pricing-note">
+          Muzzle is a <strong>free</strong> de-esser plugin for taming sibilance in seconds. The <strong>pro version</strong>
+          unlocks the <strong>Clarity</strong> and <strong>Air</strong> pre-chain filters for adding top-end back without the harshness.
+        </p>
+        <div class="imz-tiers">
+          <!-- Free -->
+          <div class="imz-tier">
+            <div class="imz-tier-name">Free</div>
+            <p class="imz-tier-sub">The full band-limited de-esser.</p>
+            <ul class="imz-tier-list">
+              <li>Complete de-esser module</li>
+              <li>Preset browser & factory presets</li>
+              <li>Light &amp; dark theme GUI</li>
+            </ul>
+            <a class="imz-cta" href="https://iamlamprey.com/buy?link=bfVo0" rel="noopener">Get Muzzle — Free</a>
+          </div>
+
+          <!-- Pro -->
+          <div class="imz-tier" data-ibl-slug="HZtFg">
+            <div class="imz-tier-name">Pro</div>
+            <div class="imz-price-row">
+              <span class="ibl-price">$40.00</span>
+              <span class="ibl-price-old" style="display: none">$40.00</span>
+              <span class="ibl-sale-chip" style="display: none">On sale</span>
+            </div>
+            <p class="imz-tier-sub">Pre-chain filters for restoring the top-end without harshness.</p>            
+            <ul class="imz-tier-list">
+              <li>Everything in Free</li>
+              <li><strong>Clarity boost</strong></li>
+              <li><strong>Air boost</strong></li>
+            </ul>
+            <a class="imz-cta" href="https://iamlamprey.com/buy?link=HZtFg" rel="noopener">Buy Muzzle Pro</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- overview -->
+      <section class="imz-section">
+        <h2 class="imz-section-title">Overview</h2>
+        <p class="imz-tagline">A clean de-esser.</p>
+        <p class="imz-overview-text">
+          Muzzle is a lightweight de-esser for taming harsh sibilance and whistling vocals. 
+          I needed something that was fast and flexible, and wanted to integrate part of my
+          daily-driver vocal chain (top-end filters) into a single plugin.
+        </p>
+      </section>
+
+      <!-- hero screenshot -->
+      <section class="imz-hero" aria-label="Muzzle interface">
+        <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0u1bcn013jc1c929g23a1gp7c.png" alt="Muzzle de-esser interface (light theme)">
+      </section>
+
+      <!-- features -->
+      <section class="imz-section">
+        <h2 class="imz-section-title">Features</h2>
+        <ul class="imz-features">
+          <li>Clean split-band de-essing</li>
+          <li>Solo band toggle to target problematic whistles</li>
+          <li>Attack / release / ratio controls</li>
+          <li>Factory presets for different voice types</li>
+          <li><strong>Custom pre-chain filters (PRO)</strong></li>          
+        </ul>
+      </section>
+
+      <!-- pricing -->
+      <section class="imz-section">
+        <h2 class="imz-section-title">Choose Muzzle</h2>
+        <p class="imz-pricing-note">
+          Muzzle is <strong>free</strong>. Pro unlocks the <strong>Clarity</strong> and <strong>Air</strong> pre-chain filters for convenient top-end without adding harshness.
+        </p>
+        <div class="imz-tiers">
+          <!-- Free -->
+          <div class="imz-tier">
+            <div class="imz-tier-name">Free</div>
+            <p class="imz-tier-sub">The full band-limited de-esser.</p>
+            <ul class="imz-tier-list">
+              <li>Complete de-esser module</li>
+              <li>Preset browser & factory presets</li>
+              <li>Light &amp; dark theme GUI</li>
+            </ul>
+            <a class="imz-cta" href="https://iamlamprey.com/buy?link=bfVo0" rel="noopener">Get Muzzle — Free</a>
+          </div>
+
+          <!-- Pro -->
+          <div class="imz-tier" data-ibl-slug="HZtFg">
+            <div class="imz-tier-name">Pro</div>
+            <div class="imz-price-row">
+              <span class="ibl-price">$40.00</span>
+              <span class="ibl-price-old" style="display: none">$40.00</span>
+              <span class="ibl-sale-chip" style="display: none">On sale</span>
+            </div>
+            <p class="imz-tier-sub">Everything in Free + Clarity &amp; Air filters.</p>
+            <ul class="imz-tier-list">
+              <li>Everything in Free</li>
+              <li><strong>Clarity boost</strong></li>
+              <li><strong>Air boost</strong></li>
+            </ul>
+            <a class="imz-cta" href="https://iamlamprey.com/buy?link=HZtFg" rel="noopener">Buy Muzzle Pro</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- transparency -->
+      <section class="imz-section">
+        <h2 class="imz-section-title">For Transparency</h2>
+        <p class="imz-transparency">
+          Muzzle's de-esser core is adapted from two free, MIT-licensed Airwindows plugins by Chris Johnson - DeBess and DeEss. This core is extended with Muzzle's tunable band-pass detection, timing controls and pre-chain filters.
+
+          You can view the original DSP at <a href="https://github.com/airwindows/airwindows/tree/master/" target="_blank" rel="noopener">github.com/airwindows</a>.
+        </p>
+      </section>
+
+    </div>
+  </div>
+
+
+<!-- Pricing module: canonical source is source/ibl-pricing.js — keep in sync -->
+<script>
+/*!
+ * iamLamprey pricing module — ibl-pricing.js
+ *
+ * Canonical source: source/ibl-pricing.js
+ * The exact contents of this file are inlined into each page so the embed
+ * stays standalone. Keep these copies in sync:
+ *   - source/instruments.html
+ *   - source/master-bundle.html
+ *   - source/plugins/altar.html
+ *   - source/plugins/muzzle.html
+ *   - source/sample-packs/supporter-bundle.html
+ *
+ * What it does: prices come from a static PRICES registry that mirrors
+ * config.json. The old Payhip scrape/sale-detection/iframe logic has been
+ * removed — Polar is the storefront and prices live in config.json. Each card
+ * keeps its truthfully hardcoded default price; FREE cards are left untouched.
+ * No "On sale" chips are rendered because Polar products are fixed-price.
+ */
+(function (root) {
+  'use strict';
+
+  /*
+   * Static price registry: slug -> price (USD, dollars). Mirrors config.json —
+   * keep it in sync by hand when prices change.
+   */
+  var PRICES = {
+  /* BEGIN PRICES — mirrors config.json (keep in sync by hand) */
+    'achromic': 40,
+    'aetheric': 20,
+    'atlas': 20,
+    'blackout': 20,
+    'blackout-2': 20,
+    'bloom': 20,
+    'cloudburst': 20,
+    'cloudburst-acoustic': 20,
+    'eidolon': 40,
+    'found-keys': 20,
+    'gloom': 40,
+    'oracle-2': 40,
+    'pdq-bass': 40,
+    'prismatic': 20,
+    'songbird': 0,
+    'zephyr': 0,
+    'tethys': 40,
+    'HZtFg': 40,
+    'master-bundle': 150,
+    'supporter-bundle': 20,
+    'ambience-supporter-pack': 10,
+    'riser-supporter-pack': 10,
+    'glitch-supporter-pack': 10,
+    'sub-drop-supporter-pack': 10,
+  /* END PRICES */
+  };
+
+  function money(n) {
+    var v = (typeof n === 'number' ? n : parseFloat(n) || 0);
+    return '$' + v.toFixed(2);
+  }
+
+  function setFirstTextNode(el, text) {
+    if (!el) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node = walker.nextNode();
+    if (node) node.textContent = text;
+  }
+
+  function resultFor(slug) {
+    var p = PRICES[slug];
+    return { price: typeof p === 'number' ? p : 0 };
+  }
+
+  function applyProduct(el, result) {
+    if (!result) return;
+    if (el.querySelector('.ibl-note') || el.querySelector('.ibl-free-label')) return; // FREE cards stay as-is
+    var priceEl = el.querySelector('.ibl-price');
+    var packPrice = el.querySelector('.ibl-altar-pack-price');
+    var display = money(result.price);
+    if (priceEl) priceEl.textContent = display;
+    if (packPrice) packPrice.textContent = display;
+  }
+
+  function applyBundle(el, result) {
+    if (!result) return;
+    var bPrice = el.querySelector('.ibl-bundle-price');      // master-bundle.html pricing block
+    var price = el.querySelector('.ibl-price');               // instruments.html bundle card
+    var altarPrice = el.querySelector('.ibl-altar-price');    // altar.html bundle price row
+    var name = el.querySelector('.ibl-altar-bundle-name');    // altar.html bundle card
+    var btn = el.querySelector('.ibl-pack-buy-btn');          // supporter-bundle.html
+    var priceLine = el.querySelector('.ibl-pack-price');
+    var display = money(result.price);
+    if (bPrice) bPrice.textContent = display;
+    if (price) price.textContent = display;
+    if (altarPrice) altarPrice.textContent = display;
+    if (name) name.textContent = name.textContent.replace(/\$[\d.]+/, display);
+    if (btn) btn.textContent = btn.textContent.replace(/-?\s*\$[\d.]+/, '- ' + display);
+    if (priceLine) setFirstTextNode(priceLine, display);
+  }
+
+  function applyTotal(el, bySlug) {
+    var sum = 0;
+    Object.keys(bySlug).forEach(function (slug) {
+      var r = bySlug[slug];
+      if (r && r.price > 0) sum += r.price;
+    });
+    var label = el.textContent.replace(/^\$[\d.]+/, '').trim();
+    el.textContent = money(sum) + (label ? ' ' + label : '');
+  }
+
+  function apply() {
+    var productEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-slug]'));
+    var bundleEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-bundle]'));
+    var totalEls = Array.prototype.slice.call(document.querySelectorAll('[data-ibl-total-value]'));
+    if (!productEls.length && !bundleEls.length) return;
+
+    productEls.forEach(function (el) {
+      applyProduct(el, resultFor(el.getAttribute('data-ibl-slug')));
+    });
+    bundleEls.forEach(function (el) {
+      applyBundle(el, resultFor(el.getAttribute('data-ibl-bundle')));
+    });
+    // The total only counts individual products, never bundles.
+    var bySlug = {};
+    productEls.forEach(function (el) {
+      var slug = el.getAttribute('data-ibl-slug');
+      if (slug) bySlug[slug] = resultFor(slug);
+    });
+    totalEls.forEach(function (el) {
+      applyTotal(el, bySlug);
+    });
+  }
+
+  var api = {
+    money: money,
+    PRICES: PRICES,
+    applyProduct: applyProduct,
+    applyBundle: applyBundle,
+    applyTotal: applyTotal
+  };
+
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  } else {
+    if (typeof document === 'undefined') return;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply);
+    } else {
+      apply();
+    }
+  }
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+
+</div>

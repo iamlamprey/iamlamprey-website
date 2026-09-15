@@ -1,0 +1,21 @@
+<footer class="ibl-footer{% if page.nav_theme == 'light' %} ibl-theme-light{% endif %}">
+  <div class="ibl-shell">
+
+    <p class="ibl-footer-newsletter-lead">New releases, free packs and sales straight to your inbox.</p>
+      {% include newsletter-form.html %} 
+    <!-- spacers --> 
+    <p> </p>
+    <p> </p>
+
+    <div class="ibl-footer-top">      
+      <nav class="ibl-footer-nav">
+        {% for item in site.data.nav %}
+          {% unless item.external %}
+        <a href="{{ item.href | relative_url }}">{{ item.label }}</a>
+          {% endunless %}
+        {% endfor %}
+      </nav>
+    </div>
+  </div>
+
+</footer>

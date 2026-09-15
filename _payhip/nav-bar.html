@@ -1,0 +1,685 @@
+<style>
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  /* hide Payhip's default store header; we render our own masthead */
+  #header {
+    display: none !important;
+  }
+
+.ibl-navbar, .ibl-navbar * { box-sizing: border-box; }
+
+  .ibl-navbar {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-blue: #7ec8ff;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-navbar a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-navbar a:hover,
+  .ibl-navbar a:focus,
+  .ibl-navbar a *,
+  .ibl-navbar a:hover *,
+  .ibl-navbar a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-navbar img {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* --- announcement bar --- */
+  .ibl-navbar .ibl-announce-bar {
+    --ibl-glitch-red: #8b1a1a;
+    --ibl-glitch-cyan: #1a6b6b;
+    --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--ibl-bg);
+    border-bottom: 1px solid var(--ibl-line-soft);
+    font-family: var(--ibl-mono);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ibl-navbar .ibl-announce-bar-url {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+  }
+
+  .ibl-navbar .ibl-announce-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 12px 0;
+    gap: 16px;
+  }
+
+  .ibl-navbar .ibl-announce-glitch {
+    font-size: 11px;
+    color: #3a3a3a;
+    white-space: nowrap;
+    overflow: hidden;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .ibl-navbar .ibl-announce-glitch span.glitched {
+    animation: ibl-glitch-pop 0.15s ease 2;
+  }
+
+  @keyframes ibl-glitch-pop {
+    0% { text-shadow: 0 0 0 transparent; }
+    25% { text-shadow: -1px 0 #8b1a1a, 1px 0 #1a6b6b; }
+    50% { text-shadow: 0 0 0 transparent; }
+    75% { text-shadow: 1px 0 #1a6b6b, -1px 0 #8b1a1a; }
+    100% { text-shadow: 0 0 0 transparent; }
+  }
+
+  .ibl-navbar .ibl-announce-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ibl-blue);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .ibl-navbar .ibl-announce-text.faded { opacity: 0.15; }
+
+  @media screen and (max-width: 700px) {
+    .ibl-navbar .ibl-announce-glitch { display: none; }
+    .ibl-navbar .ibl-announce-text { font-size: 11px; }
+  }
+  /* --- masthead --- */
+  .ibl-navbar-masthead {
+    background: var(--ibl-bg);
+    padding: 14px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-navbar-masthead-inner {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .ibl-navbar-masthead-logo img {
+    height: 34px;
+    width: auto;
+    display: block;
+  }
+
+  .ibl-navbar-masthead-nav {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    display: flex;
+  }
+
+  .ibl-navbar-masthead-nav a {
+    color: var(--ibl-muted) !important;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .ibl-navbar-masthead-nav a:hover {
+    color: var(--ibl-text) !important;
+  }
+
+  .ibl-navbar-nav-item-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .ibl-navbar-nav-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    display: none;
+    flex-direction: column;
+    padding: 8px;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+
+  .ibl-navbar-nav-item-dropdown:hover .ibl-navbar-nav-dropdown,
+  .ibl-navbar-nav-item-dropdown:focus-within .ibl-navbar-nav-dropdown {
+    display: flex;
+  }
+
+  .ibl-navbar-nav-dropdown::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -8px;
+    height: 8px;
+  }
+
+  .ibl-navbar-nav-dropdown a {
+    color: var(--ibl-muted) !important;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: color 180ms ease, background 180ms ease;
+  }
+
+  .ibl-navbar-nav-dropdown a:hover {
+    color: var(--ibl-text) !important;
+    background: var(--ibl-surface-2);
+  }
+
+  .ibl-navbar-masthead-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+  }
+
+  .ibl-navbar-masthead-login,
+  .ibl-navbar-masthead-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+  }
+
+  .ibl-navbar-masthead-login img,
+  .ibl-navbar-masthead-cart img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* --- mobile hamburger button (hidden on desktop) --- */
+  .ibl-navbar-masthead-burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    gap: 0;
+    cursor: pointer;
+  }
+
+  .ibl-navbar-masthead-burger:hover {
+    background: var(--ibl-accent-soft);
+  }
+
+  .ibl-navbar-masthead-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--ibl-text);
+    border-radius: 2px;
+    margin: 3px 0;
+  }
+
+  /* --- mobile overlay menu --- */
+  .ibl-navbar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--ibl-bg);
+    transform: translateY(-100%);
+    transition: transform 260ms ease;
+    visibility: hidden;
+    overflow: hidden;
+  }
+
+  .ibl-navbar.ibl-open .ibl-navbar-overlay {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .ibl-navbar-overlay-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-navbar-overlay-bar img {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  .ibl-navbar-overlay-close {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ibl-text);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .ibl-navbar-overlay-close:hover {
+    background: var(--ibl-accent-soft);
+  }
+
+  .ibl-navbar-overlay-nav {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 20px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 60px);
+  }
+
+  .ibl-navbar-overlay-nav > a {
+    color: var(--ibl-muted) !important;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-navbar-overlay-nav > a:hover {
+    color: var(--ibl-text) !important;
+  }
+
+  .ibl-navbar-overlay-group-title {
+    color: var(--ibl-dim);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 16px 0 6px;
+  }
+
+  .ibl-navbar-overlay-group a {
+    color: var(--ibl-muted) !important;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 0 12px 8px;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-navbar-overlay-group a:hover {
+    color: var(--ibl-text) !important;
+  }
+
+  body.ibl-menu-open {
+    overflow: hidden !important;
+  }
+
+  @media screen and (max-width: 760px) {
+    .ibl-navbar-masthead-inner {
+      gap: 16px;
+      flex-wrap: nowrap;
+    }
+
+    .ibl-navbar-masthead-nav {
+      display: none !important;
+    }
+
+    .ibl-navbar-masthead-logo img {
+      height: 26px;
+    }
+
+    .ibl-navbar-masthead-burger {
+      display: inline-flex !important;
+    }
+
+    .ibl-navbar-nav-dropdown {
+      display: none !important;
+    }
+  }
+
+  /* --- light theme (Muzzle page only: https://iamlamprey.com/muzzle) --- */
+  .ibl-navbar.ibl-theme-light {
+    --ibl-bg: #FFFFFF;
+    --ibl-surface: #FFFFFF;
+    --ibl-surface-2: #F0F0EC;
+    --ibl-line: #E6E6E2;
+    --ibl-line-soft: #E6E6E2;
+    --ibl-text: #1A1A1A;
+    --ibl-muted: #5C5C58;
+    --ibl-dim: #888888;
+    --ibl-accent: #000000;
+    --ibl-accent-soft: rgba(0, 0, 0, 0.06);
+    --ibl-blue: #0E7BA8;
+  }
+
+  /* invert the white logo / Login / Cart icons so they stay visible on the light header */
+  .ibl-navbar.ibl-theme-light .ibl-navbar-masthead-logo img,
+  .ibl-navbar.ibl-theme-light .ibl-navbar-masthead-login img,
+  .ibl-navbar.ibl-theme-light .ibl-navbar-masthead-cart img,
+  .ibl-navbar.ibl-theme-light .ibl-navbar-overlay-bar img {
+    filter: invert(1);
+  }
+</style>
+
+<div class="ibl-navbar">
+  <!-- custom masthead (replaces Payhip header) -->
+  <div class="ibl-navbar-masthead">
+    <div class="ibl-navbar-masthead-inner">
+      <a class="ibl-navbar-masthead-logo" href="https://iamlamprey.com">
+        <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0ud78ao1e7p10lk69l1mtakcp1e.png" alt="iamlamprey" loading="lazy">
+      </a>
+      <nav class="ibl-navbar-masthead-nav">
+        <a href="https://iamlamprey.com/music">Music</a>
+        <div class="ibl-navbar-nav-item-dropdown">
+          <a class="ibl-navbar-nav-toggle" href="https://iamlamprey.com/plugins">Plug-Ins</a>
+          <div class="ibl-navbar-nav-dropdown">
+            <a href="https://iamlamprey.com/altar">Altar</a>
+            <a href="https://iamlamprey.com/muzzle">Muzzle</a>            
+          </div>
+        </div>
+        <div class="ibl-navbar-nav-item-dropdown">
+          <a class="ibl-navbar-nav-toggle" href="https://iamlamprey.com/instruments">Instruments</a>
+          <div class="ibl-navbar-nav-dropdown">
+            <a href="https://iamlamprey.com/b/master-bundle">Master Bundle</a>
+            <a href="https://iamlamprey.com/b/achromic">Achromic</a>
+            <a href="https://iamlamprey.com/b/aetheric">Aetheric</a>
+            <a href="https://iamlamprey.com/b/atlas">Atlas</a>
+            <a href="https://iamlamprey.com/b/blackout">Blackout</a>
+            <a href="https://iamlamprey.com/b/blackout-2">Blackout 2</a>
+            <a href="https://iamlamprey.com/b/bloom">Bloom</a>
+            <a href="https://iamlamprey.com/b/cloudburst">Cloudburst</a>
+            <a href="https://iamlamprey.com/b/cloudburst-acoustic">Cloudburst Acoustic</a>
+            <a href="https://iamlamprey.com/b/eidolon">Eidolon</a>
+            <a href="https://iamlamprey.com/b/found-keys">Found Keys</a>
+            <a href="https://iamlamprey.com/b/gloom">Gloom</a>
+            <a href="https://iamlamprey.com/b/oracle-2">Oracle Vol 2</a>
+            <a href="https://iamlamprey.com/b/pdq-bass">PDQ Bass</a>
+            <a href="https://iamlamprey.com/b/prismatic">Prismatic</a>
+            <a href="https://iamlamprey.com/b/songbird">Songbird</a>
+            <a href="https://iamlamprey.com/b/tethys">Tethys</a>
+            <a href="https://iamlamprey.com/b/zephyr">Zephyr</a>
+          </div>
+        </div>
+        <div class="ibl-navbar-nav-item-dropdown">
+          <a class="ibl-navbar-nav-toggle" href="https://iamlamprey.com/instruments">Sample Packs</a>
+          <div class="ibl-navbar-nav-dropdown">
+            <a href="https://iamlamprey.com/b/ambience-supporter-pack">Ambience</a>
+            <a href="https://iamlamprey.com/b/glitch-supporter-pack">Glitch</a>
+            <a href="https://iamlamprey.com/b/riser-supporter-pack">Risers</a>          
+            <a href="https://iamlamprey.com/b/sub-drop-supporter-pack">Sub Drops</a>
+          </div>
+        </div>
+        <a href="https://iamlamprey.com/contact">Contact</a>
+      </nav>
+      <div class="ibl-navbar-masthead-actions">
+        <a class="ibl-navbar-masthead-login" href="https://payhip.com/iamlamprey/users/login" aria-label="Login">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0uf849p241lqt1cb3f4km651n.png" alt="" loading="lazy">
+        </a>
+        <a class="ibl-navbar-masthead-cart" href="https://iamlamprey.com/cart" aria-label="Cart">
+          <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0uf8g641vlq19qsk7n14ep1p0i20.png" alt="" loading="lazy">
+        </a>
+        <button class="ibl-navbar-masthead-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="iblNavOverlay">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- mobile overlay menu -->
+  <div class="ibl-navbar-overlay" id="iblNavOverlay">
+    <div class="ibl-navbar-overlay-bar">
+      <a href="https://iamlamprey.com">
+        <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0ud78ao1e7p10lk69l1mtakcp1e.png" alt="iamlamprey" loading="lazy">
+      </a>
+      <button class="ibl-navbar-overlay-close" type="button" aria-label="Close menu">×</button>
+    </div>
+    <nav class="ibl-navbar-overlay-nav">
+      <a href="https://iamlamprey.com/music">Music</a>
+
+      <div class="ibl-navbar-overlay-group">
+        <div class="ibl-navbar-overlay-group-title">Plug-Ins</div>
+        <a href="https://iamlamprey.com/altar">Altar</a>
+        <a href="https://iamlamprey.com/muzzle">Muzzle</a>
+      </div>
+
+      <div class="ibl-navbar-overlay-group">
+        <div class="ibl-navbar-overlay-group-title">Instruments</div>
+        <a href="https://iamlamprey.com/b/master-bundle">Master Bundle</a>
+        <a href="https://iamlamprey.com/b/achromic">Achromic</a>
+        <a href="https://iamlamprey.com/b/aetheric">Aetheric</a>
+        <a href="https://iamlamprey.com/b/atlas">Atlas</a>
+        <a href="https://iamlamprey.com/b/blackout">Blackout</a>
+        <a href="https://iamlamprey.com/b/blackout-2">Blackout 2</a>
+        <a href="https://iamlamprey.com/b/bloom">Bloom</a>
+        <a href="https://iamlamprey.com/b/cloudburst">Cloudburst</a>
+        <a href="https://iamlamprey.com/b/cloudburst-acoustic">Cloudburst Acoustic</a>
+        <a href="https://iamlamprey.com/b/eidolon">Eidolon</a>
+        <a href="https://iamlamprey.com/b/found-keys">Found Keys</a>
+        <a href="https://iamlamprey.com/b/gloom">Gloom</a>
+        <a href="https://iamlamprey.com/b/oracle-2">Oracle Vol 2</a>
+        <a href="https://iamlamprey.com/b/pdq-bass">PDQ Bass</a>
+        <a href="https://iamlamprey.com/b/prismatic">Prismatic</a>
+        <a href="https://iamlamprey.com/b/songbird">Songbird</a>
+        <a href="https://iamlamprey.com/b/tethys">Tethys</a>
+        <a href="https://iamlamprey.com/b/zephyr">Zephyr</a>
+      </div>
+
+      <div class="ibl-navbar-overlay-group">
+        <div class="ibl-navbar-overlay-group-title">Sample Packs</div>
+        <a href="https://iamlamprey.com/b/ambience-supporter-pack">Ambience</a>
+        <a href="https://iamlamprey.com/b/glitch-supporter-pack">Glitch</a>
+        <a href="https://iamlamprey.com/b/riser-supporter-pack">Risers</a>
+        <a href="https://iamlamprey.com/b/sub-drop-supporter-pack">Sub Drops</a>
+      </div>
+
+      <a href="https://iamlamprey.com/contact">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<script>
+(function() {
+  function buildBar() {
+    var origText = document.querySelector('.announcement-bar-text');
+    if (!origText) return false;
+    var root = document.querySelector('.ibl-navbar');
+    if (!root) return false;
+    var bar = document.createElement('div');
+    bar.className = 'ibl-announce-bar';
+    bar.innerHTML =
+      '<div class="ibl-announce-bar-inner">' +
+        '<div class="ibl-announce-glitch" id="iblGlitchL"></div>' +
+        '<div class="ibl-announce-text" id="iblAnnText">' + origText.textContent.trim() + '</div>' +
+        '<div class="ibl-announce-glitch" id="iblGlitchR"></div>' +
+      '</div>';
+    var urlLink = document.querySelector('.announcement-bar-url');
+    if (urlLink) {
+      var url = urlLink.getAttribute('href');
+      if (url) {
+        var a = document.createElement('a');
+        a.className = 'ibl-announce-bar-url';
+        a.href = url;
+        a.setAttribute('aria-label', origText.textContent.trim());
+        bar.appendChild(a);
+      }
+    }
+    root.insertBefore(bar, root.firstElementChild);
+    startGlitch();
+    return true;
+  }
+  function attempt(n) {
+    if (buildBar()) return;
+    if (n > 0) setTimeout(function() { attempt(n - 1); }, 150);
+  }
+  attempt(30);
+
+  function makeNoise(seed) {
+    var s = Date.now() + seed + Math.random() * 99999;
+    function r() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }
+    var c = '01!@#$%^&*()_+-=[]{}|;:,.<>/?';
+    var b = [];
+    for (var i = 0; i < 40; i++) b.push(c[Math.floor(r() * c.length)]);
+    return { b: b, r: r, c: c };
+  }
+
+  function render(el, buf, flash) {
+    el.innerHTML = buf.map(function(c, i) {
+      return flash[i] ? '<span class="glitched">' + c + '</span>' : '<span>' + c + '</span>';
+    }).join('');
+  }
+
+  function startGlitch() {
+    var left = makeNoise(1);
+    var elL = document.getElementById('iblGlitchL');
+    if (elL) {
+      render(elL, left.b, {});
+      setInterval(function() {
+        var f = {}, n = Math.floor(left.r() * 2) + 2;
+        for (var i = 0; i < n; i++) { var p = Math.floor(left.r() * 40); left.b[p] = left.c[Math.floor(left.r() * left.c.length)]; f[p] = true; }
+        render(elL, left.b, f);
+      }, 500);
+    }
+
+    var right = makeNoise(2);
+    var elR = document.getElementById('iblGlitchR');
+    if (elR) {
+      render(elR, right.b, {});
+      setInterval(function() {
+        var f = {}, n = Math.floor(right.r() * 2) + 2;
+        for (var i = 0; i < n; i++) { var p = Math.floor(right.r() * 40); right.b[p] = right.c[Math.floor(right.r() * right.c.length)]; f[p] = true; }
+        render(elR, right.b, f);
+      }, 600);
+    }
+
+    var te = document.getElementById('iblAnnText');
+    if (te) {
+      var v = true;
+      setInterval(function() { v = !v; te.classList.toggle('faded', !v); }, 3000);
+    }
+  }
+})();
+</script>
+
+<script>
+(function() {
+  function applyTheme() {
+    var root = document.querySelector('.ibl-navbar');
+    if (!root) return;
+    var host = window.location.hostname;
+    var path = window.location.pathname;
+    var onMuzzle = /(^|\.)iamlamprey\.com$/.test(host) && /^\/(?:muzzle|muzzle-test)\/?$/.test(path);
+    if (onMuzzle) root.classList.add('ibl-theme-light');
+  }
+  applyTheme();
+
+  function initMenu() {
+    var root = document.querySelector('.ibl-navbar');
+    if (!root) return false;
+    var burger = document.querySelector('.ibl-navbar-masthead-burger');
+    var overlay = document.getElementById('iblNavOverlay');
+    var close = document.querySelector('.ibl-navbar-overlay-close');
+    if (!burger || !overlay || !close) return false;
+
+    function openMenu() {
+      root.classList.add('ibl-open');
+      document.body.classList.add('ibl-menu-open');
+      burger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      root.classList.remove('ibl-open');
+      document.body.classList.remove('ibl-menu-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+
+    burger.addEventListener('click', openMenu);
+    close.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    var links = overlay.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener('click', closeMenu);
+    }
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 760) closeMenu();
+    });
+
+    return true;
+  }
+  function attempt(n) {
+    if (initMenu()) return;
+    if (n > 0) setTimeout(function() { attempt(n - 1); }, 150);
+  }
+  attempt(30);
+})();
+</script>

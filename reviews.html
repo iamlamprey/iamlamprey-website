@@ -1,0 +1,79 @@
+---
+layout: default
+permalink: /reviews/
+title: Rate your purchase
+noindex: true
+review: true
+description: Rate an iamlamprey purchase — ratings come from verified buyers only.
+---
+<div class="ibl-shell">
+  <!-- one centred band, like /contact/: the visitor arrived from a purchase
+       email, so the page has no navigation or product name of its own to offer.
+       There is no product name here because the email already names it, which
+       keeps this page a static file with no lookup behind it. -->
+  <section class="ibl-section ibl-review-section">
+    <h1 class="ibl-section-heading">Rate your purchase</h1>
+    <p class="ibl-section-text">Thanks for buying from iamlamprey. How would you rate it?</p>
+
+    <form class="ibl-review-form" method="post" action="{{ site.reviews_endpoint }}">
+      <!-- the token is the whole gate and only the invite email carries one, so
+           it is written in here by ibl-review.js from the URL: no static page
+           can read its own query string -->
+      <input class="ibl-review-token" type="hidden" name="token" id="iblReviewToken" value="">
+
+      <!-- five radios dressed as the display widget's own row, laid out in the
+           order a keyboard walks them: 1 to 5, so the arrow keys and the reading
+           direction agree. Each input sits immediately before its own label,
+           because that adjacency is what draws the focus ring and the picked
+           star; the lighter stars are filled with `:has()` rather than by
+           reversing the DOM to 5-to-1, which is what keeps the markup order and
+           the visual order the same order. -->
+      <div class="ibl-review-stars" role="radiogroup" aria-label="Rating out of 5">
+        <input class="ibl-review-radio" type="radio" name="rating" id="iblReview1" value="1" aria-label="1 out of 5" required>
+        <label class="ibl-review-star" for="iblReview1">
+          <svg viewBox="0 0 26 24" aria-hidden="true" focusable="false"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </label>
+
+        <input class="ibl-review-radio" type="radio" name="rating" id="iblReview2" value="2" aria-label="2 out of 5">
+        <label class="ibl-review-star" for="iblReview2">
+          <svg viewBox="0 0 26 24" aria-hidden="true" focusable="false"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </label>
+
+        <input class="ibl-review-radio" type="radio" name="rating" id="iblReview3" value="3" aria-label="3 out of 5">
+        <label class="ibl-review-star" for="iblReview3">
+          <svg viewBox="0 0 26 24" aria-hidden="true" focusable="false"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </label>
+
+        <input class="ibl-review-radio" type="radio" name="rating" id="iblReview4" value="4" aria-label="4 out of 5">
+        <label class="ibl-review-star" for="iblReview4">
+          <svg viewBox="0 0 26 24" aria-hidden="true" focusable="false"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </label>
+
+        <input class="ibl-review-radio" type="radio" name="rating" id="iblReview5" value="5" aria-label="5 out of 5">
+        <label class="ibl-review-star" for="iblReview5">
+          <svg viewBox="0 0 26 24" aria-hidden="true" focusable="false"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </label>
+      </div>
+
+      <button class="ibl-review-submit" type="submit">Submit rating</button>
+    </form>
+
+    <!-- the status lines sit outside the form so hiding it — the token is spent,
+         or there was never one to post — cannot hide the answer as well -->
+    <p class="ibl-review-status" id="iblReviewRated" role="status" aria-live="polite" hidden>
+      Rating submitted, thanks!
+    </p>
+
+    <p class="ibl-review-status" id="iblReviewUsed" role="status" aria-live="polite" hidden>
+      This link has already been used - it is one rating per buyer, per product.
+    </p>
+
+    <p class="ibl-review-status ibl-review-status-error" id="iblReviewError" role="alert" aria-live="polite" hidden>
+      That didn't go through - open the link from your purchase email again, or <a href="{{ '/contact/' | relative_url }}">get in touch</a>.
+    </p>
+
+    <p class="ibl-review-status" id="iblReviewOpen" role="status" aria-live="polite" hidden>
+      Ratings are open to verified buyers - the link is in your purchase email.
+    </p>
+  </section>
+</div>

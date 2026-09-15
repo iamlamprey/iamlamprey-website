@@ -1,0 +1,68 @@
+# Deployed by .github/workflows/contact-worker.yml on any push that touches worker/.
+# Nothing secret belongs in this file: it is committed and, once the repo is public,
+# readable. RESEND_API_KEY, RESEND_CONTACTS_KEY, TURNSTILE_SECRET and
+# POLAR_WEBHOOK_SECRET are Worker secrets set in the Cloudflare dashboard
+# (Workers -> the script -> Settings -> Variables).
+#
+# The name is historical — the Worker now answers /contact/, /subscribe, /polar,
+# /reviews and /api/ratings — but it stays as it is: renaming moves the
+# workers.dev host and breaks contact_endpoint in _config.yml for no benefit.
+name = "iamlamprey-contact"
+main = "src/index.js"
+compatibility_date = "2026-09-11"
+
+[vars]
+ALLOWED_ORIGINS = "https://iamlamprey.com,https://www.iamlamprey.com,https://iamlamprey.github.io,http://127.0.0.1:4000,http://localhost:4000"
+TO_EMAIL = "support@iamlamprey.com"
+FROM_EMAIL = "iamlamprey contact form <noreply@iamlamprey.com>"
+# the rating invites keep their own sender, because the contact relay's display
+# name names that form and nothing else
+RATING_FROM_EMAIL = "iamlamprey <noreply@iamlamprey.com>"
+# where the site is published: the Worker fetches config.json from here to resolve
+# a Polar product to a rating key, and the invite email links back to
+# <SITE_URL>/reviews/. Set it to https://iamlamprey.com at the custom-domain
+# cutover, along with url: and baseurl: in _config.yml.
+SITE_URL = "https://iamlamprey.github.io/iamlamprey-website"
+# the Resend topic every new contact is opted into, and the segment to add them
+# to. Ids, not secrets — see the Mailing list section of the README.
+RESEND_TOPIC_ID = "c3c747cc-2ef3-4caf-b2f8-22507c655cae"
+RESEND_SEGMENT_ID = "a2f5870e-8679-468e-9dd2-c7370b0506e3"
+
+# The rating invites' database. Created once, outside the repo, from a repo root
+# (--cwd worker is relative to it):
+#
+#   npx wrangler d1 create iamlamprey-ratings
+#   npx wrangler d1 migrations apply iamlamprey-ratings --cwd worker --remote
+#
+# and the id the first command prints goes below. --remote puts the tables in the
+# deployed database; without it the apply lands in the local dev one.
+[[d1_databases]]
+binding = "DB"
+database_name = "iamlamprey-ratings"
+database_id = "5679ebe9-7c66-4479-9c7a-8a7b71d89615"
+
+# One key: the resolved config.json lookup, so an order resolves its rating key
+# without a fetch per order. Also created once:
+#
+#   npx wrangler kv namespace create CONFIG
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "c38f8d289d614323bd0fde16d4dbf9c9"
+
+# The per-IP ceiling on the two public routes, / and /subscribe. Turnstile stops a
+# script; this bounds one that solves Turnstile and then loops — five requests a
+# minute, answered 429. namespace_id is arbitrary and only groups the limiters, so
+# there is nothing to create in the dashboard.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 5, period = 60 }
+
+# The hourly tick that sends the day-14 invites and the day-21 reminder.
+[triggers]
+crons = ["0 * * * *"]
+
+# refuse to deploy without the secrets the Worker needs, rather than 502ing every
+# signup from a script that is missing one
+[secrets]
+required = ["RESEND_API_KEY", "RESEND_CONTACTS_KEY", "TURNSTILE_SECRET", "POLAR_WEBHOOK_SECRET"]

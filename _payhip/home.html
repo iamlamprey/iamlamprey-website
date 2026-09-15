@@ -1,0 +1,431 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+  html,
+  body,
+  .content-wrapper,
+  .container,
+  .page-width,
+  .main-content,
+  #content,
+  #main,
+  #wrapper,
+  .wrapper,
+  [class*="container"],
+  [class*="wrapper"],
+  [class*="content"],
+  [class*="page"],
+  [class*="collection"],
+  [class*="layout"],
+  [class*="col-"],
+  [class*="row"],
+  [class*="section"],
+  article,
+  main,
+  section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .ibl-home,
+  .ibl-home * {
+    box-sizing: border-box;
+  }
+
+  .ibl-home {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    overflow: hidden;
+  }
+
+  .ibl-home a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-home a:hover,
+  .ibl-home a:focus,
+  .ibl-home a *,
+  .ibl-home a:hover *,
+  .ibl-home a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-home img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-home-shell {
+    width: min(760px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  /* --- shared button base --- */
+  .ibl-home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+  }
+
+  .ibl-home-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* --- Muzzle (light, JetBrains Mono) --- */
+  .ibl-home-muzzle {
+    --hm-midgrey: #CCCCC8;
+    --hm-softgrey: #5C5C58;
+    --hm-text: #1A1A1A;
+    --hm-black: #000;
+    --hm-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: #FFFFFF;
+    color: var(--hm-text);
+    font-family: var(--hm-mono) !important;
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-muzzle .ibl-home-shot {
+    width: min(620px, 100%);
+    margin: 0 auto;
+    outline: 1px solid var(--hm-midgrey);
+    outline-offset: -1px;
+    border-radius: 0;
+  }
+
+  .ibl-home-muzzle .ibl-home-name {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hm-text) !important;
+    margin: 28px 0 8px;
+  }
+
+  .ibl-home-muzzle .ibl-home-tagline {
+    color: var(--hm-softgrey);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  .ibl-home-muzzle .ibl-home-btn {
+    background: var(--hm-black);
+    color: #fff !important;
+  }
+
+  .ibl-home-muzzle a.ibl-home-btn,
+  .ibl-home-muzzle a.ibl-home-btn:focus {
+    color: #fff !important;
+  }
+
+  .ibl-home-muzzle .ibl-home-btn:hover {
+    background: #2E2E2C;
+  }
+
+  /* --- Altar (dark, Segoe UI) --- */
+  .ibl-home-altar {
+    --ha-bg: #090909;
+    --ha-text: #e8e8e8;
+    --ha-muted: #7d7d7d;
+    --ha-line: #242424;
+    --ha-accent: #f2f2f2;
+    --ha-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: var(--ha-bg);
+    color: var(--ha-text);
+    font-family: var(--ha-font);
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-altar .ibl-home-shot {
+    width: min(720px, 100%);
+    margin: 0 auto;
+    border-radius: 10px;
+    border: 1px solid var(--ha-line);
+  }
+
+  .ibl-home-altar .ibl-home-name {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ha-text) !important;
+    margin: 28px 0 8px;
+  }
+
+  .ibl-home-altar .ibl-home-tagline {
+    color: var(--ha-muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  .ibl-home-altar .ibl-home-btn {
+    background: var(--ha-accent);
+    color: #070707 !important;
+    border: 1px solid var(--ha-accent);
+    border-radius: 8px;
+  }
+
+  .ibl-home-altar a.ibl-home-btn,
+  .ibl-home-altar a.ibl-home-btn:focus {
+    color: #111 !important;
+  }
+
+  .ibl-home-altar .ibl-home-btn:hover {
+    background: #d8d8d8;
+    border-color: #d8d8d8;
+  }
+
+  /* --- Instruments (darker grey + uniform square grid) --- */
+  .ibl-home-instruments {
+    --hi-bg: #222222;
+    --hi-text: #f2f2f2;
+    --hi-muted: #b8b8b8;
+    --hi-accent: #f2f2f2;
+    --hi-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: var(--hi-bg);
+    color: var(--hi-text);
+    font-family: var(--hi-font);
+    text-align: center;
+    padding: clamp(40px, 8vw, 72px) 0 clamp(48px, 9vw, 80px);
+  }
+
+  .ibl-home-instr-title {
+    font-size: clamp(22px, 3.5vw, 30px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hi-text);
+    margin: 0 0 12px;
+  }
+
+  .ibl-home-instr-desc {
+    color: var(--hi-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto 28px;
+  }
+
+  .ibl-home-instr-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 36px;
+    width: min(920px, calc(100% - 32px));
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .ibl-home-instr-item {
+    display: block;
+    transition: transform 200ms ease;
+  }
+
+  .ibl-home-instr-item:hover {
+    transform: translateY(-3px);
+  }
+
+  .ibl-home-instr-art {
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .ibl-home-instr-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ibl-home-instr-item-name {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--hi-text);
+    text-align: center;
+  }
+
+  .ibl-home-instruments .ibl-home-btn {
+    background: var(--hi-accent);
+    color: #070707 !important;
+    border: 1px solid var(--hi-accent);
+    border-radius: 8px;
+  }
+
+  .ibl-home-instruments a.ibl-home-btn,
+  .ibl-home-instruments a.ibl-home-btn:focus {
+    color: #111 !important;
+  }
+
+  .ibl-home-instruments .ibl-home-btn:hover {
+    background: #d8d8d8;
+    border-color: #d8d8d8;
+  }
+
+  @media screen and (max-width: 640px) {
+    .ibl-home-instr-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 12px;
+      width: calc(100% - 28px);
+      padding: 4px 0 12px;
+      margin: 0 auto 28px;
+      scrollbar-width: none;
+    }
+
+    .ibl-home-instr-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ibl-home-instr-item {
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+      width: min(160px, 42vw);
+    }
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 480px) {
+    .ibl-home-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="ibl-home">
+  <section class="ibl-home-muzzle" aria-label="Muzzle">
+    <div class="ibl-home-shell">
+      <img class="ibl-home-shot" src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1k0u1bcn013jc1c929g23a1gp7c.png" alt="Muzzle de-esser interface (light theme)">
+      <h2 class="ibl-home-name">Muzzle</h2>
+      <p class="ibl-home-tagline">Stem the screaming</p>
+      <a class="ibl-home-btn" href="https://iamlamprey.com/muzzle">Learn More</a>
+    </div>
+  </section>
+
+  <section class="ibl-home-altar" aria-label="Altar">
+    <div class="ibl-home-shell">
+      <img class="ibl-home-shot" src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1jqvtf7q0ji91t7oi6f119t1ek1c.png" alt="Altar interface screenshot">
+      <h2 class="ibl-home-name">Altar</h2>
+      <p class="ibl-home-tagline">A gift from The Lake</p>
+      <a class="ibl-home-btn" href="https://iamlamprey.com/altar">Learn More</a>
+    </div>
+  </section>
+
+  <section class="ibl-home-instruments" aria-label="Instruments">
+    <div class="ibl-home-shell">
+      <h2 class="ibl-home-instr-title">Instruments</h2>
+      <p class="ibl-home-instr-desc">A few from the catalogue.</p>
+    </div>
+    <ul class="ibl-home-instr-grid">
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/achromic">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvadfc2l9dn160qhof1vb218pe10.jpg" alt="Achromic - Aggressive Rhythm Guitars artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Achromic</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/bloom">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvahqqis1hu354a14vub1s13kl10.jpg" alt="Bloom - Lush Synth Arp artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Bloom</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/cloudburst">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvt6i0g9c576gqpkucl04ea11.jpg" alt="Cloudburst - Playable Guitar Harmonics artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Cloudburst</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/eidolon">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hval2l6k1fb61dt8rgrfcd4qm10.jpg" alt="Eidolon - Haunted Piano artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Eidolon</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/oracle-2">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvblbagk1rm04baf2q10q18bu10.jpg" alt="Oracle Volume 2 - Ambient Guitars artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Oracle 2</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/prismatic">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvh3pcrmapuv0d1jjn1eck13fnr.jpg" alt="Prismatic - Shining Keys artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Prismatic</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/blackout-2">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvahhmfu1l5i19qm1m5al5i12fu10.png" alt="Blackout Volume 2 - Lightweight Pulses artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Blackout 2</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/pdq-bass">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvblq8b910fhkshuup1pajm1s10.jpg" alt="PDQ Bass - Aggressive Bass Guitar artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">PDQ Bass</span>
+        </a>
+      </li>
+      <li>
+        <a class="ibl-home-instr-item" href="https://iamlamprey.com/b/tethys">
+          <span class="ibl-home-instr-art">
+            <img src="https://payhip.com/cdn-cgi/image/format=auto,width=750/https://pe56d.s3.amazonaws.com/o_1hvbnb0ma1bl913kc6endh71log10.jpg" alt="Tethys - Expressive Synth Keys artwork" loading="lazy">
+          </span>
+          <span class="ibl-home-instr-item-name">Tethys</span>
+        </a>
+      </li>
+    </ul>
+    <div class="ibl-home-shell">
+      <a class="ibl-home-btn" href="https://iamlamprey.com/instruments">Browse Instruments</a>
+    </div>
+  </section>
+</div>

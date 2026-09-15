@@ -1,0 +1,397 @@
+<style>
+.ibl-songbird, .ibl-songbird * { box-sizing: border-box; }
+
+  .ibl-songbird {
+    --ibl-bg: #090909;
+    --ibl-surface: #111111;
+    --ibl-surface-2: #171717;
+    --ibl-line: #242424;
+    --ibl-line-soft: #1a1a1a;
+    --ibl-text: #e8e8e8;
+    --ibl-muted: #999999;
+    --ibl-dim: #4a4a4a;
+    --ibl-accent: #f2f2f2;
+    --ibl-accent-soft: rgba(255, 255, 255, 0.08);
+    --ibl-blue: #7ec8ff;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-songbird a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-songbird a:hover,
+  .ibl-songbird a:focus,
+  .ibl-songbird a *,
+  .ibl-songbird a:hover *,
+  .ibl-songbird a:focus * {
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-songbird img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .ibl-songbird-shell {
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+
+  .ibl-songbird-section {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-songbird-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .ibl-songbird-section-heading {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0 0 18px;
+  }
+
+  .ibl-songbird-section-text {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 700px;
+  }
+
+  .ibl-songbird-section-text strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-songbird-section-text em {
+    color: var(--ibl-text);
+    font-style: italic;
+  }
+
+  .ibl-songbird-section-text + .ibl-songbird-section-text {
+    margin-top: 14px;
+  }
+
+  /* --- tabs --- */
+  .ibl-songbird-tabs {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--ibl-line-soft);
+  }
+
+  .ibl-songbird-tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--ibl-line);
+    margin-bottom: 28px;
+  }
+
+  .ibl-songbird-tab-btn {
+    padding: 14px 28px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ibl-muted);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--ibl-font);
+    cursor: pointer;
+    transition: color 180ms ease, border-color 180ms ease;
+    margin-bottom: -1px;
+  }
+
+  .ibl-songbird-tab-btn:hover {
+    color: var(--ibl-text);
+  }
+
+  .ibl-songbird-tab-btn.active {
+    color: var(--ibl-text);
+    border-bottom-color: var(--ibl-text);
+  }
+
+  .ibl-songbird-tab-panel {
+    display: none;
+  }
+
+  .ibl-songbird-tab-panel.active {
+    display: block;
+  }
+
+  .ibl-songbird-tab-panel h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  .ibl-songbird-tab-panel p {
+    color: var(--ibl-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 0 16px;
+    max-width: 650px;
+  }
+
+  .ibl-songbird-tab-panel p strong {
+    color: var(--ibl-text);
+  }
+
+  .ibl-songbird-features {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 20px;
+  }
+
+  .ibl-songbird-features li {
+    padding: 8px 0 8px 18px;
+    color: var(--ibl-muted);
+    font-size: 15px;
+    position: relative;
+  }
+
+  .ibl-songbird-features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: var(--ibl-dim);
+  }
+
+  .ibl-songbird-tab-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 24px;
+    border: 1px solid var(--ibl-accent);
+    border-radius: 6px;
+    background: var(--ibl-accent);
+    color: #070707 !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    transition: transform 180ms ease, background 180ms ease;
+  }
+
+  .ibl-songbird a.ibl-songbird-tab-link,
+  .ibl-songbird a.ibl-songbird-tab-link:hover,
+  .ibl-songbird a.ibl-songbird-tab-link:focus {
+    color: #111111 !important;
+  }
+
+  .ibl-songbird-tab-link:hover {
+    transform: translateY(-1px);
+    background: #d8d8d8;
+  }
+
+  /* --- audio --- */
+  .ibl-songbird-audio {
+    padding: 48px 0;
+  }
+
+  .ibl-songbird-audio-wrap {
+    max-width: 100%;
+    margin: 24px auto 0;
+  }
+
+  .ibl-songbird-audio-wrap iframe {
+    width: 100%;
+    height: 450px;
+    border: 0;
+    border-radius: 8px;
+  }
+  
+  /* YouTube-specific: maintain 16:9 aspect ratio */
+  .ibl-songbird-audio-wrap-youtube {
+    max-width: 100%;
+    margin: 24px auto 0;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+  }
+
+  .ibl-songbird-audio-wrap-youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 760px) {
+    .ibl-songbird-audio-wrap iframe {
+      height: 350px;
+    }
+
+    .ibl-songbird-features {
+      grid-template-columns: 1fr;
+    }
+
+  }
+  /* --- rhapsody tutorial videos --- */
+  .ibl-rhapsody-tutorials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .ibl-rhapsody-tutorial {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+    border: 1px solid var(--ibl-line);
+  }
+
+  .ibl-rhapsody-tutorial iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    .ibl-rhapsody-tutorials {
+      grid-template-columns: 1fr;
+    }
+  }
+
+</style>
+
+<div class="ibl-songbird">
+    <div class="ibl-songbird-shell">
+    <!-- description: Toy Kalimba --><!-- description: Toy Kalimba -->
+    <div class="ibl-songbird-section">
+      <h2 class="ibl-songbird-section-heading">Toy Kalimba</h2>
+      <p class="ibl-songbird-section-text">Songbird is a deeply sampled toy Kalimba I bought a few months ago. It has multiple velocity layers and four round-robins for a simple, yet expressive sound.</p>
+    </div>
+
+    <!-- tabs: Rhapsody / Kontakt -->
+    <div class="ibl-songbird-tabs">
+      <div class="ibl-songbird-tab-bar">
+        <button class="ibl-songbird-tab-btn active" data-tab="rhapsody">Rhapsody</button>
+        <button class="ibl-songbird-tab-btn" data-tab="kontakt">Kontakt</button>
+      </div>
+
+      <!-- Rhapsody panel (default open) -->
+      <div class="ibl-songbird-tab-panel active" id="tab-rhapsody">
+        <p>
+          <strong>Rhapsody</strong> is a free and open-source VST, AU &amp; Standalone player by <a href="https://librewave.com" target="_blank" rel="noopener" style="color: var(--ibl-text) !important; text-decoration: underline !important;">Libre Wave</a>.
+        </p>
+        <p>
+          Gone are the days of needing $400 software to open virtual instruments. Rhapsody is fast, powerful and most importantly&hellip; <strong>it's free.</strong>
+        </p>
+
+        <ul class="ibl-songbird-features">
+          <li>G2-E5 Keyrange</li>
+          <li>Multi-Velocity Samples</li>
+          <li>4 Round Robins</li>
+          <li>Built-in FX Suite</li>
+          <li>Free Player Plugin by Libre Wave</li>
+          <li>VST, AU & Standalone Support</li>
+          <li>17MB download size</li>
+          <li>17MB uncompressed</li>
+        </ul>
+
+                <div class="ibl-rhapsody-tutorials">
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/dM-e2spiqwE" title="Install Rhapsody &amp; Add Libraries" allowfullscreen loading="lazy"></iframe>
+          </div>
+
+          <div class="ibl-rhapsody-tutorial">
+            <iframe src="https://www.youtube-nocookie.com/embed/VAHXQSWKKIY" title="Library Walkthrough" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <a class="ibl-songbird-tab-link" href="https://codeberg.org/LibreWave/Rhapsody/releases/tag/2.5.2" target="_blank" rel="noopener">Download Rhapsody</a>
+      </div>
+
+      <!-- Kontakt panel -->
+      <div class="ibl-songbird-tab-panel" id="tab-kontakt">
+        <p>
+          <strong>Kontakt 5.8</strong> or higher (full version) required. This library will <strong>not</strong> work in the free Kontakt Player.
+        </p>
+
+        <ul class="ibl-songbird-features">
+          <li>G2-E5 Keyrange</li>
+          <li>Multi-Velocity Samples</li>
+          <li>4 Round Robins</li>
+          <li>Built-in FX Suite</li>
+          <li>Kontakt 5.8 or higher (full)</li>
+          <li>All major DAWs supported</li>
+          <li>8GB RAM minimum</li>
+          <li>36MB download size</li>
+          <li>36MB uncompressed</li>
+          <li>Does NOT work in the Free Kontakt Player.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- audio -->
+    <div class="ibl-songbird-audio">
+      <h2 class="ibl-songbird-section-heading">Listen to Songbird</h2>
+      <div class="ibl-songbird-audio-wrap-youtube">
+        <iframe src="https://www.youtube-nocookie.com/embed/7Tukq2myLno" title="Songbird - Toy Kalimba" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- tabs ---
+  var tabs = document.querySelectorAll('.ibl-songbird-tab-btn');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      var allBtns = document.querySelectorAll('.ibl-songbird-tab-btn');
+      var allPanels = document.querySelectorAll('.ibl-songbird-tab-panel');
+      for (var j = 0; j < allBtns.length; j++) allBtns[j].classList.remove('active');
+      for (var k = 0; k < allPanels.length; k++) allPanels[k].classList.remove('active');
+      this.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  }
+
+})();
+</script>

@@ -1,0 +1,301 @@
+<style>  
+  html, body, .content-wrapper, .container, .page-width,
+  .main-content, #content, #main, #wrapper, .wrapper,
+  [class*="container"], [class*="wrapper"], [class*="content"],
+  [class*="page"], [class*="collection"], [class*="layout"],
+  [class*="col-"], [class*="row"], [class*="section"],
+  article, main, section {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html, body { overflow-x: hidden !important; }
+
+  .ibl-music, .ibl-music * { box-sizing: border-box; }
+
+  .ibl-music {
+    --ibl-bg: #090909;
+    --ibl-surface: #0f0f0f;
+    --ibl-line: #1a1a1a;
+    --ibl-text: #e0e0e0;
+    --ibl-muted: #6b6b6b;
+    --ibl-dim: #3a3a3a;
+    --ibl-blue: #7ec8ff;
+    --ibl-glitch-red: #8b1a1a;
+    --ibl-glitch-cyan: #1a6b6b;
+    --ibl-font: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: -1px;
+    overflow: hidden;
+    background: var(--ibl-bg);
+    color: var(--ibl-text);
+    font-family: var(--ibl-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ibl-music a {
+    color: inherit !important;
+    text-decoration: none !important;
+    background-image: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ibl-music-shell {
+    width: min(820px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 96px) 0;
+    text-align: center;
+  }
+
+  /* --- terminal / corruption block --- */
+  .ibl-music-corruption {
+    position: relative;
+    background: var(--ibl-surface);
+    border: 1px solid var(--ibl-line);
+    border-radius: 10px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    min-height: 320px;
+    text-align: left;
+    overflow: hidden;
+  }
+
+  /* crt scan lines */
+  .ibl-music-corruption::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .ibl-music-screen {
+    font-family: var(--ibl-mono);
+    font-size: 14px;
+    line-height: 1.65;
+    color: #c8c8c8;
+    word-break: break-all;
+    white-space: pre-wrap;
+    min-height: 280px;
+    position: relative;
+    z-index: 1;
+    transition: color 0.15s ease;
+  }
+
+  /* glitch animation for corrupted chars */
+  @keyframes glitch-text {
+    0% { text-shadow: 0 0 0 transparent; }
+    10% { text-shadow: -1px 0 var(--ibl-glitch-red), 1px 0 var(--ibl-glitch-cyan); }
+    20% { text-shadow: 0 0 0 transparent; }
+    30% { text-shadow: 2px 0 var(--ibl-glitch-cyan), -2px 0 var(--ibl-glitch-red); }
+    40% { text-shadow: 0 0 0 transparent; }
+    100% { text-shadow: 0 0 0 transparent; }
+  }
+
+  .ibl-music-screen.glitch {
+    animation: glitch-text 0.15s ease 3;
+  }
+
+  /* fragment highlight */
+  .ibl-music-fragment {
+    color: var(--ibl-blue);
+  }
+
+  /* --- footer / status --- */
+  .ibl-music-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #888;
+    font-size: 11px;
+    font-family: var(--ibl-mono);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .ibl-music-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s ease;
+  }
+
+  /* --- responsive --- */
+  @media screen and (max-width: 600px) {
+    .ibl-music-corruption {
+      padding: 20px 14px;
+      min-height: 260px;
+    }
+    .ibl-music-screen {
+      font-size: 12px;
+    }
+  }
+</style>
+
+<div class="ibl-music">
+  <div class="ibl-music-shell">
+    <div class="ibl-music-corruption">
+      <div class="ibl-music-screen" id="iblMusicScreen"></div>
+    </div>
+
+    <div class="ibl-music-status">
+      <span class="ibl-music-dot" id="iblMusicDot"></span>
+      <span id="iblMusicStatus">listening for signal</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var screen = document.getElementById('iblMusicScreen');
+  var status = document.getElementById('iblMusicStatus');
+  var dot = document.getElementById('iblMusicDot');
+  if (!screen) return;
+
+  var BUF_SIZE = 1200;
+
+  var fragments = [
+    "do I watch alone?",
+    "i will make you believe",
+    "best and better heads",
+    "deep in the drowning mud",
+    "stare into the sun",
+    "the gallows? or the gun?",
+    "we can do no wrong",
+    "follow me underwater",
+    "dead and dying",
+    "in the gardens again",
+    "paint a mess",
+    "my frame, my bones",
+    "pull the thread",
+    "tired of it all",
+    "awake again",
+    "red herrings relay",
+    "through the dissonance",
+    "the forest thrives",
+    "let me out",
+    "are you hollow?",
+    "you are irrelevant",
+    "break me down",
+    "i am your consequence",
+    "hiding in the dark",
+    "fear is your enemy",
+    "i feel you fading",
+    "my potential is wasted",
+    "the twisted neurotic",
+    "a wall of minds"
+  ];
+
+  var noiseChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`';
+  function randNoise() { return noiseChars[Math.floor(Math.random() * noiseChars.length)]; }
+
+  var buf = [];
+
+  function initBuf() {
+    buf = [];
+    for (var i = 0; i < BUF_SIZE; i++) buf.push(randNoise());
+  }
+
+  function placeFragment(text) {
+    // clear old fragment markers
+    for (var i = 0; i < buf.length; i++) {
+      if (typeof buf[i] === 'object') buf[i] = randNoise();
+    }
+    var chars = text.split('');
+    var start = Math.floor(Math.random() * (BUF_SIZE - chars.length - 5)) + 2;
+    for (var j = 0; j < chars.length; j++) {
+      buf[start + j] = { c: chars[j] };
+    }
+  }
+
+  function corruptBuf(steps) {
+    for (var s = 0; s < steps; s++) {
+      for (var i = 0; i < buf.length; i++) {
+        if (typeof buf[i] === 'object') {
+          if (Math.random() < 0.35) buf[i] = randNoise();
+        } else {
+          if (Math.random() < 0.12) buf[i] = randNoise();
+        }
+      }
+    }
+  }
+
+  function render() {
+    var html = '';
+    for (var i = 0; i < buf.length; i++) {
+      if (typeof buf[i] === 'object') {
+        html += '<span class="ibl-music-fragment">' + esc(buf[i].c) + '</span>';
+      } else {
+        html += esc(String(buf[i]));
+      }
+    }
+    screen.innerHTML = html;
+    screen.classList.remove('glitch');
+    void screen.offsetWidth;
+    screen.classList.add('glitch');
+    setTimeout(function() { screen.classList.remove('glitch'); }, 200);
+  }
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // --- cycle ---
+  initBuf();
+  render();
+  status.textContent = 'listening for signal';
+
+  var fragIndex = 0;
+  var lastIndex = -1;
+  var fragShowing = false;
+
+  setInterval(function() {
+    if (!fragShowing) {
+      // pick a random fragment, never the same one twice in a row
+      do {
+        fragIndex = Math.floor(Math.random() * fragments.length);
+      } while (fragIndex === lastIndex);
+      lastIndex = fragIndex;
+      placeFragment(fragments[fragIndex]);
+      fragShowing = true;
+      render();
+      status.textContent = 'fragment recovered';
+      if (dot) dot.style.background = '#7ec8ff';
+      setTimeout(function() { status.textContent = 'decoding...'; }, 300);
+    } else {
+      corruptBuf(3);
+      fragShowing = false;
+      render();
+      status.textContent = 'signal lost, rescanning';
+      if (dot) dot.style.background = '#555';
+      setTimeout(function() {
+        status.textContent = 'listening for signal';
+        if (dot) dot.style.background = '#ccc';
+      }, 300);
+    }
+  }, 900);
+})();
+</script>

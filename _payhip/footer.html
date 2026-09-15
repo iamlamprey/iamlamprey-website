@@ -1,0 +1,161 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-10934629039"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-10934629039');
+</script>
+
+<!-- Event snippet for Website sale conversion page -->
+<script>
+  gtag('event', 'conversion', {
+      'send_to': 'AW-10934629039/Yi2zCNb2gMcDEK_lhN4o',
+      'transaction_id': ''
+  });
+</script>
+
+<style>
+  .ibl-announce-bar {
+    --ibl-bg: #090909;
+    --ibl-glitch-red: #8b1a1a;
+    --ibl-glitch-cyan: #1a6b6b;
+    --ibl-mono: "Cascadia Code", "Fira Code", "JetBrains Mono", "Consolas", monospace;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--ibl-bg);
+    border-bottom: 1px solid #1a1a1a;
+    font-family: var(--ibl-mono);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  .ibl-announce-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(1100px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 12px 0;
+    gap: 16px;
+  }
+
+  .ibl-announce-glitch {
+    font-size: 11px;
+    color: #3a3a3a;
+    white-space: nowrap;
+    overflow: hidden;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .ibl-announce-glitch span.glitched {
+    animation: ibl-glitch-pop 0.15s ease 2;
+  }
+
+  @keyframes ibl-glitch-pop {
+    0% { text-shadow: 0 0 0 transparent; }
+    25% { text-shadow: -1px 0 #8b1a1a, 1px 0 #1a6b6b; }
+    50% { text-shadow: 0 0 0 transparent; }
+    75% { text-shadow: 1px 0 #1a6b6b, -1px 0 #8b1a1a; }
+    100% { text-shadow: 0 0 0 transparent; }
+  }
+
+  .ibl-announce-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7ec8ff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .ibl-announce-text.faded { opacity: 0.15; }
+
+  @media screen and (max-width: 700px) {
+    .ibl-announce-glitch { display: none; }
+    .ibl-announce-text { font-size: 11px; }
+  }
+
+  /* hide Payhip's original bar (keep dropzone visible so layout works) */
+  .announcement-bar {
+    display: none !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+  }
+</style>
+
+<script>
+(function() {
+  var origText = document.querySelector('.announcement-bar-text');
+  if (!origText) return;
+
+  var bar = document.createElement('div');
+  bar.className = 'ibl-announce-bar';
+  bar.innerHTML =
+    '<div class="ibl-announce-bar-inner">' +
+      '<div class="ibl-announce-glitch" id="iblGlitchL"></div>' +
+      '<div class="ibl-announce-text" id="iblAnnText">' + origText.textContent.trim() + '</div>' +
+      '<div class="ibl-announce-glitch" id="iblGlitchR"></div>' +
+    '</div>';
+
+  // insert our bar into the header's announcement dropzone (so layout adjusts properly)
+  var dropzone = document.querySelector('.announcement-bar-dropzone');
+  if (dropzone) {
+    dropzone.insertBefore(bar, dropzone.firstChild);
+  } else {
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
+  function makeNoise(seed) {
+    var s = Date.now() + seed + Math.random() * 99999;
+    function r() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }
+    var c = '01!@#$%^&*()_+-=[]{}|;:,.<>/?';
+    var b = [];
+    for (var i = 0; i < 40; i++) b.push(c[Math.floor(r() * c.length)]);
+    return { b: b, r: r, c: c };
+  }
+
+  function render(el, buf, flash) {
+    el.innerHTML = buf.map(function(c, i) {
+      return flash[i] ? '<span class="glitched">' + c + '</span>' : '<span>' + c + '</span>';
+    }).join('');
+  }
+
+  var left = makeNoise(1);
+  var elL = document.getElementById('iblGlitchL');
+  if (elL) {
+    render(elL, left.b, {});
+    setInterval(function() {
+      var f = {}, n = Math.floor(left.r() * 2) + 2;
+      for (var i = 0; i < n; i++) { var p = Math.floor(left.r() * 40); left.b[p] = left.c[Math.floor(left.r() * left.c.length)]; f[p] = true; }
+      render(elL, left.b, f);
+    }, 500);
+  }
+
+  var right = makeNoise(2);
+  var elR = document.getElementById('iblGlitchR');
+  if (elR) {
+    render(elR, right.b, {});
+    setInterval(function() {
+      var f = {}, n = Math.floor(right.r() * 2) + 2;
+      for (var i = 0; i < n; i++) { var p = Math.floor(right.r() * 40); right.b[p] = right.c[Math.floor(right.r() * right.c.length)]; f[p] = true; }
+      render(elR, right.b, f);
+    }, 600);
+  }
+
+  var te = document.getElementById('iblAnnText');
+  if (te) {
+    var v = true;
+    setInterval(function() { v = !v; te.classList.toggle('faded', !v); }, 3000);
+  }
+})();
+</script>
