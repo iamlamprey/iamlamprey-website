@@ -5,11 +5,12 @@
  *
  * config.json is the single source of truth for every commerce value on the
  * site: product name, price, sale price, countdown and Polar checkout link.
- * Ratings are not commerce data, so they are not here — they live in
- * _data/ratings.yml and are rendered at build time. One fetch per page load,
- * memoised, so the announcement bar, the product block and any catalogue grid
- * share the same request — and a sale created or changed by the polar-discount
- * Action shows up on the next page load with no site rebuild.
+ * Ratings are not commerce data, so they are not here — the hand-pooled
+ * baseline lives in _data/ratings.yml, rendered at build time, and the live
+ * figures are fetched by ibl-site.js. This file's own request is one per page
+ * load, memoised, so the announcement bar, the product block and any catalogue
+ * grid share it — and a sale created or changed by the polar-discount Action
+ * shows up on the next page load with no site rebuild.
  */
 (function (root) {
   'use strict';

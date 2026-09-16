@@ -14,6 +14,11 @@ newsletter_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/subscribe
 # is the only place a purchase email lands, and the token that email carried is
 # what the form submits.
 reviews_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/reviews
+# where the product page reads the live figures from — the same Worker, on its
+# /api/ratings route. The build renders the hand-pooled baseline; the page fetches
+# this and blends the two in the browser, so a figure needs no build step and
+# nothing committed. The route answers a wildcard CORS header for that reason.
+ratings_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/api/ratings
 exclude:
   - README.md
   - PROMPT.md

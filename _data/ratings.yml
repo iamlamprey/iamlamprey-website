@@ -1,20 +1,22 @@
 # Per-product ratings, pooled by hand from the marketplaces each product is/was
 # sold on. Keyed by the page's `slug:` front matter.
 #
-# This is the *baseline*: _data/ratings-live.yml — generated hourly from this
-# site's own verified-purchase ratings — is added to it rather than replacing it.
-# The two are pooled in one place: _includes/product-rating.html sums the two
-# counts and weights the average by them, so one live rating is enough. A product
-# with no entry here is not barred from a badge; it simply contributes nothing to
-# the pool. Every rating counts, including the low ones, and a badge is shown only
-# at an average of 4.0 or more.
+# This is the *baseline*: the build renders it, and the product page fetches this
+# site's own verified-purchase ratings from the Worker's /api/ratings and blends
+# the two in the browser. The counts are summed and the average weighted by them,
+# so one live rating is enough. A product with no entry here is not barred from a
+# badge; it simply contributes nothing to the pool. Every rating counts, including
+# the low ones, and a badge is shown only at a blended average of 4.0 or more.
 #
-# A product with no entry here (or in the live file) renders NO stars at all, and
-# that is deliberate: a page with no reviews of its own shows none rather than
-# borrowing a store-wide figure, which reads as a rating the product has not
-# earned. The sample packs have no entry for exactly that reason; Altar and Muzzle
-# carry a `slug:` of their own now and no entry here either, so their figure is
-# whatever their own ratings make of it, starting with the first one.
+# A product with no entry here renders NO stars on the server and the element
+# starts hidden, and that is deliberate: a page with no reviews of its own shows
+# none rather than borrowing a store-wide figure, which reads as a rating the
+# product has not earned. A live figure can still reveal a badge at runtime —
+# that is how a product's first ratings appear — but with javascript off the
+# element stays hidden. The sample packs have no entry for exactly that reason;
+# Altar and Muzzle carry a `slug:` of their own now and no entry here either, so
+# their figure is whatever their own ratings make of it, starting with the first
+# one.
 product:
   achromic: { average: 4.4, count: 119 }
   aetheric: { average: 4.2, count: 52 }

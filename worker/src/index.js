@@ -16,8 +16,8 @@
  *                checkbox was ticked, mint the single-use rating invite from the
  *                order itself, and retire a rating when that order is refunded.
  *   /reviews     the form behind /reviews/: one rating, for one invite token.
- *   /api/ratings the live aggregates, read hourly at build time by
- *                .github/workflows/ratings.yml into _data/ratings-live.yml.
+ *   /api/ratings the live aggregates, read by the product page at load, and
+ *                blended in the browser with the baseline.
  *
  * The cron in wrangler.toml's [triggers] sends the invites: 14 days after the
  * order, plus one reminder seven days later, so a rating posted thirty seconds
@@ -64,8 +64,8 @@ const REMINDER_DELAY = 7 * 86400;
 const EMAIL_BATCH = 25;
 
 // the aggregate is published at four decimal places: the star fill uses that
-// value while the caption rounds it to one, and a fixed precision keeps
-// _data/ratings-live.yml from churning on floating point noise
+// value while the caption rounds it to one, and this is the precision the
+// page's script writes into data-ibl-average
 const RATING_PRECISION = 10000;
 const RATINGS_CACHE = 'public, max-age=300, s-maxage=600';
 
@@ -351,9 +351,15 @@ async function handleReview(request, env) {
   return reviewAnswer(request, allowOrigin, token, state);
 }
 
-// GET /api/ratings — every slug with at least one live rating, which the site
-// mirrors into _data/ratings-live.yml at build time. A retired rating (a refund)
-// stops counting from here rather than being deleted.
+// GET /api/ratings — every slug with at least one live rating, which the product
+// page fetches and blends with the baseline in the browser. A retired rating (a
+// refund) stops counting from here rather than being deleted.
+//
+// The figure is public and read-only, so the CORS answer is a wildcard: no
+// Vary: Origin, and the edge cache keeps serving one shared copy instead of one
+// per origin. There is deliberately no RATE_LIMITER here — five requests a
+// minute would trip a visitor browsing a few product pages — which is worth
+// revisiting if the endpoint is ever hammered.
 async function handleRatings(request, env) {
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     return new Response('Method not allowed', { status: 405 });
@@ -365,7 +371,7 @@ async function handleRatings(request, env) {
     rows = result.results || [];
   } catch (error) {
     console.error(`ratings: aggregate read failed: ${error}`);
-    return new Response('Ratings unavailable', { status: 503, headers: { 'Cache-Control': 'no-store' } });
+    return new Response('Ratings unavailable', { status: 503, headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' } });
   }
 
   const product = {};
@@ -378,7 +384,7 @@ async function handleRatings(request, env) {
 
   return new Response(JSON.stringify({ generated_at: generatedAt, product }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': RATINGS_CACHE },
+    headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': RATINGS_CACHE, 'Content-Type': 'application/json; charset=utf-8' },
   });
 }
 

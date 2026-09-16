@@ -721,6 +721,13 @@ body.ibl-menu-open {
   margin: 6px 0 4px;
 }
 
+/* `hidden` has to beat the flex row above: a product with no baseline renders
+   the element with no value and no caption, and it must not leave an empty slot
+   where a rating would be */
+.ibl-rating[hidden] {
+  display: none;
+}
+
 .ibl-rating-stars {
   position: relative;
   display: inline-block;

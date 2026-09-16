@@ -1,12 +1,12 @@
 /*!
  * iamLamprey site chrome — ibl-site.js
  *
- * Announcement bar, the per-product rating's star fill, customer-portal link
- * and the mobile menu. Loaded on every page; the announcement is only revealed
- * when config.json carries a usable value, so an absent or emptied entry never
- * leaves an empty strip. The rating itself is server-rendered from
- * _data/ratings.yml, so only the fill layer's width needs the DOM: if this file
- * never runs, the value, the caption and five hollow stars are still there.
+ * Announcement bar, the per-product rating's baseline and its live figures,
+ * customer-portal link and the mobile menu. Loaded on every page; the
+ * announcement is only revealed when config.json carries a usable value, so an
+ * absent or emptied entry never leaves an empty strip. The rating's baseline is
+ * server-rendered from _data/ratings.yml; if this file never runs, that figure,
+ * the caption and five hollow stars are still there.
  */
 (function () {
   'use strict';
@@ -93,9 +93,9 @@
     return STAR_AREA[low] + (STAR_AREA[high] - STAR_AREA[low]) * (position - low);
   }
 
-  /* the per-product rating is server-rendered from _data/ratings.yml, so all
-     that is left for the DOM is clipping the fill layer to the average the
-     wrapper carries: the value, the caption and the outline are markup */
+  /* the fill layer is clipped to the average the wrapper carries, which is the
+     build's baseline until liveRating writes the blended figure into it: the
+     value, the caption and the outline are markup either way */
   function fillRating() {
     var root = document.getElementById('iblRating');
     if (!root) return;
@@ -111,6 +111,76 @@
     /* the row is 128 units of five 26-unit stars, so the fill runs past the
        last star's ink and is capped at the whole row */
     if (fill) fill.style.width = Math.min(edge / 128 * 100, 100) + '%';
+  }
+
+  /* the live half of the rating, and the only place the two halves are blended:
+     the wrapper carries the baseline the build rendered, this fetches the
+     product's own figures from the Worker, writes the blend back into the same
+     attributes and re-clips the fill. Only a product page carries the wrapper,
+     so nothing else fetches anything, and every failure is silent — the
+     baseline is already on screen and stays there. The endpoint's own
+     five-minute cache is what keeps a browse cheap: no timeout, no retry and
+     nothing remembered between pages */
+  function liveRating() {
+    var root = document.getElementById('iblRating');
+    if (!root) return;
+
+    var endpoint = root.getAttribute('data-ibl-ratings');
+    var slug = root.getAttribute('data-ibl-slug');
+    if (!endpoint || !slug) return;
+
+    var hasBaseline = root.hasAttribute('data-ibl-count');
+    var baseCount = hasBaseline ? Number(root.getAttribute('data-ibl-count')) : 0;
+    var baseAverage = hasBaseline ? parseFloat(root.getAttribute('data-ibl-average')) : 0;
+
+    fetch(endpoint, { headers: { 'Accept': 'application/json' } }).then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      var live = data && data.product && data.product[slug];
+
+      /* no row for this slug is not a failure: the product simply has no live
+         ratings yet, so the baseline stands as the build rendered it */
+      if (!live) return;
+
+      /* the response is somebody else's to shape, so a row that is not two
+         numbers is not a figure: the baseline stands rather than the badge
+         printing NaN */
+      var liveCount = Number(live.count);
+      var liveAverage = Number(live.average);
+      if (!isFinite(liveCount) || !isFinite(liveAverage)) return;
+
+      var count = baseCount + liveCount;
+      if (!count) return;
+
+      var total = (hasBaseline ? baseAverage * baseCount : 0) + liveAverage * liveCount;
+      var average = total / count;
+
+      /* the gate is the blended average, compared before any rounding: a 3.96
+         figure is below 4.0 however it would print */
+      if (average < 4) {
+        root.hidden = true;
+        return;
+      }
+
+      /* four places because this is the attribute the fill reads — parseFloat
+         treats 5 and 5.0 alike, so the cap is the only thing that matters here */
+      root.setAttribute('data-ibl-average', Math.round(average * 10000) / 10000);
+
+      var value = document.getElementById('iblRatingValue');
+      var caption = document.getElementById('iblRatingCount');
+      var stars = document.getElementById('iblRatingStars');
+
+      /* toFixed(1) prints 5.0 rather than 5, which is what Liquid's `round: 1`
+         prints too: the fetched figure reads like the rendered one */
+      if (value) value.textContent = average.toFixed(1);
+      if (caption) caption.textContent = count === 1 ? '(1 rating)' : '(' + count + ' ratings)';
+      if (stars) stars.setAttribute('aria-label', 'Rated ' + average.toFixed(1) + ' out of 5');
+
+      root.hidden = false;
+      fillRating(); /* the average is set, so this is the figure that gets clipped */
+    }).catch(function () {
+      /* offline, blocked or a 503: the server-rendered figure stays as it is */
+    });
   }
 
   function applyPortal(data) {
@@ -162,6 +232,10 @@
   initMenu();
   /* the script is deferred, so the DOM is parsed and the fill needs no fetch */
   fillRating();
+
+  /* the live half is a fetch, so it upgrades the rendered figure when — and
+     only when — it lands */
+  liveRating();
 
   IBLConfig.load().then(function (data) {
     fillAnnouncement(data);
