@@ -19,9 +19,9 @@
  *   /api/ratings the live aggregates, read by the product page at load, and
  *                blended in the browser with the baseline.
  *
- * The cron in wrangler.toml's [triggers] sends the invites: 14 days after the
- * order, plus one reminder seven days later, so a rating posted thirty seconds
- * after checkout never reaches the figures.
+ * The cron in wrangler.toml's [triggers] sends the invite a day after the order,
+ * so a rating posted thirty seconds after checkout never reaches the figures —
+ * one email, one rating, and nothing to unsubscribe from.
  *
  * Only upsertContact() knows the list provider is Resend, so swapping it for Kit
  * or MailerLite later is one function. Secrets (RESEND_API_KEY,
@@ -54,10 +54,10 @@ const REVIEW = { flags: { rated: 'rated=1', used: 'used=1', invalid: 'rated=0' }
 const TOKEN_SHAPE = /^[0-9a-f]{64}$/;
 const RATING_SHAPE = /^[1-5]$/;
 
-// the invite goes out two weeks after the order and the reminder one week after
-// that, in seconds
-const INVITE_DELAY = 14 * 86400;
-const REMINDER_DELAY = 7 * 86400;
+// the invite goes out a day after the order, in seconds. It is the only email
+// this feature sends: there is no reminder pass, so a buyer who ignores it is
+// never chased again.
+const INVITE_DELAY = 86400;
 
 // how many emails one hourly tick will send. A backlog drains over a few ticks
 // rather than walking past Resend's 100-a-day ceiling in one.
@@ -87,8 +87,7 @@ export default {
 
   // the hourly tick from [triggers] in wrangler.toml
   async scheduled(controller, env) {
-    await sendRatingEmails(env, 'invite');
-    await sendRatingEmails(env, 'reminder');
+    await sendRatingEmails(env);
   },
 };
 
@@ -513,16 +512,13 @@ function ratingKeyFor(lookup, productIds) {
   return null;
 }
 
-// one cron pass: the invite, or the single reminder. The delay and the stamp
-// that stops a second send are the only difference between the two.
-async function sendRatingEmails(env, kind) {
+// the one cron pass: the invite, a day after the order. A failed send leaves
+// sent_at alone deliberately, so the next hourly tick retries it.
+async function sendRatingEmails(env) {
   const now = nowSeconds();
-  const reminder = kind === 'reminder';
-  const sql = reminder
-    ? 'SELECT token, email, slug, product_id FROM review_invites WHERE reminded_at IS NULL AND sent_at IS NOT NULL AND sent_at <= ? AND used_at IS NULL ORDER BY sent_at LIMIT ?'
-    : 'SELECT token, email, slug, product_id FROM review_invites WHERE sent_at IS NULL AND created_at <= ? ORDER BY created_at LIMIT ?';
+  const sql = 'SELECT token, email, slug, product_id FROM review_invites WHERE sent_at IS NULL AND created_at <= ? ORDER BY created_at LIMIT ?';
 
-  const due = await env.DB.prepare(sql).bind(now - (reminder ? REMINDER_DELAY : INVITE_DELAY), EMAIL_BATCH).all();
+  const due = await env.DB.prepare(sql).bind(now - INVITE_DELAY, EMAIL_BATCH).all();
   const rows = due.results || [];
   const lookup = await configLookup(env);
   const names = (lookup && lookup.names) || {};
@@ -531,22 +527,17 @@ async function sendRatingEmails(env, kind) {
   for (const invite of rows) {
     const name = names[invite.product_id] || humanise(invite.slug);
 
-    if (await sendRatingEmail(env, invite, name, kind)) sent.push(invite.token);
+    if (await sendRatingEmail(env, invite, name)) sent.push(invite.token);
   }
 
-  // the stamp is a column this file chooses, never anything a request carried
-  const stamp = reminder ? 'reminded_at' : 'sent_at';
-
-  // an unsent stamp is left alone deliberately: the email that failed is retried
-  // on the next hourly tick
   for (const token of sent) {
-    await env.DB.prepare(`UPDATE review_invites SET ${stamp} = ? WHERE token = ?`).bind(now, token).run();
+    await env.DB.prepare('UPDATE review_invites SET sent_at = ? WHERE token = ?').bind(now, token).run();
   }
 }
 
-async function sendRatingEmail(env, invite, name, kind) {
+async function sendRatingEmail(env, invite, name) {
   const link = `${env.SITE_URL}/reviews/?t=${invite.token}`;
-  const mail = ratingEmail(name, link, kind === 'reminder');
+  const mail = ratingEmail(name, link);
 
   try {
     const sent = await fetch(RESEND_ENDPOINT, {
@@ -562,36 +553,28 @@ async function sendRatingEmail(env, invite, name, kind) {
     });
 
     if (!sent.ok) {
-      console.error(`ratings: the ${kind} for ${invite.slug} returned ${sent.status} ${(await sent.text()).slice(0, 200)}`);
+      console.error(`ratings: the invite for ${invite.slug} returned ${sent.status} ${(await sent.text()).slice(0, 200)}`);
       return false;
     }
   } catch (error) {
-    console.error(`ratings: the ${kind} for ${invite.slug} failed: ${error}`);
+    console.error(`ratings: the invite for ${invite.slug} failed: ${error}`);
     return false;
   }
 
   return true;
 }
 
-// the invite and the one reminder. Both read as transactional because they are:
-// what was bought, one link, and nothing promotional, tracked or recurring —
-// which is also why neither carries an unsubscribe.
-function ratingEmail(name, link, reminder) {
+// the one email. It reads as transactional because it is: what was bought, one
+// link, and nothing promotional, tracked or recurring — which is also why it
+// carries no unsubscribe.
+function ratingEmail(name, link) {
   const safeName = escapeHtml(name);
   const href = escapeHtml(link);
 
-  if (reminder) {
-    return {
-      subject: `Still using ${name}?`,
-      text: `A quick follow-up on ${name}, which you picked up from iamlamprey three weeks ago.\n\nIf you have a moment, a rating helps me work out what to make next:\n\n${link}\n\nOne star and a Submit, and the link works once. This is the last email about this order.\n\niamlamprey`,
-      html: `<p>A quick follow-up on <strong>${safeName}</strong>, which you picked up from iamlamprey three weeks ago.</p><p>If you have a moment, a rating helps me work out what to make next:</p><p><a href="${href}">Rate ${safeName}</a></p><p>One star and a Submit, and the link works once. This is the last email about this order.<br>iamlamprey</p>`,
-    };
-  }
-
   return {
     subject: `How's ${name} treating you?`,
-    text: `You bought ${name} from iamlamprey a couple of weeks ago.\n\nIf you have a moment, I would like to know what you think of it:\n\n${link}\n\nOne star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.\n\niamlamprey`,
-    html: `<p>You bought <strong>${safeName}</strong> from iamlamprey a couple of weeks ago.</p><p>If you have a moment, I would like to know what you think of it:</p><p><a href="${href}">Rate ${safeName}</a></p><p>One star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.<br>iamlamprey</p>`,
+    text: `Thanks for picking up ${name} from iamlamprey.\n\nIf you have a moment, I would like to know what you think of it:\n\n${link}\n\nOne star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.\n\niamlamprey`,
+    html: `<p>Thanks for picking up <strong>${safeName}</strong> from iamlamprey.</p><p>If you have a moment, I would like to know what you think of it:</p><p><a href="${href}">Rate ${safeName}</a></p><p>One star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.<br>iamlamprey</p>`,
   };
 }
 

@@ -1,0 +1,41 @@
+# ratings — watching purchases and pulling a test token
+#
+# Run from the repo root: --cwd worker is what points wrangler at
+# worker/wrangler.toml, where the Worker name, the D1 binding and the cron live.
+#
+# Both commands need an authenticated wrangler: `npx wrangler login` once (opens a
+# browser and OAuths to your Cloudflare account), or CLOUDFLARE_API_TOKEN plus
+# CLOUDFLARE_ACCOUNT_ID in the environment. Without one of those they fail with a
+# login error and touch nothing.
+#
+# This file is not published and holds no secret:
+#   - scripts/ is in _config.yml's `exclude:`, so it never reaches the site. It
+#     exists only in the git repo.
+#   - the only values in it are the Worker name and the D1 database name, and both
+#     are already committed in worker/wrangler.toml, so this adds no new identifier.
+#   - the SELECT below PRINTS a token at run time; it does not contain one. A printed
+#     token is the whole gate on /reviews/, so treat it as a one-use credential and
+#     never paste a real one into a committed file.
+#   - the one genuinely public ratings route is /api/ratings, which serves aggregates
+#     only (counts and averages, never a token) and is meant to be callable.
+
+# 1. watch live — every request the deployed Worker answers, plus its console output.
+#    A purchase arrives from Polar as a `POST .../polar` line; the hourly cron shows
+#    up as its own event on the hour. The Worker only logs failures, so a bare 200
+#    with no error line above it is the healthy case.
+npx wrangler tail --cwd worker
+
+#    ...or the same stream as one JSON object per line, easier to grep or pipe:
+npx wrangler tail --cwd worker --format json
+
+# 2. the invite for a purchase — minted within seconds of the order, NOT when the
+#    email is sent, so this needs no waiting. `created`/`sent` read NULL until the
+#    cron stamps them.
+npx wrangler d1 execute iamlamprey-ratings --cwd worker --remote --command "SELECT order_id, slug, datetime(created_at, 'unixepoch') AS created, datetime(sent_at, 'unixepoch') AS sent, datetime(used_at, 'unixepoch') AS used, token FROM review_invites ORDER BY created_at DESC LIMIT 10"
+
+#    ...or just the newest token, to paste into:
+#      https://iamlamprey.github.io/iamlamprey-website/reviews/?t=<token>
+#    (that host is SITE_URL in worker/wrangler.toml; it becomes https://iamlamprey.com
+#    at the custom-domain cutover. The token is 64 hex characters, works once, and the
+#    link then answers "already used".)
+npx wrangler d1 execute iamlamprey-ratings --cwd worker --remote --command "SELECT token FROM review_invites ORDER BY created_at DESC LIMIT 1"
