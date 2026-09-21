@@ -30,10 +30,9 @@ RATING_FROM_EMAIL = "iamlamprey <noreply@iamlamprey.com>"
 SUBSCRIBE_FROM_EMAIL = "iamlamprey <noreply@iamlamprey.com>"
 # where the site is published: the Worker fetches config.json from here to resolve
 # a Polar product to a rating key, links the invite email back to
-# <SITE_URL>/reviews/, and lands a confirmed signup on <SITE_URL>/subscribed/. Set
-# it to https://iamlamprey.com at the custom-domain cutover, along with url: and
-# baseurl: in _config.yml.
-SITE_URL = "https://iamlamprey.github.io/iamlamprey-website"
+# <SITE_URL>/reviews/, and lands a confirmed signup on <SITE_URL>/subscribed/. It
+# tracks url: in _config.yml.
+SITE_URL = "https://iamlamprey.com"
 # the Resend topic every new contact is opted into, and the segment to add them
 # to. Ids, not secrets — see the Mailing list section of the README.
 RESEND_TOPIC_ID = "c3c747cc-2ef3-4caf-b2f8-22507c655cae"

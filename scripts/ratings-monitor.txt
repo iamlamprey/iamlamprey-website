@@ -34,8 +34,7 @@ npx wrangler tail --cwd worker --format json
 npx wrangler d1 execute iamlamprey-ratings --cwd worker --remote --command "SELECT order_id, slug, datetime(created_at, 'unixepoch') AS created, datetime(sent_at, 'unixepoch') AS sent, datetime(used_at, 'unixepoch') AS used, token FROM review_invites ORDER BY created_at DESC LIMIT 10"
 
 #    ...or just the newest token, to paste into:
-#      https://iamlamprey.github.io/iamlamprey-website/reviews/?t=<token>
-#    (that host is SITE_URL in worker/wrangler.toml; it becomes https://iamlamprey.com
-#    at the custom-domain cutover. The token is 64 hex characters, works once, and the
-#    link then answers "already used".)
+#      https://iamlamprey.com/reviews/?t=<token>
+#    (that host is SITE_URL in worker/wrangler.toml. The token is 64 hex characters,
+#    works once, and the link then answers "already used".)
 npx wrangler d1 execute iamlamprey-ratings --cwd worker --remote --command "SELECT token FROM review_invites ORDER BY created_at DESC LIMIT 1"

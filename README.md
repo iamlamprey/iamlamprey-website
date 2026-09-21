@@ -29,9 +29,9 @@ None of this lives in the repo; it is all dashboard work:
    records it generates in Cloudflare DNS (a DKIM `TXT`, an SPF `TXT` and an `MX` on the
    `send.` subdomain). Then create an API key with **Sending access** scoped to `iamlamprey.com`.
 2. **Turnstile** — add a widget for the site's hostnames (`iamlamprey.com`,
-   `www.iamlamprey.com`, `iamlamprey.github.io` and `localhost` while the site is still served
-   from those). The **site key** is public and goes in `contact.html`; the **secret key** stays
-   in the Worker.
+   `www.iamlamprey.com`, `iamlamprey.github.io` and `localhost` — the last two stay so legacy
+   links and local previews keep working). The **site key** is public and goes in
+   `contact.html`; the **secret key** stays in the Worker.
 3. **Worker secrets** — set `RESEND_API_KEY` and `TURNSTILE_SECRET` on the Worker (Workers →
    the script → Settings → Variables → Secret), or locally with
    `npx wrangler secret put <NAME> --cwd worker`. Keeping them in the Cloudflare dashboard
@@ -48,7 +48,7 @@ on the `send.` subdomain and the two coexist — the `support@` and `contact@` r
 untouched.
 
 The endpoint stays a `workers.dev` URL rather than an `iamlamprey.com/api/contact` route, so it
-behaves the same before and after the custom-domain cutover, with no DNS coupling. 
+behaves the same on the live site and on a local preview, with no DNS coupling.
 
 ## config.json
 
@@ -112,8 +112,11 @@ Polar dashboard → **Settings → Preferences → Embedding**. Enter every host
 the list is replaced, not appended:
 
 ```
-iamlamprey.com, iamlamprey.github.io, 127.0.0.1:4000, localhost:4000
+iamlamprey.com, www.iamlamprey.com, iamlamprey.github.io, 127.0.0.1:4000, localhost:4000
 ```
+
+`www` is listed alongside the apex, and the github.io entry stays because links carrying that
+host are still in circulation.
 
 ### The /thanks/ page
 
@@ -121,8 +124,7 @@ iamlamprey.com, iamlamprey.github.io, 127.0.0.1:4000, localhost:4000
 sends a paid buyer to. Every Checkout Link carries one:
 
 ```
-https://iamlamprey.github.io/iamlamprey-website/thanks/?checkout_id={CHECKOUT_ID}   # now
-https://iamlamprey.com/thanks/?checkout_id={CHECKOUT_ID}                           # after cutover
+https://iamlamprey.com/thanks/?checkout_id={CHECKOUT_ID}
 ```
 
 `{CHECKOUT_ID}` is substituted by Polar at redirect time. The URL has to be absolute, because this
@@ -152,8 +154,10 @@ scope, which the discount automation's token may not carry; the script reads `PO
 and falls back to `keys.txt`, like the migration scripts.
 
 **Pilot one link first** (`--slug achromic`, then buy through it): the Success URLs live on Polar,
-not in the repo, so this is the one part of the setup that a `git revert` cannot undo. Expect to run
-it twice — once for the GitHub Pages hostname and once at cutover. Every link needs one: the embed's
+not in the repo, so this is the one part of the setup that a `git revert` cannot undo. They all read
+`https://iamlamprey.com/thanks/` now, so rolling back means re-running the script with
+`--base-url https://iamlamprey.github.io/iamlamprey-website/thanks/` while that host is still in
+the embed allowlist. Every link needs one: the embed's
 success message carries only `{successURL, redirect}`, so a link with no Success URL leaves the
 overlay to close with the buyer back on the product page and no confirmation on screen. Whether
 Polar shows a confirmation of its own inside the overlay before closing is still unconfirmed on a
@@ -216,19 +220,37 @@ already scheduled.
 
 ## Cutover to iamlamprey.com
 
-1. Flip the hrefs in `_data/nav.yml` if the paths change.
-2. Set `baseurl: ""` in `_config.yml` (and `url:` to the new domain).
-3. Add the `CNAME` file for the custom domain.
-4. Add the Payhip-era redirects from `PROMPT.md`: `/b/`, `/muzzle`, `/achromic`.
-5. Re-check the 404s: every page in `_data/nav.yml` now exists — `/music/`,
-   `/instruments/`, `/master-bundle/`, `/sample-packs/`, `/contact/`, `/plugins/`
-   (Muzzle and Altar) and every instrument and sample pack. The Supporter Bundle
-   page and the Altar "Support Development" block are still parked.
-6. Re-run the Success URLs against the new hostname:
-   `python scripts/set_success_url.py --base-url https://iamlamprey.com/thanks/`. They live on
-   Polar rather than in the repo, so nothing else moves them. While you are in the dashboard,
-   confirm **both** hostnames are still in the embed allowlist (Settings → Preferences →
-   Embedding) — dropping one blanks the checkout overlay on whichever host is missing.
+Done — the site is served from `iamlamprey.com` by GitHub Pages. The repo side of it was four
+changes:
+
+1. `_data/nav.yml` already pointed at canonical paths, so no href moved.
+2. `_config.yml`: `url: https://iamlamprey.com` and `baseurl: ""`, which takes the
+   `/iamlamprey-website` prefix off every `canonical`, `og:url`, `og:image` and asset path.
+3. `CNAME` at the repo root holds `iamlamprey.com`. The publishing source is *Deploy from a
+   branch*, so that committed file is what tells Pages the custom domain — a custom-workflow
+   deploy ignores it.
+4. `worker/wrangler.toml`: `SITE_URL = "https://iamlamprey.com"`, so review invites and
+   newsletter confirmations land on the apex.
+
+The Payhip-era redirects from `PROMPT.md` (`/b/`, `/muzzle`, `/achromic`) were already committed
+under `redirects/`, and every page in `_data/nav.yml` exists — `/music/`, `/instruments/`,
+`/master-bundle/`, `/sample-packs/`, `/contact/`, `/plugins/` (Muzzle and Altar) and every
+instrument and sample pack. The Supporter Bundle page and the Altar "Support Development" block
+are still parked.
+
+The dashboard half of it, none of which lives in the repo:
+
+- **Cloudflare DNS** — the Payhip apex and `www` records became GitHub's four `A` records and a
+  `www` `CNAME` to `iamlamprey.github.io`, both **DNS only** (grey cloud): proxying them stops
+  GitHub issuing its Let's Encrypt certificate. MX and the Resend records were left alone.
+- **Pages** — the DNS check passed, the certificate was issued and **Enforce HTTPS** went on.
+  The gap between the DNS swap and the certificate is the only downtime the cutover has.
+- **Polar** — the Success URLs moved with
+  `python scripts/set_success_url.py --base-url https://iamlamprey.com/thanks/`, and the embed
+  allowlist keeps both hostnames (Settings → Preferences → Embedding) — dropping one blanks the
+  checkout overlay on whichever host is missing.
+- **Turnstile** — the widget lists `iamlamprey.com` and `www.iamlamprey.com` alongside the older
+  hosts; a missing hostname fails the contact form and the newsletter signup silently.
 
 ## Known follow-ups
 

@@ -1,7 +1,7 @@
 title: iamlamprey
 description: Virtual instruments, plugins and sample packs.
-url: https://iamlamprey.github.io
-baseurl: /iamlamprey-website    # project-page URL; set to "" at custom-domain cutover
+url: https://iamlamprey.com
+baseurl: ""    # the site is served from the domain root, so nothing gets a prefix
 # where /contact/ posts — the Worker that relays to Resend (see README). The
 # form is dead until YOUR-SUBDOMAIN is replaced with the subdomain wrangler
 # prints on the first deploy.

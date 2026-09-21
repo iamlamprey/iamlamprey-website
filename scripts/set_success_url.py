@@ -12,10 +12,10 @@ Polar substitutes {CHECKOUT_ID} at redirect time. The parameter is left on the
 URL deliberately: the /thanks/ page ignores it today, but a valued Purchase
 event needs it to look the order's total up against Polar's API.
 
-The site is served from two hostnames, so this runs twice in its life — once for
-the GitHub Pages host, once for the custom domain — and again whenever the
-Success URL has to move. A link already carrying the target URL is skipped, so a
-re-run costs one list request and no writes.
+The Success URL is absolute, so this has to be re-run whenever the site moves
+host: it pointed at the GitHub Pages host first, and now at the custom domain.
+A link already carrying the target URL is skipped, so a re-run costs one list
+request and no writes.
 
 Links are matched to config.json items by comparing each link's products against
 the item's product_id, which does not drift the way a label can. A link that
