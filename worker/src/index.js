@@ -21,6 +21,11 @@
  *   /reviews     the form behind /reviews/: one rating, for one invite token.
  *   /api/ratings the live aggregates, read by the product page at load, and
  *                blended in the browser with the baseline.
+ *   /purchase    the valued Purchase for a completed checkout: the browser pixel
+ *                cannot see Polar's checkout, so /thanks/ posts the checkout id
+ *                here, this looks the order up through Polar's orders API and
+ *                sends the server-side event with the order id as the event_id
+ *                both halves carry.
  *
  * The cron in wrangler.toml's [triggers] sends the invite a day after the order,
  * so a rating posted thirty seconds after checkout never reaches the figures —
@@ -29,11 +34,13 @@
  * Only upsertContact() knows the list provider is Resend, so swapping it for Kit
  * or MailerLite later is one function. Secrets (RESEND_API_KEY,
  * RESEND_CONTACTS_KEY, TURNSTILE_SECRET, POLAR_WEBHOOK_SECRET,
- * SUBSCRIBE_SECRET) are Worker secrets set in the Cloudflare dashboard; the
- * topic and segment ids and the rest are in wrangler.toml's [vars] block.
+ * SUBSCRIBE_SECRET, META_CAPI_TOKEN, POLAR_ORDERS_TOKEN) are Worker secrets set
+ * in the Cloudflare dashboard; the topic and segment ids and the rest are in
+ * wrangler.toml's [vars] block.
  */
 
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const GRAPH_API = 'https://graph.facebook.com/v26.0';
 const RESEND_API = 'https://api.resend.com';
 const RESEND_ENDPOINT = `${RESEND_API}/emails`;
 const EMAIL_SHAPE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -92,6 +99,31 @@ const RATINGS_CACHE = 'public, max-age=300, s-maxage=600';
 // rather than one each
 const CONFIG_TTL = 86400;
 
+// Polar's orders API, on the same pinned version every scripts/ client sends. A
+// request that sends none follows Polar's Current version, which changes each
+// quarter — the reasoning and the pin's deadline are in the README.
+const POLAR_ORDERS = 'https://api.polar.sh/v1/orders/';
+const POLAR_VERSION = '2026-04';
+
+// total_amount comes back in integer cents; Meta wants the figure in currency
+// units, which is the division this route applies once
+const CENTS_PER_UNIT = 100;
+
+// the redirect back from Polar's checkout and the order it just created are not
+// perfectly ordered, so the first lookup can come back empty. Three attempts
+// cover that gap, which is also why the page has no retry loop of its own.
+const ORDER_ATTEMPTS = 3;
+const ORDER_RETRY_MS = 500;
+
+// a Polar checkout id is a uuid4, which is what {CHECKOUT_ID} substitutes into
+// the Success URL. Anything else is not worth a Polar request.
+const CHECKOUT_ID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// the two cookies the page forwards, as Meta writes them: fb.<subdomain>.<created
+// at>.<value>. A request carrying anything else has it dropped rather than passed
+// on, because these end up in user_data.
+const MATCH_COOKIE_SHAPE = /^fb\.\d+\.\d+\.\S{1,400}$/;
+
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
@@ -101,6 +133,7 @@ export default {
     if (pathname === '/confirm') return handleConfirm(request, env);
     if (pathname === '/reviews') return handleReview(request, env);
     if (pathname === '/api/ratings') return handleRatings(request, env);
+    if (pathname === '/purchase') return handlePurchase(request, env);
 
     return handleContact(request, env); // the root path stays the contact form
   },
@@ -463,6 +496,249 @@ async function handleRatings(request, env) {
     status: 200,
     headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': RATINGS_CACHE, 'Content-Type': 'application/json; charset=utf-8' },
   });
+}
+
+// POST /purchase — the valued Purchase. Polar is the merchant of record, so the
+// payment happens on buy.polar.sh and the browser pixel cannot see it: /thanks/
+// posts the checkout id Polar substituted into the Success URL, this looks the
+// order up through Polar's own API, and the event travels from here instead.
+//
+// Both copies carry the same event_name and the same event_id — the Polar order
+// id — which is exactly how Meta deduplicates a redundant setup: one purchase
+// counts once, and a browser with the pixel blocked still reports.
+async function handlePurchase(request, env) {
+  const { allowOrigin, response } = gate(request, env);
+  if (response) return response;
+
+  // the checkout id is an unguessable uuid, but the ceiling costs nothing
+  if (!(await withinRateLimit(env, request))) {
+    return purchaseJson(allowOrigin, 429, { ok: false, reason: 'rate_limited' });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return purchaseJson(allowOrigin, 400, { ok: false, reason: 'bad_request' });
+  }
+
+  // the page only asks once consent has been granted, and says so in the body.
+  // The Worker cannot verify the claim — it is not a token and not a signature —
+  // but requiring it keeps the intent explicit here and means a stray or
+  // hand-rolled request cannot quietly send a server event. A decline is
+  // answered with nothing at all, which is the same answer for both halves.
+  if (!body || body.consent !== true) {
+    return new Response(null, { status: 204, headers: corsHeaders(allowOrigin) });
+  }
+
+  const checkoutId = String(body.checkout_id || '').trim();
+
+  if (!CHECKOUT_ID_SHAPE.test(checkoutId)) {
+    return purchaseJson(allowOrigin, 400, { ok: false, reason: 'bad_request' });
+  }
+
+  const found = await paidOrder(env, checkoutId);
+
+  // a lookup that could not be completed is not an order that does not exist: the
+  // page is told to leave this one reportable
+  if (found.failed) return purchaseJson(allowOrigin, 502, { ok: false, reason: 'lookup_failed' });
+  if (!found.order) return purchaseJson(allowOrigin, 200, { ok: false, reason: 'no_order' });
+
+  const order = found.order;
+  const value = Number(order.total_amount) / CENTS_PER_UNIT; // Polar reports integer cents
+  const currency = String(order.currency || '').trim().toUpperCase(); // and lowercase codes
+
+  // a free order is a real order — Songbird and the free Muzzle tier both land
+  // here — and Meta has nothing to learn from a $0 Purchase
+  if (!(value > 0)) return purchaseJson(allowOrigin, 200, { ok: false, reason: 'free_order' });
+
+  if (!currency) {
+    console.error(`purchase: order ${order.id} carries no currency`);
+    return purchaseJson(allowOrigin, 502, { ok: false, reason: 'bad_order' });
+  }
+
+  // both cookies are read from an untrusted request and end up in user_data, so
+  // anything that is not the shape Meta writes is dropped rather than passed on
+  const fbp = MATCH_COOKIE_SHAPE.test(String(body.fbp || '')) ? String(body.fbp) : '';
+  const fbc = MATCH_COOKIE_SHAPE.test(String(body.fbc || '')) ? String(body.fbc) : '';
+
+  const event = { order, checkoutId, value, currency, contentIds: [orderContentId(order)], fbp, fbc };
+
+  if (!(await sendPurchase(env, request, event))) {
+    return purchaseJson(allowOrigin, 502, { ok: false, reason: 'capi_error' });
+  }
+
+  return purchaseJson(allowOrigin, 200, { ok: true, event_id: order.id, value, currency, content_ids: event.contentIds });
+}
+
+// the paid order behind a checkout id, or null when there is none yet. Polled
+// briefly for the reason ORDER_ATTEMPTS gives; `failed` separates a lookup that
+// could not be made at all from an order that does not exist, because only the
+// first is worth retrying.
+async function paidOrder(env, checkoutId) {
+  const token = (env.POLAR_ORDERS_TOKEN || '').trim();
+
+  if (!token) {
+    console.error('purchase: POLAR_ORDERS_TOKEN is not set');
+    return { failed: true };
+  }
+
+  const url = new URL(POLAR_ORDERS);
+  url.searchParams.set('checkout_id', checkoutId);
+  url.searchParams.set('limit', '10');
+
+  // only needed when the token is not scoped to a single organisation: an
+  // unscoped token's lookup answers 400 rather than a list of that org's orders
+  if (env.POLAR_ORGANIZATION_ID) url.searchParams.set('organization_id', env.POLAR_ORGANIZATION_ID);
+
+  for (let attempt = 0; attempt < ORDER_ATTEMPTS; attempt++) {
+    if (attempt) await sleep(ORDER_RETRY_MS);
+
+    let response;
+    try {
+      response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Polar-Version': POLAR_VERSION, 'Accept': 'application/json' },
+      });
+    } catch (error) {
+      console.error(`purchase: the order lookup failed: ${error}`);
+      return { failed: true };
+    }
+
+    if (!response.ok) {
+      console.error(`purchase: the order lookup returned ${response.status}`); // never the body: it carries the order
+      return { failed: true };
+    }
+
+    const data = await response.json();
+    const paid = (data.items || []).filter((order) => order && order.status === 'paid');
+
+    // a checkout can be attempted more than once, and the paid one is the order
+    if (paid.length) return { order: newestOrder(paid) };
+
+    // nothing paid yet: the redirect beats the order, so wait and ask again
+  }
+
+  return { order: null };
+}
+
+// the server half of the pair, and the half that survives an ad blocker. Only
+// `em` is hashed, as lowercase-hex SHA-256 over the address lowercased and
+// trimmed — hashing the ip, the user agent or the cookies is what Meta rejects —
+// and a failed send is answered false so the route can tell the page to try
+// again rather than count the order.
+async function sendPurchase(env, request, event) {
+  const pixelId = (env.META_PIXEL_ID || '').trim();
+  const token = (env.META_CAPI_TOKEN || '').trim();
+
+  if (!pixelId || !token) {
+    console.error('purchase: META_PIXEL_ID or META_CAPI_TOKEN is not set');
+    return false;
+  }
+
+  const userData = {};
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  const agent = request.headers.get('User-Agent') || '';
+  const email = normaliseEmail((event.order.customer || {}).email || '');
+
+  if (ip) userData.client_ip_address = ip;
+  if (agent) userData.client_user_agent = agent;
+  if (EMAIL_SHAPE.test(email)) userData.em = [await hashedEmail(email)];
+  if (event.fbp) userData.fbp = event.fbp;
+  if (event.fbc) userData.fbc = event.fbc;
+
+  const payload = {
+    data: [{
+      event_name: 'Purchase',
+      event_time: nowSeconds(),
+      event_id: event.order.id, // the same id the page sends as its eventID
+      event_source_url: `${env.SITE_URL}/thanks/?checkout_id=${encodeURIComponent(event.checkoutId)}`,
+      action_source: 'website',
+      user_data: userData,
+      custom_data: {
+        value: event.value,
+        currency: event.currency,
+        content_ids: event.contentIds,
+        content_type: 'product',
+        num_items: 1,
+      },
+    }],
+  };
+
+  // Meta only routes an event to the Test Events tab while this is set, which is
+  // why it is empty in production rather than merely unused
+  if (env.META_TEST_EVENT_CODE) payload.test_event_code = env.META_TEST_EVENT_CODE;
+
+  const url = `${GRAPH_API}/${encodeURIComponent(pixelId)}/events?access_token=${encodeURIComponent(token)}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      console.error(`purchase: the conversions api returned ${response.status}`); // the status only: the body echoes the payload
+      return false;
+    }
+  } catch (error) {
+    console.error(`purchase: the conversions api failed: ${error}`);
+    return false;
+  }
+
+  return true;
+}
+
+// the one field the Conversions API wants hashed: SHA-256 in lowercase hex, over
+// the address lowercased and trimmed, which is the form normaliseEmail() already
+// produces. The ip, the user agent and the two cookies travel as they are.
+async function hashedEmail(email) {
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(normaliseEmail(email))));
+
+  let hash = '';
+  for (const byte of digest) hash += byte.toString(16).padStart(2, '0');
+
+  return hash;
+}
+
+// the newest order on a list, by created_at: one checkout can produce more than
+// one order, and the one that matters is the latest that was paid
+function newestOrder(orders) {
+  let newest = orders[0];
+
+  for (const order of orders) {
+    if (String(order.created_at || '') > String(newest.created_at || '')) newest = order;
+  }
+
+  return newest;
+}
+
+// the product an order was for. The REST shape carries a flat product_id; the
+// webhook shape nests it, so orderProductIds() covers that as a fallback, and an
+// order that resolves to neither is still reported — content_ids is not required
+// for a valued Purchase the way value and currency are.
+function orderContentId(order) {
+  const flat = String(order.product_id || '').trim();
+
+  if (flat) return flat;
+
+  const ids = orderProductIds(order);
+
+  return ids.length ? ids[0] : '';
+}
+
+// the purchase route is json both ways — the page posts json and reads json — and
+// the payload is per buyer, so it is never cached at the edge
+function purchaseJson(allowOrigin, status, payload) {
+  const headers = corsHeaders(allowOrigin);
+  headers['Content-Type'] = 'application/json; charset=utf-8';
+  headers['Cache-Control'] = 'no-store';
+
+  return new Response(JSON.stringify(payload), { status, headers });
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // mints the single-use invite for a paid order. The order id is the primary key,

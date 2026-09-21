@@ -20,6 +20,19 @@ reviews_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/reviews
 # this and blends the two in the browser, so a figure needs no build step and
 # nothing committed. The route answers a wildcard CORS header for that reason.
 ratings_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/api/ratings
+# the Meta pixel every page reports to. It is public — it ships in the page
+# source — and it stays blank until the pixel has been created in Events Manager
+# and the Worker has the two secrets it needs. A blank id renders no pixel, no
+# consent banner and no events at all, which is what makes local previews and
+# the first deploy harmless: the id is the one switch. It has to stay nil rather
+# than "", because Liquid reads an empty string as true and would render the
+# pixel anyway.
+meta_pixel_id:
+# where /thanks/ posts a completed checkout — the same Worker, on its /purchase
+# route, which looks the order up through Polar and sends the server-side
+# Purchase the browser pixel cannot see. The value reaches the page as a meta
+# tag, because the script that reads it is not Liquid-processed.
+purchase_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/purchase
 exclude:
   - README.md
   - PROMPT.md

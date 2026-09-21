@@ -1,0 +1,81 @@
+{% if site.meta_pixel_id %}
+<!-- The one file that touches Meta's javascript. Meta's base snippet defines the
+     fbq queue and fetches fbevents.js in one statement; the fetch is split out
+     here into iblLoadPixel() so it can wait for the consent banner, which leaves
+     this file requesting nothing from Meta until a visitor has accepted. The
+     matching <noscript> beacon is deliberately not shipped: a visitor without
+     javascript cannot see the banner either, so a beacon that fired anyway would
+     be tracking without consent. -->
+<script>
+  (function (f) {
+    if (f.fbq) return;
+
+    var fbq = function () {
+      fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments);
+    };
+
+    f.fbq = fbq;
+    f._fbq = fbq;
+    fbq.push = fbq;
+    fbq.loaded = true;
+    fbq.version = '2.0';
+    fbq.queue = [];
+  })(window);
+
+  (function () {
+    'use strict';
+
+    var PIXEL_ID = '{{ site.meta_pixel_id }}';
+    var PIXEL_SRC = 'https://connect.facebook.net/en_US/fbevents.js';
+
+    /* the events fired while the banner was still up, in the order they were
+       fired. Meta's own queue would hold them, but it would hold the init call
+       behind them, and an event with no pixel to attribute it to is dropped —
+       so they wait here and iblLoadPixel() drains them after init. */
+    window.iblQueue = [];
+
+    /* local previews share _config.yml with production, so the pixel id alone
+       cannot keep them out of the dataset */
+    function isLocal() {
+      var host = window.location.hostname;
+      return host === 'localhost' || host === '127.0.0.1';
+    }
+
+    /* the only thing that loads the pixel, and it is called from one place:
+       ibl-consent.js, once the stored decision reads granted */
+    window.iblLoadPixel = function () {
+      if (window.iblPixelLoaded) return;
+      window.iblPixelLoaded = true;
+
+      if (isLocal() || typeof window.fbq !== 'function') return;
+
+      window.fbq('init', PIXEL_ID);
+      window.fbq('track', 'PageView');
+
+      while (window.iblQueue.length) window.fbq.apply(null, window.iblQueue.shift());
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = PIXEL_SRC;
+      document.head.appendChild(script);
+    };
+
+    /* the one call the rest of the site makes, always behind an `if
+       (window.iblTrack)` guard so a blank pixel id — which does not render this
+       file at all — costs nothing. A decline drops the event; an undecided
+       visitor queues it, and it is sent if they accept and discarded with the
+       queue if they decline. */
+    window.iblTrack = function (name, params, options) {
+      if (window.iblConsent === 'denied') return;
+      if (typeof window.fbq !== 'function') return;
+
+      if (!window.iblPixelLoaded) {
+        window.iblQueue.push(['track', name, params, options]);
+        return;
+      }
+
+      window.fbq('track', name, params, options);
+    };
+  })();
+</script>
+{% endif %}

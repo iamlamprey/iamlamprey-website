@@ -1,0 +1,13 @@
+<!-- The consent gate, and the reason the pixel is not in the page's own markup.
+     It is rendered hidden and ibl-consent.js unhides it only when no decision is
+     on record, so a returning visitor never sees it flash. No focus trap and no
+     aria-modal: it sits at the end of the page rather than over it, and blocking
+     a visitor behind a notice is worse than the notice itself. There is no
+     privacy page to link yet, so the link goes to /contact/ rather than nowhere. -->
+<div class="ibl-consent" id="ibl-consent" role="dialog" aria-modal="false" aria-label="Meta pixel consent" hidden>
+  <p class="ibl-consent-text">May I use the Meta (Facebook) pixel to see which pages and products lead to a sale? It stays off until you accept &mdash; <a href="{{ '/contact/' | relative_url }}">get in touch</a> if you would like to know more.</p>
+  <div class="ibl-consent-actions">
+    <button class="ibl-consent-choice ibl-consent-accept" type="button" data-ibl-consent="granted">Accept</button>
+    <button class="ibl-consent-choice ibl-consent-decline" type="button" data-ibl-consent="denied">Decline</button>
+  </div>
+</div>

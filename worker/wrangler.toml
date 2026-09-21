@@ -1,8 +1,9 @@
 # Deployed by .github/workflows/contact-worker.yml on any push that touches worker/.
 # Nothing secret belongs in this file: it is committed and, once the repo is public,
 # readable. RESEND_API_KEY, RESEND_CONTACTS_KEY, TURNSTILE_SECRET,
-# POLAR_WEBHOOK_SECRET and SUBSCRIBE_SECRET are Worker secrets set in the
-# Cloudflare dashboard (Workers -> the script -> Settings -> Variables).
+# POLAR_WEBHOOK_SECRET, SUBSCRIBE_SECRET, META_CAPI_TOKEN and POLAR_ORDERS_TOKEN
+# are Worker secrets set in the Cloudflare dashboard (Workers -> the script ->
+# Settings -> Variables).
 #
 # SUBSCRIBE_SECRET signs the double opt-in confirmation links, so it is generated
 # once and set once — rotating it invalidates every link that is already out
@@ -11,8 +12,9 @@
 #   npx wrangler secret put SUBSCRIBE_SECRET --cwd worker
 #
 # The name is historical — the Worker now answers /contact/, /subscribe, /confirm,
-# /polar, /reviews and /api/ratings — but it stays as it is: renaming moves the
-# workers.dev host and breaks contact_endpoint in _config.yml for no benefit.
+# /polar, /reviews, /api/ratings and /purchase — but it stays as it is: renaming it
+# moves the workers.dev host and breaks contact_endpoint in _config.yml for no
+# benefit.
 name = "iamlamprey-contact"
 main = "src/index.js"
 compatibility_date = "2026-09-11"
@@ -38,6 +40,20 @@ SITE_URL = "https://iamlamprey.com"
 RESEND_TOPIC_ID = "c3c747cc-2ef3-4caf-b2f8-22507c655cae"
 RESEND_SEGMENT_ID = "a2f5870e-8679-468e-9dd2-c7370b0506e3"
 
+# The Meta pixel both halves of the Purchase report to, and the Conversions API
+# test code. The pixel id is public — it ships in the page source, and the same
+# number goes in _config.yml as meta_pixel_id — while META_CAPI_TOKEN is a secret.
+# META_TEST_EVENT_CODE is normally empty: Meta only routes an event to the Test
+# Events tab while it is set, so a value left here would keep production events
+# out of the dataset.
+META_PIXEL_ID = ""
+META_TEST_EVENT_CODE = ""
+
+# Polar's organisation, sent as organization_id on the order lookup. It is only
+# needed when POLAR_ORDERS_TOKEN is not scoped to a single organisation — an
+# unscoped token's lookup answers 400 without it — so it is normally empty.
+POLAR_ORGANIZATION_ID = ""
+
 # The rating invites' database. Created once, outside the repo, from a repo root
 # (--cwd worker is relative to it):
 #
@@ -59,10 +75,10 @@ database_id = "5679ebe9-7c66-4479-9c7a-8a7b71d89615"
 binding = "CONFIG"
 id = "c38f8d289d614323bd0fde16d4dbf9c9"
 
-# The per-IP ceiling on the two public routes, / and /subscribe. Turnstile stops a
-# script; this bounds one that solves Turnstile and then loops — five requests a
-# minute, answered 429. namespace_id is arbitrary and only groups the limiters, so
-# there is nothing to create in the dashboard.
+# The per-IP ceiling the public routes share. Turnstile stops a script; this
+# bounds one that solves Turnstile and then loops — five requests a minute,
+# answered 429. namespace_id is arbitrary and only groups the limiters, so there
+# is nothing to create in the dashboard.
 [[ratelimits]]
 name = "RATE_LIMITER"
 namespace_id = "1001"
@@ -75,6 +91,12 @@ simple = { limit = 5, period = 60 }
 crons = ["0 * * * *"]
 
 # refuse to deploy without the secrets the Worker needs, rather than 502ing every
-# signup from a script that is missing one
+# signup from a script that is missing one. The two the /purchase route added go in
+# the same way, and both have to exist in the dashboard BEFORE the first push that
+# carries them: this list is evaluated at deploy time, and a deploy that fails here
+# takes the contact form, the newsletter and the reviews down with it.
+#
+#   npx wrangler secret put META_CAPI_TOKEN --cwd worker
+#   npx wrangler secret put POLAR_ORDERS_TOKEN --cwd worker
 [secrets]
-required = ["RESEND_API_KEY", "RESEND_CONTACTS_KEY", "TURNSTILE_SECRET", "POLAR_WEBHOOK_SECRET", "SUBSCRIBE_SECRET"]
+required = ["RESEND_API_KEY", "RESEND_CONTACTS_KEY", "TURNSTILE_SECRET", "POLAR_WEBHOOK_SECRET", "SUBSCRIBE_SECRET", "META_CAPI_TOKEN", "POLAR_ORDERS_TOKEN"]

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  {% if site.meta_pixel_id %}{% include meta-pixel.html %}{% endif %}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% if page.title == site.title %}
   <title>{{ site.title }} &middot; {{ site.description }}</title>
@@ -31,6 +32,7 @@
   {% endif %}
 </head>
 <body data-ibl-checkout-theme="{{ page.theme | default: 'dark' }}">
+  {% if site.meta_pixel_id %}{% include consent-banner.html %}{% endif %}
   {% include announcement-bar.html %}
   {% include header.html %}
   <main>
@@ -38,6 +40,7 @@
   </main>
   {% include footer.html %}
   <script src="{{ '/assets/js/ibl-config.js' | relative_url }}" defer></script>
+  {% if site.meta_pixel_id %}<script src="{{ '/assets/js/ibl-consent.js' | relative_url }}" defer></script>{% endif %}
   <script src="{{ '/assets/js/ibl-site.js' | relative_url }}" defer></script>
   <script src="{{ '/assets/js/ibl-newsletter.js' | relative_url }}" defer></script>
   {% if page.layout == 'product' or page.layout == 'plugin' or page.catalog %}<script defer src="https://cdn.jsdelivr.net/npm/@polar-sh/checkout@0.4.1/dist/embed.global.js"></script>{% endif %}
@@ -48,6 +51,7 @@
   {% if page.review %}<script src="{{ '/assets/js/ibl-review.js' | relative_url }}" defer></script>{% endif %}
   {% if page.subscribed %}<script src="{{ '/assets/js/ibl-subscribed.js' | relative_url }}" defer></script>{% endif %}
   {% if page.contact %}<script src="{{ '/assets/js/ibl-contact.js' | relative_url }}" defer></script>{% endif %}
+  {% if page.purchase %}<script src="{{ '/assets/js/ibl-purchase.js' | relative_url }}" defer></script>{% endif %}
   {% if page.contact %}<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>{% endif %}
 </body>
 </html>

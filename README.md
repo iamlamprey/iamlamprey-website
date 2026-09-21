@@ -164,6 +164,149 @@ Polar shows a confirmation of its own inside the overlay before closing is still
 device; if it does, the Success URL is a nicety rather than the only thing standing between a buyer
 and a silent close.
 
+## Meta Pixel
+
+The site reports a four-event funnel to one Meta pixel, three of the events from the
+browser and one from the Worker:
+
+- **`PageView`** on every page, fired as the pixel loads.
+- **`ViewContent`** on a product page, from `assets/js/ibl-catalog.js` — the only file
+  that knows an item's price and its Polar `product_id`. `/plugins/muzzle/` carries two
+  product blocks, so it legitimately reports two.
+- **`InitiateCheckout`** on a buy button, from the same file, with the price read at
+  click time. Catalogue grid cards report nothing: they are links to a product page, and
+  `ViewContent` fires on arrival there. An item priced at `0` reports neither event.
+- **`Purchase`** on `/thanks/`, valued with the order's real total — see below.
+
+The pixel's id lives in `_config.yml` as `meta_pixel_id`, next to the other endpoint
+keys. **A blank value renders no pixel, no consent banner and no events at all**, which
+is what keeps local previews and the deploy before the tokens exist harmless — and it
+is the whole rollback: blank the id, push, and the feature is off.
+
+### The consent gate
+
+Nothing in the page requests anything from Meta until a visitor presses **Accept** on
+the banner. `_includes/meta-pixel.html` carries Meta's base snippet with its
+`fbevents.js` fetch split out into `window.iblLoadPixel()`, and `ibl-consent.js` — the
+only caller — runs it once the decision is `granted`. The `<noscript>` beacon is
+deliberately **not** shipped: a visitor without javascript cannot see the banner either,
+so a beacon that fired anyway would be tracking without consent.
+
+- The decision is `'granted'` or `'denied'` under **`ibl-consent-v1`** in
+  `localStorage`. A new key version is how a later change to what is being consented to
+  is introduced, rather than everyone who answered the old one inheriting it.
+- **Granted** loads the pixel immediately, and fires a queued event that was recorded
+  before the answer — `window.iblQueue`, so a visitor who opens a product page and only
+  then answers the banner still has their `ViewContent` recorded.
+- **Declined** never loads the pixel, and `window.iblTrack()` drops every event from
+  there on. `/thanks/` reports nothing either, so the Worker is never asked: the two
+  copies of `Purchase` are gated on the same decision.
+- A **localhost** host is refused inside `iblLoadPixel()`, so a local preview shares
+  `_config.yml` with production but stays out of the dataset.
+- A browser with `localStorage` unavailable is shown the banner every visit rather than
+  being treated as an answer.
+
+`window.iblTrack(name, params, options)` is the one call the rest of the site makes,
+always behind an `if (window.iblTrack)` guard, so every caller still runs with the
+pixel switched off. The banner links to `/contact/`, because the site has no privacy
+page to link to; a one-paragraph `/privacy/` would be the better home for that link.
+
+### Why `Purchase` needs the Worker
+
+Polar is the merchant of record, so the payment happens on `buy.polar.sh` and the pixel
+cannot see it: the embed's `success` event carries only `{ successURL, redirect }`, and
+GitHub Pages cannot run server code. The value has to be looked up after the fact, which
+is what `worker/src/index.js` is for — it already holds the Polar credentials, the
+origin allowlist and the rate limiter.
+
+```
+buyer pays on buy.polar.sh
+  → Polar redirects to https://iamlamprey.com/thanks/?checkout_id=<uuid>
+  → thanks.html POSTs that checkout_id (+ _fbp/_fbc) to the Worker's /purchase route
+  → the Worker calls Polar, GET /v1/orders/?checkout_id=<uuid>
+  → real total_amount + currency + product_id
+  → the Worker sends the server-side Purchase and returns the order id and the value
+  → the page fires fbq('track', 'Purchase', {...}, { eventID: <Polar order id> })
+```
+
+Both copies carry **the same `event_id` (the Polar order id) and the same `event_name`**,
+which is exactly how Meta deduplicates a redundant setup — so one purchase counts once,
+and an ad-blocked browser still reports through the server.
+
+### The `/purchase` route
+
+`POST /purchase` fits the file's existing shape: `gate()` for the origin allowlist and
+the `OPTIONS` preflight (a JSON post from `iamlamprey.com` to the `workers.dev` host is
+cross-origin), then `withinRateLimit()`. A body without `consent: true` is answered `204`
+and nothing happens — the Worker cannot verify the claim, but the intent is explicit in
+code and a hand-rolled request cannot quietly send an event.
+
+- **The lookup** is `GET https://api.polar.sh/v1/orders/?checkout_id=<id>&limit=10` with
+  `Authorization: Bearer POLAR_ORDERS_TOKEN` and **`Polar-Version: 2026-04`**, the same
+  pin all five `scripts/` clients send and for the same reason (see the section below).
+  It takes the newest order with `status === 'paid'`, and retries that lookup three times
+  at ~500 ms, because the redirect back to `/thanks/` and the order creation are not
+  perfectly ordered — which is also why the page has no retry loop of its own.
+- **The numbers** come from the order: `total_amount` is **integer cents**, so it is
+  divided by 100, and `currency` comes back lowercase (`usd`), so it is uppercased for
+  the ISO 4217 form Meta expects. `value` and `currency` are the two parameters Meta
+  marks required for `Purchase`; a free order (`total_amount` of 0) is answered
+  `{ ok: false, reason: 'free_order' }` rather than fired valueless.
+- **The server event** is a `POST` to `https://graph.facebook.com/v26.0/<PIXEL_ID>/events`
+  carrying `em` — SHA-256 in lowercase hex over the address lowercased and trimmed — plus
+  `client_ip_address`, `client_user_agent` and `fbp`/`fbc`, which must **not** be hashed
+  and are omitted rather than sent empty. `META_TEST_EVENT_CODE` routes the event to the
+  Test Events tab while it is set, so it stays blank in production.
+- **The answer** is `{ ok: true, event_id, value, currency, content_ids }` with
+  `no-store`, or `{ ok: false, reason }` for `no_order`, `free_order`, `bad_request`,
+  `rate_limited`, `lookup_failed`, `bad_order` or `capi_error`. The page fires its
+  browser copy only on `ok: true`, and treats any `200` — either answer — as final.
+- **The deduplication on the page** is `sessionStorage['ibl-purchase-' + checkoutId]`,
+  written only once the Worker has answered: Meta's rules cover a pixel↔server pair, but
+  two *browser* events sharing an `eventID` are not guaranteed to collapse, so a reload
+  of the confirmation page would otherwise inflate the count. A network failure is never
+  remembered, so it can still retry.
+
+The route logs status codes only — never the buyer's email, the token or a response body.
+
+### Setting it up
+
+Dashboard work first, then the two public values in the repo:
+
+1. **Events Manager** → *Connect data* → *Web* → create the pixel (this is a *dataset*;
+   the Pixel ID and Dataset ID are the same number). Under *Settings* → *Conversions
+   API* → *Set up manually*, generate the access token as a **system user**, and turn on
+   *Automatic Advanced Matching*. Then *Brand Safety → Domains* and verify
+   `iamlamprey.com` by DNS `TXT` (Cloudflare owns the zone), and *Aggregated Event
+   Measurement* → *Configure Web Events* in this priority order: `Purchase` →
+   `InitiateCheckout` → `ViewContent` → `PageView`.
+2. **Polar** → *Settings → Access Tokens* → create an **Organization Access Token**
+   scoped to **`orders:read`** and nothing else. Do not reuse the discount automation's
+   token: that one carries `discounts:write`, and the pixel route has no business near
+   it.
+3. **Cloudflare** → the Worker → *Settings → Variables* → set **`META_CAPI_TOKEN`** and
+   **`POLAR_ORDERS_TOKEN`** as secrets **before the push that carries them**. Both are in
+   `[secrets] required` in `worker/wrangler.toml`, and a deploy that refuses there takes
+   the contact form, the newsletter and the reviews down with it.
+4. Fill in the public halves — `META_PIXEL_ID` in `worker/wrangler.toml` and
+   `meta_pixel_id` in `_config.yml` — and push. Until the id is set the site is
+   unchanged and untracked, so this is the one clean switch.
+5. `POLAR_ORGANIZATION_ID` only if the token is not scoped to a single organisation: the
+   lookup answers `400` without it in that case.
+
+### Known limitations
+
+- **A declined visitor is not counted at all**, including a real EU or UK purchase. That
+  is the gate's trade-off: both halves hang on the one decision rather than the server
+  event ignoring it.
+- **A buyer who closes the tab before `/thanks/` loads** is never reported. A webhook
+  backstop on the existing `/polar` handler would catch those — deduplication would even
+  be free, since the `event_id` is the same order id — but a webhook has no access to the
+  consent decision, so it would fire for buyers who explicitly declined. Worth
+  revisiting if the tab-close loss shows up in the numbers.
+- No `AddToCart` (there is no cart: every buy button is a direct checkout link) and no
+  refund handling (Meta has no standard event for it; `order.refunded` is available).
+
 ## Polar API versioning
 
 Polar versions its API by date (`YYYY-MM`) and applies that version to requests, responses and

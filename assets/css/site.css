@@ -2358,3 +2358,94 @@ body.ibl-menu-open {
 .ibl-review-status-error {
   color: var(--ibl-orange);
 }
+
+/* --- consent banner --- */
+
+/* The pixel does not load until this has been answered, so the banner is the one
+   piece of chrome that floats over the page: a card at the bottom-left on a
+   desktop, a full-width bar on a phone, where a card that size would sit on top
+   of the buy button. It is rendered hidden and unhidden by ibl-consent.js, which
+   is what keeps it off the screen for a visitor who has already decided. */
+.ibl-consent {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 150;
+  width: min(420px, calc(100% - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--ibl-line);
+  border-radius: 10px;
+  background: var(--ibl-surface);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+}
+
+.ibl-consent-text {
+  margin: 0;
+  color: var(--ibl-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ibl-consent-text a {
+  color: var(--ibl-text);
+  text-decoration: underline;
+}
+
+.ibl-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* the newsletter button's pair, one size down: this is a notice rather than a
+   call to action, so Accept takes the accent and Decline sits beside it as the
+   quieter outline */
+.ibl-consent-choice {
+  min-height: 40px;
+  padding: 10px 20px;
+  border: 1px solid var(--ibl-accent);
+  border-radius: 6px;
+  background: var(--ibl-accent);
+  color: #070707;
+  font-family: var(--ibl-font);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.ibl-consent-choice:hover {
+  transform: translateY(-1px);
+  background: #d8d8d8;
+}
+
+.ibl-consent-decline {
+  border-color: var(--ibl-line);
+  background: transparent;
+  color: var(--ibl-muted);
+}
+
+.ibl-consent-decline:hover {
+  background: var(--ibl-surface-2);
+  color: var(--ibl-text);
+}
+
+/* a bar across the bottom of the phone, where the card would cover the button
+   the visitor is being asked to press */
+@media screen and (max-width: 600px) {
+  .ibl-consent {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    border-width: 1px 0 0;
+    border-radius: 0;
+  }
+
+  .ibl-consent-choice {
+    flex: 1 1 0;
+  }
+}

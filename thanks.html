@@ -3,8 +3,12 @@ layout: default
 permalink: /thanks/
 title: Thank you
 noindex: true
+purchase: true
 description: Your order is confirmed.
 ---
+<!-- the endpoint ibl-purchase.js posts the completed checkout to: the script is
+     not Liquid-processed, so the value reaches it here rather than in the file -->
+<meta name="ibl-purchase-endpoint" content="{{ site.purchase_endpoint }}">
 <div class="ibl-shell">
   <section class="ibl-section ibl-thanks-section">
     <h1 class="ibl-section-heading">Thank you</h1>

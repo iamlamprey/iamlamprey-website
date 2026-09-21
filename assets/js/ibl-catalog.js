@@ -25,6 +25,21 @@
     return value > 0 ? IBLConfig.money(value) : 'Free';
   }
 
+  /* Meta is told a figure in currency units, and a discounted price can land on
+     a float artefact, so it is rounded the way IBLConfig.money rounds the same
+     figure on screen */
+  function roundMoney(value) {
+    return Math.round(value * 100) / 100;
+  }
+
+  /* the store's own currency, out of config.json rather than hardcoded: Meta
+     wants the ISO 4217 code in its uppercase form */
+  function currencyOf(data) {
+    var currency = data && data.config && data.config.currency;
+
+    return String(currency || 'USD').toUpperCase();
+  }
+
   function pad2(value) {
     return (value < 10 ? '0' : '') + value;
   }
@@ -95,6 +110,16 @@
     var base = typeof item.price === 'number' ? item.price : 0;
     var checkout = item.checkout ? IBLConfig.resolve(item.checkout) : '';
     var timer = null;
+
+    /* the price a buyer would pay right now: the sale price while the window is
+       open, the shelf price otherwise. Read at the moment of the event rather
+       than frozen at render time — the sale can expire while the page is open,
+       which is the same reason drawBuy() re-reads href at click time */
+    function effectivePrice() {
+      if (base > 0 && data.saleActive(slug)) return base * (1 - (Number(data.discount.amount) || 0) / 100);
+
+      return base;
+    }
 
     if (nameEl && item.name) nameEl.textContent = tagline ? item.name + ' - ' + tagline : item.name;
 
@@ -181,6 +206,44 @@
       drawSale();
     } else {
       drawBase();
+    }
+
+    /* the funnel, and the only two events this file fires. Both are skipped at
+       zero — a free item is a download rather than a purchase, and a $0 event is
+       noise in the funnel — and the guard covers a blank meta_pixel_id, which
+       renders no iblTrack at all. Two blocks on one page (Muzzle's tiers) fire
+       two, one each. */
+    var openingPrice = effectivePrice();
+
+    if (window.iblTrack && openingPrice > 0) {
+      window.iblTrack('ViewContent', {
+        content_ids: [item.product_id || slug],
+        content_type: 'product',
+        content_name: label,
+        value: roundMoney(openingPrice),
+        currency: currencyOf(data)
+      });
+    }
+
+    /* bound once per block, and read at click time for the same reason
+       effectivePrice() is: the countdown can close the sale while the page is
+       open. A block whose checkout is empty is a "Coming soon" button, with no
+       checkout to start. */
+    if (buyEl && checkout && window.iblTrack) {
+      buyEl.addEventListener('click', function () {
+        var value = effectivePrice();
+
+        if (!(value > 0)) return;
+
+        window.iblTrack('InitiateCheckout', {
+          content_ids: [item.product_id || slug],
+          content_type: 'product',
+          content_name: label,
+          value: roundMoney(value),
+          currency: currencyOf(data),
+          num_items: 1
+        });
+      });
     }
   }
 
