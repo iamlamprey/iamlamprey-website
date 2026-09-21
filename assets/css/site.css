@@ -2449,3 +2449,36 @@ body.ibl-menu-open {
     flex: 1 1 0;
   }
 }
+
+/* The non-EU notice: the gate's card, but a notice rather than a question. The
+   pixel is already loading behind it, so the × is the only control and it needs
+   the top-right corner the gate's buttons do not. */
+.ibl-consent.ibl-notice {
+  padding-right: 46px;   /* the × is 30px plus its own inset */
+}
+
+.ibl-notice-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ibl-muted);
+  font-family: var(--ibl-font);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.ibl-notice-close:hover {
+  background: var(--ibl-surface-2);
+  color: var(--ibl-text);
+}

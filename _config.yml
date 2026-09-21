@@ -33,6 +33,13 @@ meta_pixel_id: "2051849245536351"
 # Purchase the browser pixel cannot see. The value reaches the page as a meta
 # tag, because the script that reads it is not Liquid-processed.
 purchase_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/purchase
+# where the page asks which consent regime it is in — the same Worker, on its
+# /geo route. The route reads Cloudflare's own country metadata and answers
+# 'required' or 'not_required'; the page loads the pixel immediately for the
+# second and shows the dismissible notice instead of the Accept/Decline gate.
+# A blank value is safe rather than broken: nothing is fetched and the page falls
+# back to the gate for everyone, which is today's behaviour.
+geo_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/geo
 exclude:
   - README.md
   - PROMPT.md

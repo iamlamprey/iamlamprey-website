@@ -1,11 +1,14 @@
 {% if site.meta_pixel_id %}
-<!-- The one file that touches Meta's javascript. Meta's base snippet defines the
-     fbq queue and fetches fbevents.js in one statement; the fetch is split out
-     here into iblLoadPixel() so it can wait for the consent banner, which leaves
-     this file requesting nothing from Meta until a visitor has accepted. The
-     matching <noscript> beacon is deliberately not shipped: a visitor without
-     javascript cannot see the banner either, so a beacon that fired anyway would
-     be tracking without consent. -->
+<!-- The one file that touches Meta's javascript, and the file that decides
+     whether it touches it at all. Meta's base snippet defines the fbq queue and
+     fetches fbevents.js in one statement; the fetch is split out here into
+     iblLoadPixel() so it can wait for the consent banner, which leaves this file
+     requesting nothing from Meta until the pixel is cleared to load. The regime
+     request below is the other half of that decision: it asks the Worker whether
+     the visitor's country requires the gate, and answers 'required' unless the
+     Worker says otherwise. The matching <noscript> beacon is deliberately not
+     shipped: a visitor without javascript cannot see the banner either, so a
+     beacon that fired anyway would be tracking without consent. -->
 <script>
   (function (f) {
     if (f.fbq) return;
@@ -41,8 +44,40 @@
       return host === 'localhost' || host === '127.0.0.1';
     }
 
+    var GEO_ENDPOINT = '{% if site.geo_endpoint %}{{ site.geo_endpoint }}{% endif %}';
+    var GEO_TIMEOUT = 2000;
+
+    /* which regime the visitor is in, resolved before anything can ask for it.
+       Every exit answers 'required': no endpoint configured, no fetch to make,
+       a local preview (which cannot load a pixel anyway), a timeout, or a
+       rejection. The one error with a cost is treating a European as though no
+       law applied, so the uncertain answer is always the gated one. */
+    window.iblGeo = (function () {
+      if (!GEO_ENDPOINT || isLocal() || typeof window.fetch !== 'function' || typeof window.Promise !== 'function') {
+        return window.Promise ? window.Promise.resolve('required') : null;
+      }
+
+      var asked = window.fetch(GEO_ENDPOINT, { headers: { 'Accept': 'application/json' } })
+        .then(function (response) {
+          return response.ok ? response.json() : null;
+        })
+        .then(function (answer) {
+          return answer && answer.consent === 'not_required' ? 'not_required' : 'required';
+        })
+        .catch(function () {
+          return 'required';
+        });
+
+      var timeout = new window.Promise(function (resolve) {
+        window.setTimeout(function () { resolve('required'); }, GEO_TIMEOUT);
+      });
+
+      return window.Promise.race([asked, timeout]);
+    })();
+
     /* the only thing that loads the pixel, and it is called from one place:
-       ibl-consent.js, once the stored decision reads granted */
+       ibl-consent.js, once the browser is cleared to track — a stored decision,
+       or a regime the Worker answered 'not_required' */
     window.iblLoadPixel = function () {
       if (window.iblPixelLoaded) return;
       window.iblPixelLoaded = true;

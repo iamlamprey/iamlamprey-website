@@ -1,7 +1,7 @@
 /*!
  * iamLamprey contact relay + mailing list + ratings — worker/src/index.js
  *
- * Six routes and one cron on one Worker, all on free tiers (the Workers
+ * Seven routes and one cron on one Worker, all on free tiers (the Workers
  * runtime, Turnstile, D1, KV and Resend's 3,000 emails a month):
  *
  *   /            the /contact/ form: check the origin, drop bots, verify a
@@ -26,6 +26,10 @@
  *                here, this looks the order up through Polar's orders API and
  *                sends the server-side event with the order id as the event_id
  *                both halves carry.
+ *   /geo         which consent regime the caller is in, so the page knows whether
+ *                gating the Meta pixel is required at all. Cloudflare's own
+ *                request metadata answers it, so no visitor's IP leaves for a
+ *                service we do not already use.
  *
  * The cron in wrangler.toml's [triggers] sends the invite a day after the order,
  * so a rating posted thirty seconds after checkout never reaches the figures —
@@ -124,6 +128,17 @@ const CHECKOUT_ID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9
 // on, because these end up in user_data.
 const MATCH_COOKIE_SHAPE = /^fb\.\d+\.\d+\.\S{1,400}$/;
 
+// the countries whose law requires prior consent before a tracking pixel loads:
+// EU-27, the rest of the EEA, the UK and Switzerland. It lives here rather than
+// in the browser so a change to it is a Worker deploy and not a site rebuild,
+// and so the site never ships a legal boundary that can drift. Cloudflare's
+// `request.cf.country` is ISO 3166-1 alpha-2, so Greece is GR and the UK is GB.
+// The crown dependencies (JE, GG, IM) are deliberately not listed; adding one is
+// a one-word change here if that judgement is revisited.
+const CONSENT_COUNTRIES = new Set(
+  'AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE IS LI NO GB CH'.split(' ')
+);
+
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
@@ -134,6 +149,7 @@ export default {
     if (pathname === '/reviews') return handleReview(request, env);
     if (pathname === '/api/ratings') return handleRatings(request, env);
     if (pathname === '/purchase') return handlePurchase(request, env);
+    if (pathname === '/geo') return handleGeo(request, env);
 
     return handleContact(request, env); // the root path stays the contact form
   },
@@ -496,6 +512,41 @@ async function handleRatings(request, env) {
     status: 200,
     headers: { 'Access-Control-Allow-Origin': '*', 'Cache-Control': RATINGS_CACHE, 'Content-Type': 'application/json; charset=utf-8' },
   });
+}
+
+// GET /geo — which consent regime the caller is in, so the page knows whether to
+// gate the pixel at all. The country comes from Cloudflare's own request metadata
+// rather than a third-party lookup, so no visitor's IP leaves for a service we do
+// not already use.
+//
+// An unresolvable country answers 'required'. That direction is the whole point
+// of the route: a false 'required' costs a banner on a visitor who did not need
+// one, while a false 'not_required' tracks a European without consent. The page
+// fails closed on the same reasoning, so a rejected fetch, a timeout or a CORS
+// failure all land back on the gate.
+//
+// Deliberately not behind withinRateLimit(): this runs on every page view, and a
+// five-a-minute ceiling would trip a visitor simply reading the site. The audit
+// below is only a CORS filter and not authentication — a non-browser client sets
+// its own Origin — which is the same caveat gate() already carries.
+async function handleGeo(request, env) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  const country = (request.cf && request.cf.country) || '';
+  const consent = !country || CONSENT_COUNTRIES.has(country) ? 'required' : 'not_required';
+
+  const headers = { 'Vary': 'Origin', 'Cache-Control': 'no-store', 'Content-Type': 'application/json; charset=utf-8' };
+  const origin = request.headers.get('Origin') || '';
+  const allowedOrigins = (env.ALLOWED_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean);
+
+  // the header is echoed only for an allowed origin, so another site's page cannot
+  // read the answer out of the response; that page's fetch fails and its own
+  // fail-closed path takes over
+  if (origin && allowedOrigins.indexOf(origin) !== -1) headers['Access-Control-Allow-Origin'] = origin;
+
+  return new Response(JSON.stringify({ consent, country }), { status: 200, headers });
 }
 
 // POST /purchase — the valued Purchase. Polar is the merchant of record, so the

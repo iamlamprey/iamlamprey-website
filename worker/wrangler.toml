@@ -12,9 +12,9 @@
 #   npx wrangler secret put SUBSCRIBE_SECRET --cwd worker
 #
 # The name is historical — the Worker now answers /contact/, /subscribe, /confirm,
-# /polar, /reviews, /api/ratings and /purchase — but it stays as it is: renaming it
-# moves the workers.dev host and breaks contact_endpoint in _config.yml for no
-# benefit.
+# /polar, /reviews, /api/ratings, /purchase and /geo — but it stays as it is:
+# renaming it moves the workers.dev host and breaks contact_endpoint in _config.yml
+# for no benefit.
 name = "iamlamprey-contact"
 main = "src/index.js"
 compatibility_date = "2026-09-11"

@@ -2,12 +2,27 @@
      It is rendered hidden and ibl-consent.js unhides it only when no decision is
      on record, so a returning visitor never sees it flash. No focus trap and no
      aria-modal: it sits at the end of the page rather than over it, and blocking
-     a visitor behind a notice is worse than the notice itself. There is no
-     privacy page to link yet, so the link goes to /contact/ rather than nowhere. -->
+     a visitor behind a notice is worse than the notice itself.
+
+     Two banners live in this file and ibl-consent.js unhides at most one of them.
+     This first one is the gate, shown to a visitor in a country whose law requires
+     prior consent: the pixel stays unloaded until Accept is pressed. The notice
+     below it is the rest of the world's answer — not a question, and with no
+     decision to record, because the pixel is already loading behind it. -->
 <div class="ibl-consent" id="ibl-consent" role="dialog" aria-modal="false" aria-label="Meta pixel consent" hidden>
   <p class="ibl-consent-text">By using this website, you may agree to our use of cookies. We use cookies to provide necessary site functionality and marketing services.</p>
   <div class="ibl-consent-actions">
     <button class="ibl-consent-choice ibl-consent-accept" type="button" data-ibl-consent="granted">Accept</button>
     <button class="ibl-consent-choice ibl-consent-decline" type="button" data-ibl-consent="denied">Decline</button>
   </div>
+</div>
+
+<!-- The notice the rest of the world gets. It is not a question and it has no
+     answer to record: the pixel is already loading behind it. The × is the only
+     control, so ibl-consent.js remembers the dismissal instead of a decision —
+     that record is also what says this browser was not in a consent country, so
+     a later page skips the /geo round trip entirely. -->
+<div class="ibl-consent ibl-notice" id="ibl-notice" role="dialog" aria-modal="false" aria-label="Cookie notice" hidden>
+  <p class="ibl-consent-text">This website uses cookies to provide necessary site functionality and marketing services.</p>
+  <button class="ibl-notice-close" type="button" data-ibl-notice="dismissed" aria-label="Close">&times;</button>
 </div>

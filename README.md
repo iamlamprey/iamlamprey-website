@@ -179,22 +179,45 @@ browser and one from the Worker:
 - **`Purchase`** on `/thanks/`, valued with the order's real total — see below.
 
 The pixel's id lives in `_config.yml` as `meta_pixel_id`, next to the other endpoint
-keys. **A blank value renders no pixel, no consent banner and no events at all**, which
-is what keeps local previews and the deploy before the tokens exist harmless — and it
-is the whole rollback: blank the id, push, and the feature is off.
+keys — `contact_endpoint`, `newsletter_endpoint`, `reviews_endpoint`, `ratings_endpoint`,
+`purchase_endpoint` and `geo_endpoint`, one per Worker route the page talks to. **A blank
+value renders no pixel, no consent banner, no notice and no events at all**, which is
+what keeps local previews and the deploy before the tokens exist harmless — and it is the
+whole rollback: blank the id, push, and the feature is off.
 
 ### The consent gate
 
-Nothing in the page requests anything from Meta until a visitor presses **Accept** on
-the banner. `_includes/meta-pixel.html` carries Meta's base snippet with its
-`fbevents.js` fetch split out into `window.iblLoadPixel()`, and `ibl-consent.js` — the
-only caller — runs it once the decision is `granted`. The `<noscript>` beacon is
-deliberately **not** shipped: a visitor without javascript cannot see the banner either,
-so a beacon that fired anyway would be tracking without consent.
+The gate is only shown where the law requires it. Before anything asks, the page calls
+the Worker's `/geo` route, and the answer splits the site in two:
 
+- **A consent country** — the EU-27, Iceland, Liechtenstein, Norway, the UK and
+  Switzerland — keeps the Accept/Decline banner, and nothing in the page requests
+  anything from Meta until **Accept** is pressed. `_includes/meta-pixel.html` carries
+  Meta's base snippet with its `fbevents.js` fetch split out into
+  `window.iblLoadPixel()`, and `ibl-consent.js` — the only caller — runs it once the
+  decision is `granted`.
+- **Everywhere else** gets the dismissible notice instead — *"This website uses cookies
+  to provide necessary site functionality and marketing services."* with a single × in
+  the corner — and the pixel loads immediately. That is what recovers the whole funnel
+  for traffic whose law does not require the gate, and what lets `fbevents.js` read
+  `fbclid` off the landing URL and write `_fbc` while it does.
+
+The `<noscript>` beacon is deliberately **not** shipped: a visitor without javascript
+cannot see either banner, so a beacon that fired anyway would be tracking without
+consent.
+
+- **Every uncertain answer is the gated one.** An unknown country, a blank
+  `geo_endpoint`, a failed or timed-out request, a CORS rejection, or a notice missing
+  from the markup all resolve to the Accept/Decline gate. A false `required` costs a
+  banner on a visitor who did not need one; a false `not_required` tracks a European
+  without consent, and that is the only mistake with a real cost.
 - The decision is `'granted'` or `'denied'` under **`ibl-consent-v1`** in
   `localStorage`. A new key version is how a later change to what is being consented to
   is introduced, rather than everyone who answered the old one inheriting it.
+- The notice's dismissal is its own key, **`ibl-notice-v1`**, because a notice is not a
+  consent — the consent key's versioning exists to describe *what* was consented to. It
+  doubles as the record that this browser was outside a consent country, so a later page
+  loads the pixel as it did then, with no `/geo` round trip and nothing to show.
 - **Granted** loads the pixel immediately, and fires a queued event that was recorded
   before the answer — `window.iblQueue`, so a visitor who opens a product page and only
   then answers the banner still has their `ViewContent` recorded.
@@ -202,14 +225,50 @@ so a beacon that fired anyway would be tracking without consent.
   there on. `/thanks/` reports nothing either, so the Worker is never asked: the two
   copies of `Purchase` are gated on the same decision.
 - A **localhost** host is refused inside `iblLoadPixel()`, so a local preview shares
-  `_config.yml` with production but stays out of the dataset.
-- A browser with `localStorage` unavailable is shown the banner every visit rather than
-  being treated as an answer.
+  `_config.yml` with production but stays out of the dataset. `isLocal()` also
+  short-circuits the regime request, so a local preview makes no `/geo` call at all.
+- A browser with `localStorage` unavailable remembers neither answer, so it is shown the
+  gate — or the notice — again on every visit rather than being treated as an answered
+  visitor.
 
 `window.iblTrack(name, params, options)` is the one call the rest of the site makes,
 always behind an `if (window.iblTrack)` guard, so every caller still runs with the
-pixel switched off. The banner links to `/contact/`, because the site has no privacy
-page to link to; a one-paragraph `/privacy/` would be the better home for that link.
+pixel switched off.
+
+### The `/geo` route
+
+`GET /geo` answers `{ consent: 'required' | 'not_required', country }`, read from
+Cloudflare's own `request.cf.country` rather than a third-party lookup — so no visitor's
+IP leaves for a service the site does not already use.
+
+- **The country list is a constant in `worker/src/index.js`**: the EU-27 plus Iceland,
+  Liechtenstein, Norway, the UK and Switzerland. It lives on the server so a change to it
+  is a Worker deploy rather than a site rebuild, and so the site never ships a legal
+  boundary that can drift. `request.cf.country` is ISO 3166-1 alpha-2 — Greece is `GR`
+  and the UK is `GB` — and the crown dependencies (Jersey, Guernsey, Man) are
+  deliberately not listed; adding one is a one-word change.
+- **An unresolvable country answers `required`**, the same direction the page fails in
+  and for the same reason: a false `required` costs a banner on a visitor who did not
+  need one, while a false `not_required` tracks a European without consent.
+- **`Cache-Control: no-store` is load-bearing rather than tidy.** A per-colo response
+  cached and served to a visitor in another country would be exactly the fail-open case
+  the route exists to avoid.
+- **The origin allowlist is a CORS filter and not authentication.** The
+  `Access-Control-Allow-Origin` header is echoed only for an origin in `ALLOWED_ORIGINS`,
+  so another site's page cannot read the answer out of the response — that page's fetch
+  fails and its own fail-closed path takes over. A non-browser client sets its own
+  `Origin`, the same caveat `gate()` already carries on the other routes.
+- **It is deliberately not behind `withinRateLimit()`.** The route runs on every page
+  view, and the shared five-a-minute ceiling would trip a visitor simply reading the
+  site; there is nothing here a script can exhaust beyond what a page view already costs.
+- `GET` and `HEAD` are answered, anything else is a `405`, and the request is simple —
+  `Accept` is a CORS-safelisted header — so there is no preflight to answer.
+
+That is one `/geo` call per first visit and none for a returning visitor, which sits
+comfortably inside the Workers free tier's 100,000 requests a day. A Cloudflare proxy
+(orange cloud) in front of the site would remove the call entirely, since the request
+would never leave Cloudflare's network — but it requires moving off GitHub's certificate,
+so the site stays as it is.
 
 ### Why `Purchase` needs the Worker
 
@@ -307,6 +366,19 @@ Dashboard work first, then the two public values in the repo:
 - **A declined visitor is not counted at all**, including a real EU or UK purchase. That
   is the gate's trade-off: both halves hang on the one decision rather than the server
   event ignoring it.
+- **A new EU or UK visitor who arrives from an ad click and browses before answering the
+  banner loses `fbclid`**, because `_fbc` is written by `fbevents.js` when it loads and it
+  does not load until Accept — by which time the landing URL is gone. A returning visitor
+  is unaffected: the stored decision loads the pixel on landing, with `fbclid` still in
+  the URL. Closing it for the first visit would mean storing `fbclid` on the device
+  before consent, which the EDPB's *Guidelines 2/2023*, the ICO and the CNIL all treat as
+  requiring consent — Article 5(3) ePrivacy covers storage *and* access by any method, and
+  no exemption covers an ad identifier. A deliberate cost, not an oversight.
+- **The non-EU classification is cached in `ibl-notice-v1`**, so a visitor who moves into
+  a consent country keeps the notice path until they clear storage. Re-asking on every
+  visit would cost a `/geo` round trip on every page view, and the error only arrives
+  with a visitor who was outside a consent country when they dismissed the notice. That
+  is the direction of the error being accepted.
 - **A buyer who closes the tab before `/thanks/` loads** is never reported. A webhook
   backstop on the existing `/polar` handler would catch those — deduplication would even
   be free, since the `event_id` is the same order id — but a webhook has no access to the
