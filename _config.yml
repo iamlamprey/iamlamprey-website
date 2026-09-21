@@ -27,7 +27,7 @@ ratings_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/api/ratings
 # the first deploy harmless: the id is the one switch. It has to stay nil rather
 # than "", because Liquid reads an empty string as true and would render the
 # pixel anyway.
-meta_pixel_id:
+meta_pixel_id: "2051849245536351"
 # where /thanks/ posts a completed checkout — the same Worker, on its /purchase
 # route, which looks the order up through Polar and sends the server-side
 # Purchase the browser pixel cannot see. The value reaches the page as a meta
