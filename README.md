@@ -132,10 +132,10 @@ is a browser-level redirect out of the checkout rather than an internal link, so
 cannot help. The page is `noindex: true` in its front matter, which `default.html` renders as
 `<meta name="robots" content="noindex">` — a thank-you page has no business in search results.
 
-The page deliberately does not read `?checkout_id=` and does not load the Meta Pixel yet. The
-parameter is left on the URL because the valued Purchase event that comes next needs it to fetch the
-order's total from Polar's API. Nothing else refers to the page: it is not in `_data/nav.yml`, and
-because it is `layout: default` it loads neither `ibl-catalog.js` nor the embed script.
+The page reads `?checkout_id=` through `ibl-purchase.js`, which its `purchase: true` front matter
+loads, and hands it to the Worker so the valued Purchase can be looked up and reported — see the
+Meta Pixel section below. Nothing else refers to the page: it is not in `_data/nav.yml`, and because
+it is `layout: default` it loads neither `ibl-catalog.js` nor the embed script.
 
 ### Setting the Success URLs
 
@@ -274,12 +274,20 @@ The route logs status codes only — never the buyer's email, the token or a res
 Dashboard work first, then the two public values in the repo:
 
 1. **Events Manager** → *Connect data* → *Web* → create the pixel (this is a *dataset*;
-   the Pixel ID and Dataset ID are the same number). Under *Settings* → *Conversions
-   API* → *Set up manually*, generate the access token as a **system user**, and turn on
-   *Automatic Advanced Matching*. Then *Brand Safety → Domains* and verify
-   `iamlamprey.com` by DNS `TXT` (Cloudflare owns the zone), and *Aggregated Event
-   Measurement* → *Configure Web Events* in this priority order: `Purchase` →
-   `InitiateCheckout` → `ViewContent` → `PageView`.
+   the Pixel ID and Dataset ID are the same number). The access token comes from the
+   pixel's *Settings* → *Conversions API*, through Meta's recommended **"Set up with
+   Dataset Quality API"** / **"Connect Conversions API"** flow, which mints the token and
+   stands up the integration in one pass — the older *Overview → Manage Integrations →
+   Manage* click, which created the Conversions API app and its system user, is no longer
+   part of that flow. The token is shown **once**, it belongs in the Cloudflare secret
+   and nowhere else, and it involves no App Review and no permission request.
+   `_includes/meta-pixel.html` was diffed against the base code Events Manager serves
+   today, so that copy is current rather than stale. Then *Brand Safety → Domains* and
+   verify `iamlamprey.com` by DNS `TXT` (Cloudflare owns the zone). *Aggregated Event
+   Measurement* is **after launch**: it lives in the pixel's *Settings → Event Setup*,
+   which needs the events already arriving before it can detect and rank them, and the
+   interactive tool it opens runs against the live site. The order to set there is
+   `Purchase` → `InitiateCheckout` → `ViewContent` → `PageView`, once the pixel is live.
 2. **Polar** → *Settings → Access Tokens* → create an **Organization Access Token**
    scoped to **`orders:read`** and nothing else. Do not reuse the discount automation's
    token: that one carries `discounts:write`, and the pixel route has no business near

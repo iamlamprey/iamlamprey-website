@@ -46,7 +46,7 @@ RESEND_SEGMENT_ID = "a2f5870e-8679-468e-9dd2-c7370b0506e3"
 # META_TEST_EVENT_CODE is normally empty: Meta only routes an event to the Test
 # Events tab while it is set, so a value left here would keep production events
 # out of the dataset.
-META_PIXEL_ID = ""
+META_PIXEL_ID = "2051849245536351"
 META_TEST_EVENT_CODE = ""
 
 # Polar's organisation, sent as organization_id on the order lookup. It is only
