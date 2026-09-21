@@ -1,0 +1,38 @@
+---
+layout: default
+permalink: /subscribed/
+title: Subscription confirmed
+noindex: true
+subscribed: true
+description: Confirm your iamlamprey newsletter subscription.
+---
+<div class="ibl-shell">
+  <!-- one centred band, borrowing /thanks/'s page-level padding: the visitor
+       arrived from a link in an email, so the page has no navigation or product
+       name of its own to offer, and only one of the three lines below is ever
+       shown. -->
+  <section class="ibl-section ibl-thanks-section">
+    <h1 class="ibl-section-heading">Newsletter subscription</h1>
+
+    <p class="ibl-section-text ibl-subscribed-status" id="iblSubscribedConfirmed" role="status" aria-live="polite" hidden>
+      You&rsquo;re subscribed &mdash; new releases, free packs and sales will come to this address.
+    </p>
+
+    <p class="ibl-section-text ibl-subscribed-status" id="iblSubscribedExpired" role="status" aria-live="polite" hidden>
+      That link has expired or is no longer valid. <a href="{{ '/' | relative_url }}">Sign up again</a> from any page footer.
+    </p>
+
+    <p class="ibl-section-text ibl-subscribed-status ibl-subscribed-status-error" id="iblSubscribedError" role="alert" aria-live="polite" hidden>
+      That didn&rsquo;t go through &mdash; please try again, or <a href="{{ '/contact/' | relative_url }}">get in touch</a>.
+    </p>
+
+    <!-- A static page cannot read its own query string, so without javascript
+         none of the three lines can be revealed. The noscript pair states what a
+         click from a fresh link means, and sends anyone who arrived another way
+         back to the form. -->
+    <noscript>
+      <p class="ibl-section-text">You&rsquo;re subscribed &mdash; new releases, free packs and sales will come to this address.</p>
+      <p class="ibl-section-text">If you reached this page without following a link in a confirmation email, <a href="{{ '/' | relative_url }}">sign up again</a> from any page footer.</p>
+    </noscript>
+  </section>
+</div>

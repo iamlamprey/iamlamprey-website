@@ -1,11 +1,17 @@
 # Deployed by .github/workflows/contact-worker.yml on any push that touches worker/.
 # Nothing secret belongs in this file: it is committed and, once the repo is public,
-# readable. RESEND_API_KEY, RESEND_CONTACTS_KEY, TURNSTILE_SECRET and
-# POLAR_WEBHOOK_SECRET are Worker secrets set in the Cloudflare dashboard
-# (Workers -> the script -> Settings -> Variables).
+# readable. RESEND_API_KEY, RESEND_CONTACTS_KEY, TURNSTILE_SECRET,
+# POLAR_WEBHOOK_SECRET and SUBSCRIBE_SECRET are Worker secrets set in the
+# Cloudflare dashboard (Workers -> the script -> Settings -> Variables).
 #
-# The name is historical — the Worker now answers /contact/, /subscribe, /polar,
-# /reviews and /api/ratings — but it stays as it is: renaming moves the
+# SUBSCRIBE_SECRET signs the double opt-in confirmation links, so it is generated
+# once and set once — rotating it invalidates every link that is already out
+# there, and the signer has no other use:
+#
+#   npx wrangler secret put SUBSCRIBE_SECRET --cwd worker
+#
+# The name is historical — the Worker now answers /contact/, /subscribe, /confirm,
+# /polar, /reviews and /api/ratings — but it stays as it is: renaming moves the
 # workers.dev host and breaks contact_endpoint in _config.yml for no benefit.
 name = "iamlamprey-contact"
 main = "src/index.js"
@@ -18,10 +24,15 @@ FROM_EMAIL = "iamlamprey contact form <noreply@iamlamprey.com>"
 # the rating invites keep their own sender, because the contact relay's display
 # name names that form and nothing else
 RATING_FROM_EMAIL = "iamlamprey <noreply@iamlamprey.com>"
+# the double opt-in confirmation email's sender. Transactional, like the rating
+# invites, so it reuses RESEND_API_KEY and carries no unsubscribe — and it keeps
+# its own sender for the same reason RATING_FROM_EMAIL does.
+SUBSCRIBE_FROM_EMAIL = "iamlamprey <noreply@iamlamprey.com>"
 # where the site is published: the Worker fetches config.json from here to resolve
-# a Polar product to a rating key, and the invite email links back to
-# <SITE_URL>/reviews/. Set it to https://iamlamprey.com at the custom-domain
-# cutover, along with url: and baseurl: in _config.yml.
+# a Polar product to a rating key, links the invite email back to
+# <SITE_URL>/reviews/, and lands a confirmed signup on <SITE_URL>/subscribed/. Set
+# it to https://iamlamprey.com at the custom-domain cutover, along with url: and
+# baseurl: in _config.yml.
 SITE_URL = "https://iamlamprey.github.io/iamlamprey-website"
 # the Resend topic every new contact is opted into, and the segment to add them
 # to. Ids, not secrets — see the Mailing list section of the README.
@@ -67,4 +78,4 @@ crons = ["0 * * * *"]
 # refuse to deploy without the secrets the Worker needs, rather than 502ing every
 # signup from a script that is missing one
 [secrets]
-required = ["RESEND_API_KEY", "RESEND_CONTACTS_KEY", "TURNSTILE_SECRET", "POLAR_WEBHOOK_SECRET"]
+required = ["RESEND_API_KEY", "RESEND_CONTACTS_KEY", "TURNSTILE_SECRET", "POLAR_WEBHOOK_SECRET", "SUBSCRIBE_SECRET"]

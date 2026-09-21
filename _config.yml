@@ -7,8 +7,9 @@ baseurl: /iamlamprey-website    # project-page URL; set to "" at custom-domain c
 # prints on the first deploy.
 contact_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/
 # where the site-wide newsletter form posts — the same Worker, on its /subscribe
-# route, which writes the address to the Resend contact list. There is no separate
-# host to wait for: a workers.dev host serving /contact/ serves /subscribe/ too.
+# route, which emails the address a confirmation link. Nothing is written until that
+# link is clicked, on the Worker's /confirm route. There is no separate host to wait
+# for: a workers.dev host serving /contact/ serves /subscribe/ too.
 newsletter_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/subscribe
 # where /reviews/ posts — the same Worker, on its /reviews route. The rating page
 # is the only place a purchase email lands, and the token that email carried is

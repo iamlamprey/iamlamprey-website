@@ -1,7 +1,7 @@
 /*!
  * iamLamprey contact relay + mailing list + ratings — worker/src/index.js
  *
- * Five routes and one cron on one Worker, all on free tiers (the Workers
+ * Six routes and one cron on one Worker, all on free tiers (the Workers
  * runtime, Turnstile, D1, KV and Resend's 3,000 emails a month):
  *
  *   /            the /contact/ form: check the origin, drop bots, verify a
@@ -9,8 +9,11 @@
  *                It stays the default route, so contact_endpoint in _config.yml
  *                needs no change.
  *   /subscribe   the site-wide newsletter form: the same origin/honeypot/mandatory
- *                Turnstile shape, but the address is written to the Resend contact
- *                list rather than emailed to an inbox.
+ *                Turnstile shape, but it emails the address a confirmation link
+ *                rather than writing it to the list.
+ *   /confirm     the link in that email: verifies the signed, self-expiring token
+ *                and only then writes the contact. A click from an inbox, so there
+ *                is no Origin header to allow and no Turnstile to solve.
  *   /polar       Polar's order webhook: verify the Standard Webhooks signature,
  *                add the buyer to that same list when the checkout's opt-in
  *                checkbox was ticked, mint the single-use rating invite from the
@@ -25,9 +28,9 @@
  *
  * Only upsertContact() knows the list provider is Resend, so swapping it for Kit
  * or MailerLite later is one function. Secrets (RESEND_API_KEY,
- * RESEND_CONTACTS_KEY, TURNSTILE_SECRET, POLAR_WEBHOOK_SECRET) are Worker
- * secrets set in the Cloudflare dashboard; the topic and segment ids and the
- * rest are in wrangler.toml's [vars] block.
+ * RESEND_CONTACTS_KEY, TURNSTILE_SECRET, POLAR_WEBHOOK_SECRET,
+ * SUBSCRIBE_SECRET) are Worker secrets set in the Cloudflare dashboard; the
+ * topic and segment ids and the rest are in wrangler.toml's [vars] block.
  */
 
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
@@ -43,7 +46,23 @@ const WEBHOOK_TOLERANCE = 300;
 // newsletter form and /reviews/ use their own, so one page's submission cannot
 // light up another page's form. flags[0] is success.
 const CONTACT = { flags: ['sent', 'error'], fallback: '/contact/' };
+// success now means the confirmation email is on its way rather than that the
+// address is on the list: the write happens on /confirm, once the link in that
+// email has been clicked. The flag pair is unchanged, so one line still answers
+// both directions of the round trip.
 const NEWSLETTER = { flags: ['subscribed', 'subscribe_error'], fallback: '/' };
+
+// the confirmation link is signed and self-expiring, so nothing is stored: 30
+// minutes is tight enough to blunt a mailed link being passed around and long
+// enough to survive delivery lag. The window is read at click time rather than
+// baked into the link, so changing it invalidates nothing already out there,
+// though shortening it can expire a link that is still in flight.
+const CONFIRM_TTL = 1800;
+
+// the three answers /subscribed/ prints. A token that does not verify is answered
+// `expired` rather than told apart from a stale one: the visitor can do the same
+// thing about either, and the distinction would only help whoever forged it.
+const CONFIRM = { flags: { confirmed: 'confirmed', expired: 'expired', confirm_error: 'confirm_error' }, fallback: '/subscribed/' };
 
 // `used` is its own answer rather than a failure: the token was spent, and a
 // buyer who reloads the link deserves to be told that rather than "error".
@@ -79,6 +98,7 @@ export default {
 
     if (pathname === '/polar') return handlePolar(request, env);
     if (pathname === '/subscribe') return handleSubscribe(request, env);
+    if (pathname === '/confirm') return handleConfirm(request, env);
     if (pathname === '/reviews') return handleReview(request, env);
     if (pathname === '/api/ratings') return handleRatings(request, env);
 
@@ -219,16 +239,74 @@ async function handleSubscribe(request, env) {
     return respond(request, allowOrigin, false, 400, NEWSLETTER);
   }
 
+  // the origin the form posted to rather than env.SITE_URL: /confirm is a route
+  // on this Worker, while env.SITE_URL is the static site, which has none
+  const origin = new URL(request.url).origin;
+  const link = await confirmationLink(env, email, origin);
+
+  if (!link) return respond(request, allowOrigin, false, 500, NEWSLETTER);
+  if (!(await sendConfirmationEmail(env, email, link))) return respond(request, allowOrigin, false, 502, NEWSLETTER);
+
+  return respond(request, allowOrigin, true, 200, NEWSLETTER);
+}
+
+// GET /confirm: the link in the confirmation email. A click from an inbox, so
+// it is deliberately not behind gate() — there is no Origin header to allow and
+// no browser of ours to answer — and the signed token is the whole gate. Every
+// answer is a 303 onto the static site, because the visitor arrived from an
+// email rather than from a page that could show them a result inline.
+async function handleConfirm(request, env) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  const url = new URL(request.url);
+  const email = url.searchParams.get('e') || '';
+  const token = url.searchParams.get('t') || '';
+  const separator = token.indexOf('.');
+  const issued = separator === -1 ? '' : token.slice(0, separator);
+  const signature = separator === -1 ? '' : token.slice(separator + 1);
+  const given = hexBytes(signature);
+
+  // an unset secret can verify nothing, and the address, the issue time and the
+  // signature are all checked before the list is touched
+  if (!env.SUBSCRIBE_SECRET || !EMAIL_SHAPE.test(email) || !/^\d+$/.test(issued) || !given) {
+    return confirmAnswer(env, 'expired');
+  }
+
+  const expected = hexBytes(await sign(env.SUBSCRIBE_SECRET, `subscribe.${email}.${issued}`));
+
+  if (!expected || !sameBytes(expected, given)) return confirmAnswer(env, 'expired');
+
+  const age = nowSeconds() - Number(issued);
+
+  // a timestamp from the future is as wrong as a stale one, and both are answered
+  // the same way: click the link in a fresh email
+  if (age < 0 || age > CONFIRM_TTL) return confirmAnswer(env, 'expired');
+
+  // the token is not single-use, so the same link can be clicked again and again:
+  // the ceiling that bounds a script on /subscribe bounds a loop here too, because
+  // every success is a write to Resend rather than an email
+  if (!(await withinRateLimit(env, request))) return confirmAnswer(env, 'confirm_error');
+
   const saved = await upsertContact(env, {
-    email,
-    firstName: field(form, 'firstName'),
+    email: normaliseEmail(email),
+    firstName: '',
     source: 'footer-form',
     products: [],
   });
 
-  if (!saved) return respond(request, allowOrigin, false, 502, NEWSLETTER);
+  return confirmAnswer(env, saved ? 'confirmed' : 'confirm_error');
+}
 
-  return respond(request, allowOrigin, true, 200, NEWSLETTER);
+// the answer to a click from an email: a 303 onto the static site, which is the
+// only page with anything to say about it. No json branch and no referer
+// handling — the visitor did not arrive from a page of ours and has no form to
+// return to, so /subscribed/ is the one place this can land.
+function confirmAnswer(env, state) {
+  const flag = CONFIRM.flags[state] || CONFIRM.flags.expired;
+
+  return new Response(null, { status: 303, headers: { 'Location': `${env.SITE_URL}${CONFIRM.fallback}?${flag}=1` } });
 }
 
 async function handlePolar(request, env) {
@@ -578,6 +656,49 @@ function ratingEmail(name, link) {
   };
 }
 
+// the second email. Transactional in the same way as the invite — one link and
+// nothing promotional — which is also why it carries no unsubscribe: the address
+// is not on the list yet, and ignoring the email is what cancels the signup.
+function confirmationEmail(link) {
+  const href = escapeHtml(link);
+
+  return {
+    subject: 'Confirm your subscription to iamlamprey',
+    text: `Someone asked to join the iamlamprey mailing list with this address.\n\nConfirm your subscription: ${link}\n\nThe link expires in 30 minutes. If this wasn't you, ignore this email and nothing will be added to the list.`,
+    html: `<p>Someone asked to join the <strong>iamlamprey</strong> mailing list with this address.</p><p><a href="${href}">Confirm your subscription</a></p><p>The link expires in 30 minutes. If this wasn't you, ignore this email and nothing will be added to the list.</p>`,
+  };
+}
+
+async function sendConfirmationEmail(env, email, link) {
+  const mail = confirmationEmail(link);
+
+  try {
+    const sent = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: env.SUBSCRIBE_FROM_EMAIL,
+        to: [email],
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html,
+      }),
+    });
+
+    if (!sent.ok) {
+      // the address stays out of the log: it is the one piece of personal data in
+      // the request, and the status is what says whether Resend took the send
+      console.error(`subscribe: the confirmation email returned ${sent.status} ${(await sent.text()).slice(0, 200)}`);
+      return false;
+    }
+  } catch (error) {
+    console.error(`subscribe: the confirmation email failed: ${error}`);
+    return false;
+  }
+
+  return true;
+}
+
 // the answer /reviews/ is built around: a 303 back to the page with the token
 // still in the query string and one flag, so finishing a rating needs no
 // javascript. The token rides back only when it was a real one, so a bad link
@@ -785,6 +906,51 @@ function randomToken() {
   for (const byte of bytes) token += byte.toString(16).padStart(2, '0');
 
   return token;
+}
+
+// HMAC-SHA256 in lowercase hex, the form randomToken() writes and the one a query
+// string takes without escaping. The message is domain-separated by its caller so
+// a signature minted for one purpose cannot be replayed as another.
+async function sign(secret, message) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const digest = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(message)));
+
+  let signature = '';
+  for (const byte of digest) signature += byte.toString(16).padStart(2, '0');
+
+  return signature;
+}
+
+// the mirror of base64Bytes(): null means "not a signature that could ever match",
+// which the caller answers rather than comparing against
+function hexBytes(value) {
+  if (!/^([0-9a-f]{2})+$/.test(value)) return null;
+
+  const bytes = new Uint8Array(value.length / 2);
+
+  for (let index = 0; index < bytes.length; index++) {
+    bytes[index] = parseInt(value.slice(index * 2, index * 2 + 2), 16);
+  }
+
+  return bytes;
+}
+
+// the confirmation link, signed rather than stored: the signature covers the
+// address and the issue time, so /confirm checks both without a table to write,
+// read or clean up after. A missing secret is not a link signed with the string
+// "undefined" — it is no link at all, which the caller answers 500 to.
+async function confirmationLink(env, email, origin) {
+  const secret = env.SUBSCRIBE_SECRET;
+
+  if (!secret) {
+    console.error('subscribe: SUBSCRIBE_SECRET is not set, so no confirmation link can be signed');
+    return null;
+  }
+
+  const issued = nowSeconds();
+  const signature = await sign(secret, `subscribe.${email}.${issued}`);
+
+  return `${origin}/confirm?e=${encodeURIComponent(email)}&t=${issued}.${signature}`;
 }
 
 function nowSeconds() {
