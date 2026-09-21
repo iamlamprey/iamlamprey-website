@@ -573,8 +573,8 @@ function ratingEmail(name, link) {
 
   return {
     subject: `How's ${name} treating you?`,
-    text: `Thanks for picking up ${name} from iamlamprey.\n\nIf you have a moment, I would like to know what you think of it:\n\n${link}\n\nOne star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.\n\niamlamprey`,
-    html: `<p>Thanks for picking up <strong>${safeName}</strong> from iamlamprey.</p><p>If you have a moment, I would like to know what you think of it:</p><p><a href="${href}">Rate ${safeName}</a></p><p>One star, then Submit, no account, and the link works once. Ratings come from verified purchases only, and every rating counts, including the low ones.<br>iamlamprey</p>`,
+    text: `Thanks for picking up ${name}.\n\nIf you've had a chance to give it a spin, I'd like to know what you think of it.\n\nRate ${name}: ${link}\n\nCheers!\niamlamprey`,
+    html: `<p>Thanks for picking up <strong>${safeName}</strong>.</p><p>If you've had a chance to give it a spin, I'd like to know what you think of it.</p><p><a href="${href}">Rate ${safeName}</a></p><p>Cheers!<br>iamlamprey</p>`,
   };
 }
 
