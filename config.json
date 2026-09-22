@@ -25,14 +25,14 @@
     "ratings_key names the rating key for a page that covers more than one product: both Muzzle tiers (bfVo0 and HZtFg) set it to muzzle, so a rating from either tier lands on /plugins/muzzle/ and the two aggregate as one figure. An item that does not set it is keyed by its own slug, which is what every other item wants. It is read by the Worker when it mints a rating invite, never by the site."
   ],
   "discount": {
-    "amount": 25,
+    "amount": 70,
     "products": "ALL",
     "start": "01/09/2026",
-    "end": "20/09/2026",
-    "code": "septembersale2"
+    "end": "30/09/2026",
+    "code": "synthmonth2026"
   },
   "announcement": {
-    "text": "",
+    "text": "Synth Month 2026 - 70% Off Storewide",
     "link": "/instruments/"
   },
   "newsletter": {
