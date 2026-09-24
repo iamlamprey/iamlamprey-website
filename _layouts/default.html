@@ -53,5 +53,10 @@
   {% if page.contact %}<script src="{{ '/assets/js/ibl-contact.js' | relative_url }}" defer></script>{% endif %}
   {% if page.purchase %}<script src="{{ '/assets/js/ibl-purchase.js' | relative_url }}" defer></script>{% endif %}
   {% if page.contact %}<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>{% endif %}
+  {% if site.cloudflare_analytics_token and site.cloudflare_analytics_token != "" %}
+  <!-- Cloudflare Web Analytics -->
+  <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ site.cloudflare_analytics_token }}"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+  {% endif %}
 </body>
 </html>

@@ -28,6 +28,19 @@ ratings_endpoint: https://iamlamprey-contact.iamlamprey.workers.dev/api/ratings
 # than "", because Liquid reads an empty string as true and would render the
 # pixel anyway.
 meta_pixel_id: "2051849245536351"
+# the Cloudflare Web Analytics token every page reports to, through the layout.
+# It is public — it ships in the page source — and it is the whole switch: an
+# empty string renders no beacon, which is what keeps a local preview out of the
+# dataset as well as out of the browser console.
+#
+# The beacon is manual on purpose. Cloudflare injects its own only for a site it
+# proxies, and the cutover left the apex and www DNS-only so GitHub keeps issuing
+# the certificate — so the snippet in _layouts/default.html is the only thing that
+# feeds Web Analytics here. Cloudflare matches the reporting hostname against the
+# site in the dashboard by postfix, so the one site covers www too, and an origin
+# that does not match (a local preview, a file:// page) is rejected rather than
+# counted. Cookieless, so it does not sit behind the consent gate.
+cloudflare_analytics_token: "251f94adae17463482d774eb172cc05b"
 # where /thanks/ posts a completed checkout — the same Worker, on its /purchase
 # route, which looks the order up through Polar and sends the server-side
 # Purchase the browser pixel cannot see. The value reaches the page as a meta

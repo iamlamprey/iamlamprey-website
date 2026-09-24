@@ -475,6 +475,38 @@ The dashboard half of it, none of which lives in the repo:
 - **Turnstile** — the widget lists `iamlamprey.com` and `www.iamlamprey.com` alongside the older
   hosts; a missing hostname fails the contact form and the newsletter signup silently.
 
+## Cloudflare Web Analytics
+
+The site's visits are counted by **Cloudflare Web Analytics**, with the beacon installed by hand in
+`_layouts/default.html` — Cloudflare injects its own only into a site it proxies, and the cutover
+left the apex and `www` **DNS only** so GitHub keeps issuing its certificate. Without that snippet
+there is nothing to count: the zone's traffic analytics measure requests through the proxy, and a
+grey-clouded record never reaches it, so the dashboard reads a visit or two instead of the real
+figure.
+
+Only the token is configuration. It is public — it ships in the page source — and it lives in
+`_config.yml` as `cloudflare_analytics_token`, next to the other endpoint keys. An empty string
+renders no beacon, which is what keeps a local preview out of the dataset; the layout tests for the
+empty string as well as for the key, so `""` is a working off switch rather than a Liquid truthiness
+trap. Cloudflare matches the reporting hostname against the site in the dashboard by postfix, so
+`iamlamprey.com` covers `www.iamlamprey.com` too, and an origin that does not match is rejected
+rather than counted.
+
+To set it up: **Web Analytics → Add a site**, enter `iamlamprey.com`, take the *not proxied through
+Cloudflare* path, then **Manage site** to copy the JS snippet. Paste it over the existing tag in
+`_layouts/default.html` and put its token in `_config.yml`. `type="module"` is what the current
+snippet uses and `defer` works too — both were checked in a browser against the live beacon, and both
+set `window.__cfBeacon` from the tag's token.
+
+Two things to know about the numbers:
+
+- The beacon is a script, so an ad blocker, Brave or a DuckDuckGo extension drops it and the visit
+  with it. Cloudflare's own edge analytics cannot be blocked — but they are the ones that need the
+  proxy.
+- It is cookieless and, per Cloudflare, collects no personal data, so it does not sit behind the
+  consent gate the Meta pixel does. A European count can be dropped with the site's *excluding
+  visitor data in the EU* setting instead.
+
 ## Known follow-ups
 
 - The hero JPGs are 2–3 MB unoptimised. A width-descriptor/WebP pass is worth
