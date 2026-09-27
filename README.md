@@ -67,28 +67,36 @@ Pushing a change to `config.json` also wakes `.github/workflows/polar-discount.y
 which creates the matching Polar discount. That is expected and idempotent (it
 deletes and recreates the same `code`).
 
-### Why `init()` is called from `ibl-catalog.js`
+### Why the overlay is opened from `ibl-catalog.js`
 
-The library's `init()` binds with a one-off `document.querySelectorAll("[data-polar-checkout]")` —
-**not** event delegation. With `data-auto-init` it would run on `DOMContentLoaded`, when our buy
-buttons do not exist yet: `ibl-catalog.js` builds them only once `config.json` has resolved. The tag
-therefore carries **no `data-auto-init`**, and the renderer calls `init()` itself at the end of its
-pass, after both the product blocks and the catalogue grids:
+The library is not left to bind the buy buttons itself. Its `init()` binds with a one-off
+`document.querySelectorAll("[data-polar-checkout]")` — **not** event delegation — which cannot work
+here anyway: `ibl-catalog.js` builds the buttons only once `config.json` has resolved, and the tag
+carries **no `data-auto-init`** for that reason.
+
+`init()` also throws away the checkout instance it creates, and that instance is the only handle on
+the checkout's lifecycle: `confirmed` is what reports the payment step to the pixel (see the Meta
+Pixel section). So the click is handled in `ibl-catalog.js`, which calls `EmbedCheckout.create()`
+itself and keeps the instance:
 
 ```js
-function initCheckout() {
-  if (window.Polar && window.Polar.EmbedCheckout) window.Polar.EmbedCheckout.init();
-}
+EmbedCheckout.create(url, theme ? { theme: theme } : undefined).then(function (embed) {
+  embed.addEventListener('confirmed', onConfirmed);
+});
 ```
 
-`init()` is idempotent, so calling it after every render is safe, and nothing else needs
-re-initialising: the click handler reads `href` at click time, so the countdown switching prices and
-`withCode()` appending `?discount_code=` keep working on a button that was bound once. The
-`window.Polar` guard covers a blocked CDN, an offline visit or a privacy blocker — the button then
-behaves as an ordinary link to Polar.
+Two consequences:
 
-**This is the trap to remember:** a buy button rendered anywhere other than `ibl-catalog.js` needs
-its own `init()` call once it exists, or it will redirect to Polar instead of opening the overlay.
+- **Nothing may call `init()`, and the tag must not carry `data-auto-init`.** Either would bind a
+  second click handler and open two overlays for one click.
+- A buy button rendered anywhere other than `ibl-catalog.js` needs its own handler — `openCheckout()`
+  is that handler.
+
+Every default action is left in place, so the overlay still tears itself down and a completed payment
+still redirects the parent window to the Success URL that `/thanks/` reports the `Purchase` from. The
+fallback is unchanged: the `window.Polar` guard covers a blocked CDN, an offline visit or a privacy
+blocker, and the button then behaves as an ordinary link to Polar. A `create()` that throws leaves the
+click unclaimed for the same reason.
 
 ### The overlay theme
 
@@ -102,9 +110,8 @@ its own `init()` call once it exists, or it will redirect to Polar instead of op
 `data-polar-checkout-theme`, so Muzzle's checkout opens light and everything else dark. It is the
 same key `_layouts/plugin.html` already reads for `ibl-plugin-light`, so there is nothing new to
 configure. A button whose `checkout` is empty — the disabled "Coming soon" state — is deliberately
-**not** tagged: the library falls back to
-`element.getAttribute('href') || element.getAttribute('data-polar-checkout')` when it is clicked, so
-a button with neither would make it build a URL out of an empty string.
+**not** tagged: the click reads `element.getAttribute('href') || element.getAttribute('data-polar-checkout')`,
+so a button with neither would build a URL out of an empty string.
 
 ### Allowlist the embed hosts in Polar
 
@@ -166,7 +173,7 @@ and a silent close.
 
 ## Meta Pixel
 
-The site reports a four-event funnel to one Meta pixel, three of the events from the
+The site reports a five-event funnel to one Meta pixel, four of the events from the
 browser and one from the Worker:
 
 - **`PageView`** on every page, fired as the pixel loads.
@@ -175,8 +182,22 @@ browser and one from the Worker:
   product blocks, so it legitimately reports two.
 - **`InitiateCheckout`** on a buy button, from the same file, with the price read at
   click time. Catalogue grid cards report nothing: they are links to a product page, and
-  `ViewContent` fires on arrival there. An item priced at `0` reports neither event.
+  `ViewContent` fires on arrival there.
+- **`AddPaymentInfo`** when the embedded checkout submits the payment — the embed's
+  `confirmed` event, wired in `openCheckout()`. It is the step between the click and the
+  order, and the one the pixel could not see while everything after the click happened
+  inside Polar's overlay.
 - **`Purchase`** on `/thanks/`, valued with the order's real total — see below.
+
+An item priced at `0` reports none of the three checkout events: a free download is not a
+purchase, and a `$0` event is noise in the funnel.
+
+Read together, the four browser and server events are the funnel as it can actually be
+observed: `ViewContent` → `InitiateCheckout` (the button was clicked) → `AddPaymentInfo`
+(payment was submitted inside Polar) → `Purchase` (the order was paid for). The middle
+step is what separates *nobody clicked buy* from *people clicked buy and abandoned the
+checkout* — the question a click-only funnel cannot answer, and the reason the overlay is
+opened in our code rather than the library's.
 
 The pixel's id lives in `_config.yml` as `meta_pixel_id`, next to the other endpoint
 keys — `contact_endpoint`, `newsletter_endpoint`, `reviews_endpoint`, `ratings_endpoint`,
@@ -379,6 +400,9 @@ Dashboard work first, then the two public values in the repo:
   visit would cost a `/geo` round trip on every page view, and the error only arrives
   with a visitor who was outside a consent country when they dismissed the notice. That
   is the direction of the error being accepted.
+- **`AddPaymentInfo` fires when the payment is submitted, not when it succeeds.** The gap
+  between it and `Purchase` is the declined, failed or abandoned payment — useful, but it
+  does mean the two are not the same measurement.
 - **A buyer who closes the tab before `/thanks/` loads** is never reported. A webhook
   backstop on the existing `/polar` handler would catch those — deduplication would even
   be free, since the `event_id` is the same order id — but a webhook has no access to the

@@ -77,6 +77,32 @@
     return url + separator + 'discount_code=' + encodeURIComponent(code);
   }
 
+  /* Opens the checkout overlay for a buy button and keeps the instance the
+     library hands back. Its own init() binds the trigger and drops that instance,
+     and the instance is the only handle on the checkout's lifecycle — which is
+     what lets the funnel report a payment the pixel cannot otherwise see. Every
+     default action is left in place, so the overlay still closes itself and a
+     completed payment still redirects to the Success URL that /thanks/ reports
+     the Purchase from. Returns whether the click was claimed: a blocked CDN, an
+     offline visit or a privacy blocker leaves the button an ordinary link. */
+  function openCheckout(buyEl, onConfirmed) {
+    var EmbedCheckout = window.Polar && window.Polar.EmbedCheckout;
+    var url = buyEl.getAttribute('href') || buyEl.getAttribute('data-polar-checkout');
+
+    if (!EmbedCheckout || !url) return false;
+
+    var theme = buyEl.getAttribute('data-polar-checkout-theme');
+
+    /* the instance arrives with the checkout's first event, which precedes
+       anything a buyer can do in it, and a create() that throws leaves the click
+       unclaimed rather than swallowed */
+    EmbedCheckout.create(url, theme ? { theme: theme } : undefined).then(function (embed) {
+      embed.addEventListener('confirmed', onConfirmed);
+    });
+
+    return true;
+  }
+
   /* --- product block (data-ibl-product) --- */
 
   function renderProduct(el, data) {
@@ -144,8 +170,8 @@
 
       buyEl.setAttribute('href', onSale ? withCode(checkout, data.discount.code) : checkout);
       buyEl.setAttribute('rel', 'noopener');
-      /* the embed builds its URL from these at click time, so a later price
-         change or discount code keeps working on a button bound once */
+      /* the click reads these at click time, so a later price change or discount
+         code keeps working on a button bound once */
       buyEl.setAttribute('data-polar-checkout', '');
       if (CHECKOUT_THEME) buyEl.setAttribute('data-polar-checkout-theme', CHECKOUT_THEME);
       buyEl.classList.remove('ibl-buy-disabled');
@@ -208,11 +234,12 @@
       drawBase();
     }
 
-    /* the funnel, and the only two events this file fires. Both are skipped at
+    /* the funnel: ViewContent here, InitiateCheckout on the click below, and
+       AddPaymentInfo when the overlay takes the payment. All three are skipped at
        zero — a free item is a download rather than a purchase, and a $0 event is
        noise in the funnel — and the guard covers a blank meta_pixel_id, which
        renders no iblTrack at all. Two blocks on one page (Muzzle's tiers) fire
-       two, one each. */
+       two ViewContents, one each. */
     var openingPrice = effectivePrice();
 
     if (window.iblTrack && openingPrice > 0) {
@@ -227,22 +254,40 @@
 
     /* bound once per block, and read at click time for the same reason
        effectivePrice() is: the countdown can close the sale while the page is
-       open. A block whose checkout is empty is a "Coming soon" button, with no
-       checkout to start. */
-    if (buyEl && checkout && window.iblTrack) {
-      buyEl.addEventListener('click', function () {
+       open. A block whose checkout is empty is a "Coming soon" button: there is
+       no checkout to open, so nothing is bound. */
+    if (buyEl && checkout) {
+      buyEl.addEventListener('click', function (event) {
         var value = effectivePrice();
 
-        if (!(value > 0)) return;
+        if (window.iblTrack && value > 0) {
+          window.iblTrack('InitiateCheckout', {
+            content_ids: [item.product_id || slug],
+            content_type: 'product',
+            content_name: label,
+            value: roundMoney(value),
+            currency: currencyOf(data),
+            num_items: 1
+          });
+        }
 
-        window.iblTrack('InitiateCheckout', {
-          content_ids: [item.product_id || slug],
-          content_type: 'product',
-          content_name: label,
-          value: roundMoney(value),
-          currency: currencyOf(data),
-          num_items: 1
+        /* the price the overlay is opened at, not the price at the moment the
+           buyer pays: the countdown can close the sale while the overlay is up,
+           and the URL it opened with is the one that set the price */
+        var claimed = openCheckout(buyEl, function () {
+          if (!window.iblTrack || !(value > 0)) return;
+
+          window.iblTrack('AddPaymentInfo', {
+            content_ids: [item.product_id || slug],
+            content_type: 'product',
+            content_name: label,
+            value: roundMoney(value),
+            currency: currencyOf(data),
+            num_items: 1
+          });
         });
+
+        if (claimed) event.preventDefault();
       });
     }
   }
@@ -357,12 +402,6 @@
     grid.parentNode.insertBefore(line, grid);
   }
 
-  /* the embed binds with a one-off query, so it has to run after the buttons
-     exist — they are built from config.json, not the page's markup */
-  function initCheckout() {
-    if (window.Polar && window.Polar.EmbedCheckout) window.Polar.EmbedCheckout.init();
-  }
-
   function run() {
     var blocks = document.querySelectorAll('[data-ibl-product]');
     var grids = document.querySelectorAll('[data-ibl-catalog]');
@@ -371,7 +410,6 @@
     IBLConfig.load().then(function (data) {
       for (var i = 0; i < blocks.length; i++) renderProduct(blocks[i], data);
       for (var j = 0; j < grids.length; j++) renderCatalog(grids[j], data);
-      initCheckout();
     });
   }
 
