@@ -541,6 +541,37 @@ body.ibl-menu-open {
   color: var(--ibl-text);
 }
 
+/* the two social glyphs close the footer's link row, opposite the nav links */
+.ibl-footer-social {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.ibl-footer-social a {
+  display: inline-flex;
+  /* the glyphs are drawn a shade under the muted ink a link uses, so they lift
+     to full strength on hover the way the nav links lift to --ibl-text */
+  opacity: 0.82;
+  transition: opacity 180ms ease;
+}
+
+.ibl-footer-social a:hover {
+  opacity: 1;
+}
+
+.ibl-footer-social img {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* the glyphs are drawn in the dark theme's muted ink, so the light theme
+   inverts them the way it already inverts the wordmark */
+.ibl-footer.ibl-theme-light .ibl-footer-social img {
+  filter: invert(1);
+}
+
 /* the footer follows the header's `nav_theme: light` flag */
 .ibl-footer.ibl-theme-light {
   --ibl-bg: #FFFFFF;
