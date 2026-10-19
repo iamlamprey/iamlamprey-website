@@ -27,12 +27,12 @@
   "discount": {
     "amount": 70,
     "products": "ALL",
-    "start": "01/09/2026",
-    "end": "30/09/2026",
-    "code": "synthmonth2026"
+    "start": "19/09/2026",
+    "end": "01/10/2026",
+    "code": "spookymonth2026"
   },
   "announcement": {
-    "text": "",
+    "text": "Spooky Season - 70% Off Storewide",
     "link": "/instruments/"
   },
   "newsletter": {
