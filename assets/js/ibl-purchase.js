@@ -13,6 +13,11 @@
  * side, and nothing here ever fires without a value: `value` and `currency` are
  * the two parameters Meta marks required for Purchase, and a valueless purchase
  * poisons the optimisation signal far worse than a missing one.
+ *
+ * The decision is waited for rather than read: a first-time visitor's answer comes
+ * back from /geo after this file has already run, so reading window.iblConsent at
+ * that moment reported nothing — and the visitor whose order that drops is the one
+ * whose order matters most.
  */
 (function () {
   'use strict';
@@ -104,20 +109,45 @@
       });
   }
 
+  // Consent is decided asynchronously for a first-time visitor — ibl-consent.js
+  // waits on the Worker's /geo answer before it grants anything — while this file
+  // runs straight away, and two defer scripts cannot be made to wait on each
+  // other's promises. Reading window.iblConsent here therefore dropped the Purchase
+  // for exactly the buyers who had never answered the notice or the banner; waiting
+  // on the decision ibl-consent.js publishes is what fixes it, without either file
+  // knowing the other's timing.
+  //
+  // A decision that never arrives is read as no consent: no banner in the markup, a
+  // browser without Promise, or a consent script that did not render at all leave
+  // nothing to wait on, and reporting anyway would be the one mistake with a real
+  // cost. Same direction window.iblTrack() already fails in.
+  function whenConsentDecided(done) {
+    if (window.iblConsent === 'granted' || window.iblConsent === 'denied') {
+      done(window.iblConsent);
+      return;
+    }
+
+    var ready = window.iblConsentReady;
+
+    if (ready && typeof ready.then === 'function') ready.then(done);
+  }
+
   function run() {
-    // the pixel and the server event are gated on the same decision, so a buyer
-    // who declined reports nothing at all — the accepted trade-off
-    if (window.iblConsent !== 'granted') return;
+    whenConsentDecided(function (decision) {
+      // the pixel and the server event are gated on the same decision, so a buyer
+      // who declined reports nothing at all — the accepted trade-off
+      if (decision !== 'granted') return;
 
-    var endpoint = document.querySelector('meta[name="ibl-purchase-endpoint"]');
-    var checkoutId = new URLSearchParams(window.location.search).get('checkout_id') || '';
+      var endpoint = document.querySelector('meta[name="ibl-purchase-endpoint"]');
+      var checkoutId = new URLSearchParams(window.location.search).get('checkout_id') || '';
 
-    // /thanks/ is reachable directly, and a visitor who typed it in has no order
-    // to report and no id to look one up with
-    if (!endpoint || !checkoutId || !window.fetch) return;
-    if (reported(checkoutId)) return;
+      // /thanks/ is reachable directly, and a visitor who typed it in has no order
+      // to report and no id to look one up with
+      if (!endpoint || !checkoutId || !window.fetch) return;
+      if (reported(checkoutId)) return;
 
-    report(endpoint.getAttribute('content'), checkoutId);
+      report(endpoint.getAttribute('content'), checkoutId);
+    });
   }
 
   if (document.readyState === 'loading') {

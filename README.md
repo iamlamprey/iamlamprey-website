@@ -245,6 +245,13 @@ consent.
 - **Declined** never loads the pixel, and `window.iblTrack()` drops every event from
   there on. `/thanks/` reports nothing either, so the Worker is never asked: the two
   copies of `Purchase` are gated on the same decision.
+- **The answer is published twice**: `window.iblConsent` for the code that only reads
+  it, and `window.iblConsentReady` — a promise resolving with the same string — for
+  the one caller that has to wait. `/thanks/` is that caller, because `ibl-purchase.js`
+  runs before a first-time visitor's `/geo` round trip can have answered: reading the
+  flag there dropped the `Purchase` for every buyer who had never answered the notice
+  or the banner. A decision that never arrives leaves the promise pending and
+  `/thanks/` silent, the same fail-closed direction as the rest of the gate.
 - A **localhost** host is refused inside `iblLoadPixel()`, so a local preview shares
   `_config.yml` with production but stays out of the dataset. `isLocal()` also
   short-circuits the regime request, so a local preview makes no `/geo` call at all.

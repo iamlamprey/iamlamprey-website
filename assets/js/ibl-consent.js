@@ -22,6 +22,12 @@
  * is ever shown it, that dismissal is also the record that this browser needs no
  * /geo round trip on a later visit. A notice is not a consent, so it does not
  * belong in the key that describes one.
+ *
+ * The answer is published twice: window.iblConsent for the code that only reads
+ * it, and window.iblConsentReady — the same answer as a promise — for the one
+ * caller that has to wait. /thanks/ is that caller: ibl-purchase.js runs before a
+ * first-time visitor's /geo round trip can have answered, so reading the flag
+ * there reported nothing for the buyers it matters most for.
  */
 (function () {
   'use strict';
@@ -30,6 +36,21 @@
   var NOTICE_KEY = 'ibl-notice-v1';
   var GRANTED = 'granted';
   var DENIED = 'denied';
+
+  // resolved once the browser's decision is known, so a script that has to act on
+  // consent can wait for it instead of reading window.iblConsent and racing the
+  // /geo round trip. It resolves with the same two strings iblConsent carries and
+  // it never rejects, so a decision that never arrives — no banner in the markup,
+  // or no consent script at all — simply leaves it pending, and a caller waiting
+  // on it reports nothing. That is the same direction the rest of the gate fails
+  // in, and the reason it is a promise rather than a poll.
+  var settleConsent = function () {};
+
+  if (typeof window.Promise === 'function') {
+    window.iblConsentReady = new window.Promise(function (resolve) {
+      settleConsent = resolve;
+    });
+  }
 
   // storage can be refused — private mode, or a browser set that way — and a
   // decision that cannot be read is no decision: the banner is shown again
@@ -54,6 +75,7 @@
 
   function grant() {
     window.iblConsent = GRANTED;
+    settleConsent(GRANTED);
 
     if (window.iblLoadPixel) window.iblLoadPixel();
   }
@@ -62,8 +84,13 @@
     remember(state);
     banner.hidden = true;
 
-    if (state === GRANTED) grant();
-    else window.iblConsent = DENIED;
+    if (state === GRANTED) {
+      grant();
+      return;
+    }
+
+    window.iblConsent = DENIED;
+    settleConsent(DENIED);
   }
 
   // the non-EU notice was dismissed on an earlier visit, which is also the record
@@ -129,6 +156,7 @@
 
     if (state === DENIED) {
       window.iblConsent = DENIED;
+      settleConsent(DENIED);
       return;
     }
 
