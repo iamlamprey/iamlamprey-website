@@ -988,6 +988,14 @@ body.ibl-menu-open {
   --ibl-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* the canvas follows the band. body's --ibl-bg is the dark token, and it is
+   what paints the space under the page's last band, which on Muzzle reads as a
+   black strip below the light content. the descendant chain is deliberate:
+   /plugins/ nests a light half inside its split screen, and its canvas is dark */
+body:has(> main > .ibl-plugin-light) {
+  background: #FFFFFF;
+}
+
 /* the accent is black on the light theme, so the button label flips to white;
    the disabled state keeps its own muted label */
 .ibl-plugin-light .ibl-buy:not(.ibl-buy-disabled) {
@@ -1040,6 +1048,25 @@ body.ibl-menu-open {
 .ibl-plugin .ibl-rating {
   justify-content: center;
   text-align: center;
+}
+
+/* the AAX caveat is a footnote at the end of the page rather than a warning
+   above the fold: it is a format note, not a reason to leave. it is a <div> so
+   it has no margin of its own to collapse out through the page when this rule
+   has not loaded yet, and the bottom padding is what holds the dark footer off
+   the text on the light theme - the page band paints it, this block does not */
+.ibl-plugin-formats {
+  margin: 32px 0 0;
+  padding: 16px 0 44px;
+  border-top: 1px solid var(--ibl-line-soft);
+  color: var(--ibl-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+.ibl-plugin-formats strong {
+  color: var(--ibl-text);
 }
 
 /* .ibl-product-section without a cover: the same price row, points and button,
