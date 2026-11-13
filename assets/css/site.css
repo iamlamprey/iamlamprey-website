@@ -676,6 +676,21 @@ body.ibl-menu-open {
   text-decoration: line-through;
 }
 
+/* the bundle's comparison line: the sum of the libraries it collects at their
+   shelf prices, struck, with the qualifier beside it. It sits directly under the
+   price row so the two figures read as one statement — $99, or $420 bought one at
+   a time — and the sale timer stays below it as the urgency line */
+.ibl-price-compare {
+  margin: 6px 0 0;
+  color: var(--ibl-muted);
+  font-size: 0.9rem;
+}
+
+.ibl-price-compare-figure {
+  color: var(--ibl-price-old);
+  text-decoration: line-through;
+}
+
 .ibl-sale-chip {
   display: inline-flex;
   align-items: center;

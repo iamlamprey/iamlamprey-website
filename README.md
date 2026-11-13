@@ -67,6 +67,21 @@ Pushing a change to `config.json` also wakes `.github/workflows/polar-discount.y
 which creates the matching Polar discount. That is expected and idempotent (it
 deletes and recreates the same `code`).
 
+### The bundle's comparison line
+
+`master-bundle.html` carries a `compare:` list in its front matter — the slugs the
+bundle collects. `_layouts/product.html` puts that list on the product block as
+`data-ibl-compare`, `ibl-catalog.js` sums their **shelf** prices into the struck
+`$420.00 bought separately` line under the price, and the same list is what the
+Included Instruments grid below lists through `data-ibl-slugs="{{ page.compare }}"`.
+A new instrument joins both places by being added to that one line.
+
+The comparison does not follow a sale — it describes what buying the same libraries
+one at a time costs at their normal prices, which is the same figure the grid reports
+as its total value, while the bundle's own $99 is what the discount reduces. A page
+with no `compare` list renders the line hidden, which is what every other product
+page does.
+
 ### Why the overlay is opened from `ibl-catalog.js`
 
 The library is not left to bind the buy buttons itself. Its `init()` binds with a one-off

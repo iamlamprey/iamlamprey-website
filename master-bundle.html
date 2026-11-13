@@ -5,6 +5,9 @@ title: Master Bundle
 slug: master-bundle
 cover: /images/instruments/master-bundle-cover.webp
 description: Every iamlamprey virtual instrument in one purchase - the complete catalogue in a single checkout.
+# the libraries the bundle collects: the product block sums their shelf prices
+# into its "bought separately" line, and the grid below lists the same set
+compare: achromic,aetheric,atlas,blackout,blackout-2,bloom,cloudburst,cloudburst-acoustic,eidolon,found-keys,gloom,oracle-2,pdq-bass,prismatic,songbird,tethys,zephyr
 ---
 <section class="ibl-section">
   <p class="ibl-section-text">
@@ -18,5 +21,5 @@ description: Every iamlamprey virtual instrument in one purchase - the complete 
 <section class="ibl-section">
   <h2 class="ibl-section-heading">Included Instruments</h2>
   <ul class="ibl-grid ibl-catalog-grid" data-ibl-catalog data-ibl-total="total value"
-      data-ibl-slugs="achromic,aetheric,atlas,blackout,blackout-2,bloom,cloudburst,cloudburst-acoustic,eidolon,found-keys,gloom,oracle-2,pdq-bass,prismatic,songbird,tethys,zephyr"></ul>
+      data-ibl-slugs="{{ page.compare }}"></ul>
 </section>

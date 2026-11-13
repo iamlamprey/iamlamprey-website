@@ -11,7 +11,7 @@ layout: default
     <div class="ibl-product-cover">
       <img src="{{ page.cover | relative_url }}" alt="{{ page.title }} cover art" loading="lazy">
     </div>
-    <div class="ibl-product" data-ibl-product="{{ page.slug }}" data-ibl-tagline="{{ page.tagline }}">
+    <div class="ibl-product" data-ibl-product="{{ page.slug }}" data-ibl-tagline="{{ page.tagline }}"{% if page.compare %} data-ibl-compare="{{ page.compare }}"{% endif %}>
       <div class="ibl-product-name">{{ page.title }}{% if page.tagline %} - {{ page.tagline }}{% endif %}</div>
       {% include product-rating.html %}
       <div class="ibl-price-row" hidden>
@@ -19,6 +19,7 @@ layout: default
         <span class="ibl-price-old" hidden></span>
         <span class="ibl-sale-chip" hidden></span>
       </div>
+      <p class="ibl-price-compare" hidden><s class="ibl-price-compare-figure"></s> bought separately</p>
       <div class="ibl-sale-timer" hidden></div>
       <p class="ibl-price-note" hidden>Pricing unavailable &mdash; reload the page</p>
       <ul class="ibl-product-points">

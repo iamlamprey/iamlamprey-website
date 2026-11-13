@@ -25,6 +25,23 @@
     return value > 0 ? IBLConfig.money(value) : 'Free';
   }
 
+  /* the list value of a set of entries — the sum of their shelf prices, so it is
+     what the set is worth rather than what it costs today. Free items add nothing
+     to it, and an entry may carry the grid's 'slug:key' alias */
+  function shelfTotal(entries, data) {
+    var total = 0;
+
+    for (var i = 0; i < entries.length; i++) {
+      var slug = entries[i].split(':')[0].trim();
+      if (!slug) continue;
+
+      var item = data.item(slug);
+      if (item && typeof item.price === 'number' && item.price > 0) total += item.price;
+    }
+
+    return total;
+  }
+
   /* Meta is told a figure in currency units, and a discounted price can land on
      a float artefact, so it is rounded the way IBLConfig.money rounds the same
      figure on screen */
@@ -116,6 +133,8 @@
     var chipEl = el.querySelector('.ibl-sale-chip');
     var timerEl = el.querySelector('.ibl-sale-timer');
     var noteEl = el.querySelector('.ibl-price-note');
+    var compareEl = el.querySelector('.ibl-price-compare');
+    var compareFigureEl = el.querySelector('.ibl-price-compare-figure');
     var buyEl = el.querySelector('.ibl-buy');
 
     if (!item) {
@@ -126,6 +145,7 @@
       show(rowEl, false);
       show(timerEl, false);
       show(buyEl, false);
+      show(compareEl, false);
       show(noteEl, true);
       return;
     }
@@ -134,6 +154,7 @@
     var tagline = el.getAttribute('data-ibl-tagline') || '';
     var buyLabel = el.getAttribute('data-ibl-buy-label') || '';
     var base = typeof item.price === 'number' ? item.price : 0;
+    var compareSlugs = (el.getAttribute('data-ibl-compare') || '').split(',');
     var checkout = item.checkout ? IBLConfig.resolve(item.checkout) : '';
     var timer = null;
 
@@ -232,6 +253,18 @@
       drawSale();
     } else {
       drawBase();
+    }
+
+    /* the bundle's comparison line: what the libraries it collects cost at their
+       shelf prices, which is the figure the Included Instruments grid reports as
+       its total value. It does not follow a sale — the set it describes is the
+       shelf price of buying the same libraries one at a time, not what the sale
+       would make that cost */
+    var compareTotal = shelfTotal(compareSlugs, data);
+
+    if (compareEl && compareFigureEl && compareTotal > 0) {
+      compareFigureEl.textContent = IBLConfig.money(compareTotal);
+      show(compareEl, true);
     }
 
     /* the funnel: ViewContent here, InitiateCheckout on the click below, and
@@ -356,7 +389,7 @@
     var slugs = (grid.getAttribute('data-ibl-slugs') || '').split(',');
     var group = grid.getAttribute('data-ibl-group') || 'instruments';
     var fragment = document.createDocumentFragment();
-    var total = 0;
+    var total = shelfTotal(slugs, data);
 
     if (!data.config) {
       showUnavailable(grid);
@@ -370,11 +403,7 @@
       if (!slug) continue;
 
       var item = data.item(slug);
-      if (item) {
-        /* the list value of the grid, for the pages that ask for it */
-        total += typeof item.price === 'number' && item.price > 0 ? item.price : 0;
-        fragment.appendChild(cardFor(item, data, group, key));
-      }
+      if (item) fragment.appendChild(cardFor(item, data, group, key));
     }
 
     if (!fragment.childNodes.length) {
